@@ -129,7 +129,7 @@
     <div id="spy-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
         <h2 class="text-xl mb-4 font-bold">Тренды УБТ</h2>
-        <div id="spyList" class="flex flex-col gap-3"></div>
+        <div id="spyList" class="flex flex-col gap-4"></div>
     </div>
 
     <script>
@@ -139,27 +139,28 @@
         // ВСТАВЬ СЮДА СВОЙ АКТУАЛЬНЫЙ BITLY TOKEN
         const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1";
 
+        // Здесь потом заменишь тестовые картинки на свои
         const spyTrends = [
             {
-                title: "UGC креатив на товарку",
+                title: "UGC Beauty Hook",
                 platform: "TikTok",
-                niche: "Товарка",
-                offer: "Beauty / Skin",
-                link: "https://example.com/creative1"
+                niche: "Beauty",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Creative+1"
             },
             {
-                title: "Проблема → решение за 15 секунд",
+                title: "Problem Solution Ad",
                 platform: "Reels",
                 niche: "Nutra",
-                offer: "Похудение",
-                link: "https://example.com/creative2"
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Creative+2"
             },
             {
-                title: "До / после с сильным хуком",
+                title: "Before / After Creative",
                 platform: "TikTok",
-                niche: "Crypto",
-                offer: "Lead Gen",
-                link: "https://example.com/creative3"
+                niche: "Ecom",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Creative+3"
             }
         ];
 
@@ -193,14 +194,31 @@
                 card.className = 'bg-gray-800 p-4 rounded-xl border border-gray-700';
 
                 card.innerHTML = `
-                    <h3 class="text-lg font-semibold mb-2">${item.title}</h3>
-                    <p class="text-sm text-gray-400 mb-1">Платформа: ${item.platform}</p>
-                    <p class="text-sm text-gray-400 mb-1">Ниша: ${item.niche}</p>
-                    <p class="text-sm text-gray-400 mb-3">Оффер: ${item.offer}</p>
-                    <a href="${item.link}" target="_blank"
-                       class="block bg-blue-600 text-white p-3 rounded-lg text-center font-semibold">
-                       🔥 Открыть креатив
-                    </a>
+                    <div class="overflow-hidden rounded-xl mb-4 border border-gray-700">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-auto block" />
+                    </div>
+
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <h3 class="text-lg font-semibold">${item.title}</h3>
+                        <span class="text-xs bg-red-600 px-2 py-1 rounded-full whitespace-nowrap">${item.week}</span>
+                    </div>
+
+                    <div class="flex gap-2 flex-wrap mb-4">
+                        <span class="text-xs bg-gray-700 px-3 py-1 rounded-full">Платформа: ${item.platform}</span>
+                        <span class="text-xs bg-gray-700 px-3 py-1 rounded-full">Ниша: ${item.niche}</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <a href="${item.image}" target="_blank"
+                           class="w-1/2 bg-blue-600 text-white p-3 rounded-lg text-center font-semibold">
+                           👁️ Открыть
+                        </a>
+
+                        <a href="${item.image}" download
+                           class="w-1/2 bg-green-600 text-white p-3 rounded-lg text-center font-semibold">
+                           ⬇️ Скачать
+                        </a>
+                    </div>
                 `;
 
                 spyList.appendChild(card);
