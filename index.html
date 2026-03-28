@@ -40,7 +40,7 @@
 <body class="p-4">
     <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
 
-    <!-- НОВЫЙ БЛОК: пользователь и баланс -->
+    <!-- БЛОК: пользователь и баланс -->
     <div id="userBar" class="mb-6 bg-gray-800 p-4 rounded-xl border border-gray-700 hidden">
         <div id="userName" class="font-semibold text-white">Пользователь</div>
         <div id="userBalance" class="text-sm text-gray-400 mt-1">Баланс: 0 кредитов</div>
@@ -159,9 +159,8 @@
         // ВСТАВЬ СЮДА НОВЫЙ АКТУАЛЬНЫЙ BITLY TOKEN
         const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
 
-        // ВСТАВЬ СЮДА URL СВОЕГО BACKEND
-        // пример: https://ubt-backend.onrender.com
-        const API_BASE_URL = "ВСТАВЬ_СЮДА_URL_BACKEND";
+        // ТВОЙ BACKEND УЖЕ ВПИСАН
+        const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
 
         const spyTrends = [
             {
@@ -238,11 +237,6 @@
                 return;
             }
 
-            if (!API_BASE_URL || API_BASE_URL === 'ВСТАВЬ_СЮДА_URL_BACKEND') {
-                console.log('API_BASE_URL not configured');
-                return;
-            }
-
             try {
                 const response = await fetch(`${API_BASE_URL}/register`, {
                     method: 'POST',
@@ -283,10 +277,6 @@
         async function spendCredits(action, amount) {
             if (!tg || !tg.initData) {
                 return { ok: false, message: 'Telegram initData not found' };
-            }
-
-            if (!API_BASE_URL || API_BASE_URL === 'ВСТАВЬ_СЮДА_URL_BACKEND') {
-                return { ok: false, message: 'Backend URL не настроен' };
             }
 
             try {
