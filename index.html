@@ -8,23 +8,33 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #1c1c1e;
+            background:
+                radial-gradient(circle at top, rgba(59,130,246,0.18), transparent 35%),
+                linear-gradient(180deg, #0f172a 0%, #111827 45%, #0b1120 100%);
             color: white;
             font-family: sans-serif;
             -webkit-user-select: none;
+            min-height: 100vh;
         }
 
         .card {
-            background: #2c2c2e;
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(44,44,46,0.96), rgba(28,28,30,0.96));
+            border-radius: 18px;
             padding: 20px;
             margin-bottom: 15px;
             cursor: pointer;
-            border: 1px solid #3a3a3c;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .card:active {
-            background: #3a3a3c;
+            transform: scale(0.98);
+        }
+
+        .card:hover {
+            border-color: rgba(59,130,246,0.35);
+            box-shadow: 0 14px 36px rgba(0,0,0,0.28);
         }
 
         .hidden {
@@ -35,16 +45,54 @@
             opacity: 0.6;
             pointer-events: none;
         }
+
+        .glass-box {
+            background: rgba(17, 24, 39, 0.82);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+            backdrop-filter: blur(8px);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
+        }
+
+        .primary-btn:active {
+            transform: scale(0.99);
+        }
+
+        .green-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, #334155, #475569);
+        }
+
+        .section-title {
+            letter-spacing: 0.2px;
+        }
     </style>
 </head>
 <body class="p-4">
     <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
 
-    <!-- БЛОК: пользователь и баланс -->
-    <div id="userBar" class="mb-6 bg-gray-800 p-4 rounded-xl border border-gray-700 hidden">
-        <div id="userName" class="font-semibold text-white">Пользователь</div>
-        <div id="userBalance" class="text-sm text-gray-400 mt-1">Баланс: 0 кредитов</div>
-        <div id="userPlan" class="text-sm text-gray-400 mt-1">Тариф: free</div>
+    <!-- БЛОК ПОЛЬЗОВАТЕЛЯ -->
+    <div id="userBar" class="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-800 to-slate-900 p-4 hidden shadow-lg">
+        <div class="flex items-center gap-3">
+            <div id="userAvatarWrap" class="h-14 w-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
+                <span id="userAvatarFallback">U</span>
+            </div>
+
+            <div class="min-w-0">
+                <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
+                <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                <div id="userPlan" class="text-xs text-blue-300 mt-1">Тариф: free</div>
+            </div>
+        </div>
     </div>
 
     <!-- ГЛАВНОЕ МЕНЮ -->
@@ -68,9 +116,9 @@
     <!-- РАЗДЕЛ ВИДЕО -->
     <div id="video-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Уникализатор</h2>
+        <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
 
-        <div class="bg-gray-800 p-8 rounded-xl border-2 border-dashed border-gray-600 text-center">
+        <div class="glass-box p-8 rounded-2xl border-2 border-dashed border-slate-600 text-center">
             <input type="file" id="videoInput" class="hidden" accept="video/*" />
             <label for="videoInput" class="cursor-pointer text-blue-400 block">
                 Нажми, чтобы выбрать видео
@@ -80,13 +128,13 @@
 
         <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
 
-        <button id="uploadBtn" class="mt-6 w-full bg-blue-600 p-4 rounded-xl font-bold">
+        <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
             Уникализировать
         </button>
 
         <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
 
-        <div id="resultBox" class="mt-4 hidden bg-gray-800 p-4 rounded-xl border border-gray-700">
+        <div id="resultBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
             <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
             <div id="resultLink"></div>
         </div>
@@ -95,31 +143,31 @@
     <!-- РАЗДЕЛ ССЫЛКИ -->
     <div id="link-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Смарт-линк</h2>
+        <h2 class="section-title text-xl mb-4 font-bold">Смарт-линк</h2>
 
         <input
             id="linkInput"
             type="text"
             placeholder="https://your-offer.com"
-            class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 mb-4 outline-none"
+            class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
         />
 
         <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
 
         <button
             id="generateLinkBtn"
-            class="w-full bg-blue-600 p-4 rounded-xl font-bold">
+            class="primary-btn w-full p-4 rounded-2xl font-bold">
             Сгенерировать
         </button>
 
-        <div id="generatedLinkBox" class="mt-4 hidden bg-gray-800 p-4 rounded-xl border border-gray-700">
+        <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
             <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
             <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
 
             <div class="flex gap-3">
                 <button
                     id="copyLinkBtn"
-                    class="w-1/2 bg-green-600 p-4 rounded-xl font-bold">
+                    class="green-btn w-1/2 p-4 rounded-2xl font-bold">
                     📋 Скопировать
                 </button>
 
@@ -127,7 +175,7 @@
                     id="openLinkBtn"
                     href="#"
                     target="_blank"
-                    class="w-1/2 bg-blue-600 p-4 rounded-xl font-bold text-center hidden">
+                    class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
                     🔗 Открыть ссылку
                 </a>
             </div>
@@ -139,7 +187,7 @@
     <!-- РАЗДЕЛ ТРЕНДЫ -->
     <div id="spy-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
+        <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
 
         <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
             <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Все</button>
@@ -156,10 +204,12 @@
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
 
-        // ВСТАВЬ СЮДА НОВЫЙ АКТУАЛЬНЫЙ BITLY TOKEN
+        // =========================
+        // ВСТАВЬ СЮДА НОВЫЙ BITLY TOKEN
+        // =========================
         const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
 
-        // ТВОЙ BACKEND УЖЕ ВПИСАН
+        // BACKEND УЖЕ ПОДКЛЮЧЕН
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
 
         const spyTrends = [
@@ -229,6 +279,25 @@
         if (tg) {
             tg.expand();
             tg.ready();
+
+            const quickName =
+                tg.initDataUnsafe?.user?.first_name ||
+                tg.initDataUnsafe?.user?.username ||
+                '';
+
+            const quickPhoto = tg.initDataUnsafe?.user?.photo_url || '';
+
+            if (quickName) {
+                document.getElementById('userBar').classList.remove('hidden');
+                document.getElementById('userName').textContent = quickName;
+                document.getElementById('userAvatarFallback').textContent = quickName.charAt(0).toUpperCase();
+            }
+
+            if (quickPhoto) {
+                document.getElementById('userAvatar').src = quickPhoto;
+                document.getElementById('userAvatar').classList.remove('hidden');
+                document.getElementById('userAvatarFallback').classList.add('hidden');
+            }
         }
 
         async function registerTelegramUser() {
@@ -267,11 +336,34 @@
             const userName = document.getElementById('userName');
             const userBalance = document.getElementById('userBalance');
             const userPlan = document.getElementById('userPlan');
+            const userAvatar = document.getElementById('userAvatar');
+            const userAvatarFallback = document.getElementById('userAvatarFallback');
 
             userBar.classList.remove('hidden');
-            userName.textContent = appState.user.first_name || appState.user.username || 'Пользователь';
+
+            const displayName =
+                appState.user.first_name ||
+                appState.user.username ||
+                'Пользователь';
+
+            userName.textContent = displayName;
             userBalance.textContent = `Баланс: ${appState.user.balance} кредитов`;
             userPlan.textContent = `Тариф: ${appState.user.plan}`;
+
+            const photoUrl =
+                tg?.initDataUnsafe?.user?.photo_url ||
+                appState.user.photo_url ||
+                '';
+
+            if (photoUrl) {
+                userAvatar.src = photoUrl;
+                userAvatar.classList.remove('hidden');
+                userAvatarFallback.classList.add('hidden');
+            } else {
+                userAvatar.classList.add('hidden');
+                userAvatarFallback.classList.remove('hidden');
+                userAvatarFallback.textContent = displayName.charAt(0).toUpperCase();
+            }
         }
 
         async function spendCredits(action, amount) {
@@ -355,7 +447,7 @@
 
             filtered.forEach((item) => {
                 const card = document.createElement('div');
-                card.className = 'bg-gray-800 p-4 rounded-xl border border-gray-700';
+                card.className = 'glass-box p-4 rounded-2xl';
 
                 card.innerHTML = `
                     <div class="overflow-hidden rounded-xl mb-4 border border-gray-700">
@@ -374,12 +466,12 @@
 
                     <div class="flex gap-3">
                         <a href="${item.image}" target="_blank"
-                           class="w-1/2 bg-blue-600 text-white p-3 rounded-lg text-center font-semibold">
+                           class="w-1/2 primary-btn text-white p-3 rounded-2xl text-center font-semibold">
                            👁️ Открыть
                         </a>
 
                         <a href="${item.image}" download
-                           class="w-1/2 bg-green-600 text-white p-3 rounded-lg text-center font-semibold">
+                           class="w-1/2 green-btn text-white p-3 rounded-2xl text-center font-semibold">
                            ⬇️ Скачать
                         </a>
                     </div>
@@ -390,7 +482,7 @@
 
             if (filtered.length === 0) {
                 spyList.innerHTML = `
-                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 text-gray-400 text-center">
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
                         Пока нет креативов в этой нише
                     </div>
                 `;
@@ -472,12 +564,12 @@
                     resultLink.innerHTML = `
                         <div class="flex flex-col gap-3 mt-2">
                             <a href="${watchUrl}" target="_blank"
-                               class="bg-blue-500 text-white p-3 rounded-lg text-center font-semibold">
+                               class="primary-btn text-white p-3 rounded-2xl text-center font-semibold">
                                👁️ Смотреть видео
                             </a>
 
                             <a href="${downloadUrl}" target="_blank" download
-                               class="bg-green-500 text-white p-3 rounded-lg text-center font-semibold">
+                               class="green-btn text-white p-3 rounded-2xl text-center font-semibold">
                                ⬇️ Скачать видео
                             </a>
                         </div>
@@ -512,6 +604,7 @@
                 generatedLinkBox.classList.remove('hidden');
                 generatedLink.textContent = spend.message;
                 generatedLink.removeAttribute('href');
+                openLinkBtn.classList.add('hidden');
                 return;
             }
 
