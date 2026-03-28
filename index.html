@@ -79,7 +79,7 @@
 
         <div id="resultBox" class="mt-4 hidden bg-gray-800 p-4 rounded-xl border border-gray-700">
             <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
-            <a id="resultLink" href="#" target="_blank" class="text-blue-400 break-all underline"></a>
+            <div id="resultLink"></div>
         </div>
     </div>
 
@@ -135,8 +135,7 @@
             const file = event.target.files[0];
 
             resultBox.classList.add('hidden');
-            resultLink.href = '#';
-            resultLink.textContent = '';
+            resultLink.innerHTML = '';
 
             if (!file) {
                 selectedFile = null;
@@ -176,8 +175,21 @@
 
                 if (data.secure_url) {
                     statusMessage.textContent = 'Готово!';
-                    resultLink.href = data.secure_url;
-                    resultLink.textContent = data.secure_url;
+
+                    resultLink.innerHTML = `
+                        <div class="flex flex-col gap-3 mt-2">
+                            <a href="${data.secure_url}" target="_blank"
+                               class="bg-blue-500 text-white p-3 rounded-lg text-center font-semibold">
+                               👁️ Смотреть видео
+                            </a>
+
+                            <a href="${data.secure_url}?fl_attachment" target="_blank"
+                               class="bg-green-500 text-white p-3 rounded-lg text-center font-semibold">
+                               ⬇️ Скачать видео
+                            </a>
+                        </div>
+                    `;
+
                     resultBox.classList.remove('hidden');
                 } else {
                     statusMessage.textContent = 'Ошибка загрузки';
