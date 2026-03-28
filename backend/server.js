@@ -12,7 +12,6 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ ДОБАВИЛ ВОТ ЭТО (главная страница)
 app.get('/', (req, res) => {
   res.json({
     ok: true,
@@ -28,6 +27,8 @@ const pool = new Pool({
 function validateTelegramInitData(initData, botToken) {
   const urlParams = new URLSearchParams(initData);
   const hash = urlParams.get('hash');
+
+  if (!hash) return null;
   urlParams.delete('hash');
 
   const dataCheckString = [...urlParams.entries()]
@@ -47,59 +48,183 @@ function validateTelegramInitData(initData, botToken) {
 
   if (calculatedHash !== hash) return null;
 
-  return JSON.parse(urlParams.get('user'));
+  const userRaw = urlParams.get('user');
+  if (!userRaw) return null;
+
+  return JSON.parse(userRaw);
+}
+
+async function telegramApi(method, body) {
+  const response = await fetch(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  return response.json();
 }
 
 app.post('/register', async (req, res) => {
-  const { initData } = req.body;
+  try {
+    const { initData } = req.body;
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
 
-  const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
-  if (!user) return res.status(401).json({ message: 'Invalid user' });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
 
-  const existing = await pool.query(
-    'select * from users where telegram_id = $1',
-    [user.id]
-  );
-
-  let dbUser;
-
-  if (existing.rows.length === 0) {
-    const inserted = await pool.query(
-      `insert into users (telegram_id, username, first_name)
-       values ($1, $2, $3) returning *`,
-      [user.id, user.username, user.first_name]
+    const existing = await pool.query(
+      'select * from users where telegram_id = $1',
+      [user.id]
     );
-    dbUser = inserted.rows[0];
-  } else {
-    dbUser = existing.rows[0];
-  }
 
-  res.json({ user: dbUser });
+    let dbUser;
+
+    if (existing.rows.length === 0) {
+      const inserted = await pool.query(
+        `insert into users (telegram_id, username, first_name)
+         values ($1, $2, $3) returning *`,
+        [user.id, user.username || null, user.first_name || null]
+      );
+      dbUser = inserted.rows[0];
+    } else {
+      dbUser = existing.rows[0];
+    }
+
+    res.json({
+      user: {
+        telegram_id: dbUser.telegram_id,
+        username: dbUser.username,
+        first_name: dbUser.first_name,
+        balance: dbUser.balance,
+        plan: dbUser.plan
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/spend', async (req, res) => {
-  const { initData, amount } = req.body;
+  try {
+    const { initData, amount } = req.body;
 
-  const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
-  if (!user) return res.status(401).json({ message: 'Invalid user' });
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
 
-  const result = await pool.query(
-    'select * from users where telegram_id = $1',
-    [user.id]
-  );
+    const result = await pool.query(
+      'select * from users where telegram_id = $1',
+      [user.id]
+    );
 
-  const dbUser = result.rows[0];
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
 
-  if (dbUser.balance < amount) {
-    return res.status(400).json({ message: 'Недостаточно средств' });
+    const dbUser = result.rows[0];
+
+    if (dbUser.balance < amount) {
+      return res.status(400).json({ message: 'Недостаточно средств' });
+    }
+
+    const updated = await pool.query(
+      'update users set balance = balance - $2 where telegram_id = $1 returning *',
+      [user.id, amount]
+    );
+
+    const updatedUser = updated.rows[0];
+
+    res.json({
+      user: {
+        telegram_id: updatedUser.telegram_id,
+        username: updatedUser.username,
+        first_name: updatedUser.first_name,
+        balance: updatedUser.balance,
+        plan: updatedUser.plan
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
+});
 
-  const updated = await pool.query(
-    'update users set balance = balance - $2 where telegram_id = $1 returning *',
-    [user.id, amount]
-  );
+app.post('/create-topup-link', async (req, res) => {
+  try {
+    const { initData, amount, credits } = req.body;
 
-  res.json({ user: updated.rows[0] });
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const payload = `topup:${user.id}:${credits}:${Date.now()}`;
+
+    const data = await telegramApi('createInvoiceLink', {
+      title: 'Пополнение баланса',
+      description: `${credits} кредитов для UBT ToolKit`,
+      payload,
+      currency: 'XTR',
+      prices: [
+        {
+          label: `${credits} credits`,
+          amount: amount
+        }
+      ]
+    });
+
+    if (!data.ok) {
+      return res.status(400).json({
+        message: data.description || 'Telegram invoice error'
+      });
+    }
+
+    res.json({ invoice_link: data.result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/telegram-webhook', async (req, res) => {
+  try {
+    const update = req.body;
+
+    if (update.pre_checkout_query) {
+      await telegramApi('answerPreCheckoutQuery', {
+        pre_checkout_query_id: update.pre_checkout_query.id,
+        ok: true
+      });
+
+      return res.json({ ok: true });
+    }
+
+    if (update.message && update.message.successful_payment) {
+      const payment = update.message.successful_payment;
+      const payload = payment.invoice_payload || '';
+
+      if (payment.currency === 'XTR' && payload.startsWith('topup:')) {
+        const parts = payload.split(':');
+        const telegramId = Number(parts[1]);
+        const credits = Number(parts[2]);
+
+        if (telegramId && credits) {
+          await pool.query(
+            'update users set balance = balance + $2 where telegram_id = $1',
+            [telegramId, credits]
+          );
+        }
+      }
+
+      return res.json({ ok: true });
+    }
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Webhook error' });
+  }
 });
 
 app.listen(port, () => {
