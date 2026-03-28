@@ -28,18 +28,14 @@
             transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .card:active {
-            transform: scale(0.98);
-        }
+        .card:active { transform: scale(0.98); }
 
         .card:hover {
             border-color: rgba(59,130,246,0.35);
             box-shadow: 0 14px 36px rgba(0,0,0,0.28);
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         .btn-disabled {
             opacity: 0.6;
@@ -58,9 +54,7 @@
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
         }
 
-        .primary-btn:active {
-            transform: scale(0.99);
-        }
+        .primary-btn:active { transform: scale(0.99); }
 
         .green-btn {
             background: linear-gradient(135deg, #059669, #10b981);
@@ -75,9 +69,7 @@
             background: linear-gradient(135deg, #dc2626, #ef4444);
         }
 
-        .section-title {
-            letter-spacing: 0.2px;
-        }
+        .section-title { letter-spacing: 0.2px; }
 
         .bottom-nav {
             background: rgba(15, 23, 42, 0.92);
@@ -86,20 +78,30 @@
             box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
         }
 
-        .bottom-nav-btn {
-            transition: all 0.15s ease;
-        }
+        .bottom-nav-btn { transition: all 0.15s ease; }
 
-        .bottom-nav-btn.active {
-            color: #60a5fa;
-        }
+        .bottom-nav-btn.active { color: #60a5fa; }
 
         .bottom-nav-btn.active .nav-icon-wrap {
             background: rgba(59,130,246,0.16);
         }
 
-        .page-wrap {
-            padding-bottom: 92px;
+        .page-wrap { padding-bottom: 92px; }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+        }
+
+        .modal-card {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            bottom: 90px;
+            z-index: 60;
         }
     </style>
 </head>
@@ -109,23 +111,28 @@
 
         <!-- БЛОК ПОЛЬЗОВАТЕЛЯ -->
         <div id="userBar" class="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-800 to-slate-900 p-4 hidden shadow-lg">
-            <div class="flex items-center gap-3">
-                <div id="userAvatarWrap" class="h-14 w-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
-                    <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
-                    <span id="userAvatarFallback">U</span>
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div id="userAvatarWrap" class="h-14 w-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                        <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
+                        <span id="userAvatarFallback">U</span>
+                    </div>
+
+                    <div class="min-w-0">
+                        <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
+                        <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                        <div id="userPlan" class="text-xs text-blue-300 mt-1">Тариф: free</div>
+                    </div>
                 </div>
 
-                <div class="min-w-0">
-                    <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
-                    <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
-                    <div id="userPlan" class="text-xs text-blue-300 mt-1">Тариф: free</div>
-                </div>
+                <button id="topupBtn" class="primary-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap">
+                    ⭐ Пополнить
+                </button>
             </div>
         </div>
 
         <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="home-screen">
-            <!-- ГЛАВНОЕ МЕНЮ -->
             <div id="main-menu">
                 <div class="card" onclick="showSection('video')">
                     <div class="flex items-center gap-3">
@@ -158,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- РАЗДЕЛ ВИДЕО -->
+            <!-- ВИДЕО -->
             <div id="video-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
@@ -185,7 +192,7 @@
                 </div>
             </div>
 
-            <!-- РАЗДЕЛ ССЫЛКИ -->
+            <!-- ССЫЛКИ -->
             <div id="link-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-bold">Смарт-линк</h2>
@@ -229,7 +236,7 @@
                 </div>
             </div>
 
-            <!-- РАЗДЕЛ ТРЕНДЫ -->
+            <!-- ТРЕНДЫ -->
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
@@ -246,7 +253,7 @@
             </div>
         </div>
 
-        <!-- ЭКРАН ПОДДЕРЖКИ -->
+        <!-- ПОДДЕРЖКА -->
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-bold">💬 Поддержка</h2>
 
@@ -270,16 +277,6 @@
                     Написать в поддержку
                 </a>
             </div>
-
-            <div class="glass-box p-5 rounded-2xl">
-                <div class="font-semibold mb-2">Что можно написать</div>
-                <div class="text-sm text-gray-400 space-y-2">
-                    <div>• Не работает функция</div>
-                    <div>• Нужна помощь с оплатой</div>
-                    <div>• Не хватает кредитов</div>
-                    <div>• Хочу тариф PRO</div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -298,87 +295,67 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА ПОПОЛНЕНИЯ -->
+    <div id="topupModalBackdrop" class="modal-backdrop hidden"></div>
+    <div id="topupModal" class="modal-card hidden">
+        <div class="glass-box rounded-3xl p-5">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-xl font-bold">⭐ Пополнить баланс</div>
+                    <div class="text-sm text-gray-400">Выбери пакет кредитов</div>
+                </div>
+                <button id="closeTopupModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">Закрыть</button>
+            </div>
+
+            <div class="space-y-3">
+                <button class="topup-option w-full primary-btn p-4 rounded-2xl font-bold text-left" data-stars="50" data-credits="50">
+                    ⭐ 50 Stars → 50 кредитов
+                </button>
+
+                <button class="topup-option w-full green-btn p-4 rounded-2xl font-bold text-left" data-stars="100" data-credits="120">
+                    ⭐ 100 Stars → 120 кредитов
+                </button>
+
+                <button class="topup-option w-full secondary-btn p-4 rounded-2xl font-bold text-left" data-stars="250" data-credits="350">
+                    ⭐ 250 Stars → 350 кредитов
+                </button>
+            </div>
+
+            <p id="topupStatus" class="mt-4 text-sm text-gray-300"></p>
+        </div>
+    </div>
+
     <script>
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
 
-        // =========================
         // ВСТАВЬ СЮДА НОВЫЙ BITLY TOKEN
-        // =========================
         const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
 
-        // BACKEND УЖЕ ПОДКЛЮЧЕН
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
 
-        // =========================
         // ВСТАВЬ СЮДА USERNAME ПОДДЕРЖКИ БЕЗ @
-        // пример: vitalik_support
-        // =========================
-        const SUPPORT_USERNAME = "vilitolu";
+        const SUPPORT_USERNAME = "ВСТАВЬ_USERNAME_ПОДДЕРЖКИ";
 
         const spyTrends = [
-            {
-                title: "Dating Hook - Chat Message",
-                niche: "dating",
-                platform: "TikTok",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png"
-            },
-            {
-                title: "Dating UGC Warm Opening",
-                niche: "dating",
-                platform: "Reels",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_6_xiaazz.png"
-            },
-            {
-                title: "Crypto Rich Lifestyle",
-                niche: "crypto",
-                platform: "TikTok",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_9_fqfanz.png"
-            },
-            {
-                title: "Crypto Fast Hook Ad",
-                niche: "crypto",
-                platform: "Reels",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_10_xyid9a.png"
-            },
-            {
-                title: "Casino Big Win",
-                niche: "gambling",
-                platform: "TikTok",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_5_fj9uma.png"
-            },
-            {
-                title: "Slots Bonus Creative",
-                niche: "gambling",
-                platform: "Reels",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_4_moh3qi.png"
-            },
-            {
-                title: "Weight Loss Before/After",
-                niche: "nutra",
-                platform: "TikTok",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_7_eelvre.png"
-            },
-            {
-                title: "Nutra Problem Solution",
-                niche: "nutra",
-                platform: "Reels",
-                week: "ТОП недели",
-                image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_8_s8ytms.png"
-            }
+            { title: "Dating Hook - Chat Message", niche: "dating", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" },
+            { title: "Dating UGC Warm Opening", niche: "dating", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_6_xiaazz.png" },
+            { title: "Crypto Rich Lifestyle", niche: "crypto", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_9_fqfanz.png" },
+            { title: "Crypto Fast Hook Ad", niche: "crypto", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_10_xyid9a.png" },
+            { title: "Casino Big Win", niche: "gambling", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_5_fj9uma.png" },
+            { title: "Slots Bonus Creative", niche: "gambling", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_4_moh3qi.png" },
+            { title: "Weight Loss Before/After", niche: "nutra", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_7_eelvre.png" },
+            { title: "Nutra Problem Solution", niche: "nutra", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_8_s8ytms.png" }
         ];
 
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        const appState = {
-            user: null
-        };
+        const appState = { user: null };
+
+        const topupBtn = document.getElementById('topupBtn');
+        const topupModal = document.getElementById('topupModal');
+        const topupModalBackdrop = document.getElementById('topupModalBackdrop');
+        const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
+        const topupStatus = document.getElementById('topupStatus');
 
         if (tg) {
             tg.expand();
@@ -444,6 +421,18 @@
             }
         }
 
+        function openTopupModal() {
+            topupModal.classList.remove('hidden');
+            topupModalBackdrop.classList.remove('hidden');
+            topupStatus.textContent = '';
+        }
+
+        function closeTopupModal() {
+            topupModal.classList.add('hidden');
+            topupModalBackdrop.classList.add('hidden');
+            topupStatus.textContent = '';
+        }
+
         async function registerTelegramUser() {
             if (!tg || !tg.initData) {
                 console.log('Telegram initData not found');
@@ -453,12 +442,8 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/register`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        initData: tg.initData
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData })
                 });
 
                 const data = await response.json();
@@ -518,9 +503,7 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/spend`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         initData: tg.initData,
                         action,
@@ -549,12 +532,52 @@
             }
         }
 
+        async function createTopupInvoice(stars, credits) {
+            if (!tg || !tg.initData) {
+                topupStatus.textContent = 'Открой Mini App через Telegram';
+                return;
+            }
+
+            topupStatus.textContent = 'Создаём оплату...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/create-topup-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        amount: stars,
+                        credits: credits
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.invoice_link) {
+                    topupStatus.textContent = data.message || 'Не удалось создать оплату';
+                    return;
+                }
+
+                tg.openInvoice(data.invoice_link, function (status) {
+                    if (status === 'paid') {
+                        topupStatus.textContent = 'Оплата прошла. Обнови экран через пару секунд.';
+                        setTimeout(registerTelegramUser, 2000);
+                    } else if (status === 'cancelled') {
+                        topupStatus.textContent = 'Оплата отменена';
+                    } else {
+                        topupStatus.textContent = `Статус: ${status}`;
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                topupStatus.textContent = 'Ошибка соединения';
+            }
+        }
+
         function showSection(section) {
             const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
             sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
-            document
-                .getElementById(section === 'main' ? 'main-menu' : section + '-section')
-                .classList.remove('hidden');
+            document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
         }
 
         function buildDownloadUrl(url) {
@@ -650,7 +673,6 @@
 
         let selectedFile = null;
 
-        // ===== ВИДЕО =====
         videoInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
 
@@ -734,7 +756,6 @@
             }
         });
 
-        // ===== BITLY =====
         generateLinkBtn.addEventListener('click', async function () {
             const url = linkInput.value.trim();
 
@@ -776,21 +797,18 @@
                 if (data.link) {
                     generatedLink.href = data.link;
                     generatedLink.textContent = data.link;
-
                     openLinkBtn.href = data.link;
                     openLinkBtn.classList.remove('hidden');
                 } else {
                     generatedLink.textContent = 'Ошибка Bitly';
                     console.log(data);
                 }
-
             } catch (error) {
                 generatedLink.textContent = 'Ошибка соединения';
                 console.error(error);
             }
         });
 
-        // ===== КОПИРОВАНИЕ ССЫЛКИ =====
         copyLinkBtn.addEventListener('click', async function () {
             const link = generatedLink.textContent.trim();
 
@@ -806,6 +824,26 @@
                 copyStatus.textContent = 'Не удалось скопировать автоматически. Скопируй вручную.';
                 console.error(error);
             }
+        });
+
+        if (topupBtn) {
+            topupBtn.addEventListener('click', openTopupModal);
+        }
+
+        if (closeTopupModalBtn) {
+            closeTopupModalBtn.addEventListener('click', closeTopupModal);
+        }
+
+        if (topupModalBackdrop) {
+            topupModalBackdrop.addEventListener('click', closeTopupModal);
+        }
+
+        document.querySelectorAll('.topup-option').forEach((btn) => {
+            btn.addEventListener('click', function () {
+                const stars = Number(this.dataset.stars);
+                const credits = Number(this.dataset.credits);
+                createTopupInvoice(stars, credits);
+            });
         });
 
         renderSpyTrends();
