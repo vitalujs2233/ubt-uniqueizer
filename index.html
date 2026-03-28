@@ -1,7 +1,8 @@
 <script>
     const CLOUD_NAME = 'de7pheovq';
     const UPLOAD_PRESET = 'ubt_preset';
-    const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1"
+
+    const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1";
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
@@ -35,8 +36,6 @@
     const generatedLink = document.getElementById('generatedLink');
 
     let selectedFile = null;
-
-    // ================= VIDEO =================
 
     videoInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
@@ -115,8 +114,6 @@
         }
     });
 
-    // ================= BITLY =================
-
     generateLinkBtn.addEventListener('click', async function () {
         const url = linkInput.value.trim();
 
@@ -125,8 +122,16 @@
             return;
         }
 
+        if (!BITLY_TOKEN || BITLY_TOKEN === "PASTE_YOUR_BITLY_TOKEN_HERE") {
+            generatedLinkBox.classList.remove('hidden');
+            generatedLink.textContent = "Сначала вставь Bitly token в код.";
+            generatedLink.removeAttribute('href');
+            return;
+        }
+
         generatedLinkBox.classList.remove('hidden');
         generatedLink.textContent = "Сокращаем...";
+        generatedLink.removeAttribute('href');
 
         try {
             const response = await fetch("https://api-ssl.bitly.com/v4/shorten", {
@@ -149,7 +154,6 @@
                 generatedLink.textContent = "Ошибка Bitly";
                 console.log(data);
             }
-
         } catch (error) {
             generatedLink.textContent = "Ошибка соединения";
             console.error(error);
