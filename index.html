@@ -71,133 +71,231 @@
             background: linear-gradient(135deg, #334155, #475569);
         }
 
+        .danger-badge {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
         .section-title {
             letter-spacing: 0.2px;
+        }
+
+        .bottom-nav {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
+        }
+
+        .bottom-nav-btn {
+            transition: all 0.15s ease;
+        }
+
+        .bottom-nav-btn.active {
+            color: #60a5fa;
+        }
+
+        .bottom-nav-btn.active .nav-icon-wrap {
+            background: rgba(59,130,246,0.16);
+        }
+
+        .page-wrap {
+            padding-bottom: 92px;
         }
     </style>
 </head>
 <body class="p-4">
-    <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
+    <div class="page-wrap">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
 
-    <!-- БЛОК ПОЛЬЗОВАТЕЛЯ -->
-    <div id="userBar" class="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-800 to-slate-900 p-4 hidden shadow-lg">
-        <div class="flex items-center gap-3">
-            <div id="userAvatarWrap" class="h-14 w-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
-                <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
-                <span id="userAvatarFallback">U</span>
+        <!-- БЛОК ПОЛЬЗОВАТЕЛЯ -->
+        <div id="userBar" class="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-800 to-slate-900 p-4 hidden shadow-lg">
+            <div class="flex items-center gap-3">
+                <div id="userAvatarWrap" class="h-14 w-14 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                    <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
+                    <span id="userAvatarFallback">U</span>
+                </div>
+
+                <div class="min-w-0">
+                    <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
+                    <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                    <div id="userPlan" class="text-xs text-blue-300 mt-1">Тариф: free</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ГЛАВНЫЙ ЭКРАН -->
+        <div id="home-screen">
+            <!-- ГЛАВНОЕ МЕНЮ -->
+            <div id="main-menu">
+                <div class="card" onclick="showSection('video')">
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🎥</div>
+                        <div>
+                            <h2 class="text-lg font-semibold">Уникализатор видео</h2>
+                            <p class="text-sm text-gray-400">Очистка метаданных и фильтры</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="showSection('link')">
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🔗</div>
+                        <div>
+                            <h2 class="text-lg font-semibold">Смарт-линк</h2>
+                            <p class="text-sm text-gray-400">Маскировка ссылок для соцсетей</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="showSection('spy')">
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🔥</div>
+                        <div>
+                            <h2 class="text-lg font-semibold">Тренды (Spy)</h2>
+                            <p class="text-sm text-gray-400">Топ креативов недели</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="min-w-0">
-                <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
-                <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
-                <div id="userPlan" class="text-xs text-blue-300 mt-1">Тариф: free</div>
-            </div>
-        </div>
-    </div>
+            <!-- РАЗДЕЛ ВИДЕО -->
+            <div id="video-section" class="hidden">
+                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
 
-    <!-- ГЛАВНОЕ МЕНЮ -->
-    <div id="main-menu">
-        <div class="card" onclick="showSection('video')">
-            <h2 class="text-lg font-semibold">🎥 Уникализатор видео</h2>
-            <p class="text-sm text-gray-400">Очистка метаданных и фильтры</p>
-        </div>
+                <div class="glass-box p-8 rounded-2xl border-2 border-dashed border-slate-600 text-center">
+                    <input type="file" id="videoInput" class="hidden" accept="video/*" />
+                    <label for="videoInput" class="cursor-pointer text-blue-400 block">
+                        Нажми, чтобы выбрать видео
+                    </label>
+                    <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
+                </div>
 
-        <div class="card" onclick="showSection('link')">
-            <h2 class="text-lg font-semibold">🔗 Смарт-линк</h2>
-            <p class="text-sm text-gray-400">Маскировка ссылок для соцсетей</p>
-        </div>
+                <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
 
-        <div class="card" onclick="showSection('spy')">
-            <h2 class="text-lg font-semibold">🔥 Тренды (Spy)</h2>
-            <p class="text-sm text-gray-400">Топ креативов недели</p>
-        </div>
-    </div>
-
-    <!-- РАЗДЕЛ ВИДЕО -->
-    <div id="video-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
-
-        <div class="glass-box p-8 rounded-2xl border-2 border-dashed border-slate-600 text-center">
-            <input type="file" id="videoInput" class="hidden" accept="video/*" />
-            <label for="videoInput" class="cursor-pointer text-blue-400 block">
-                Нажми, чтобы выбрать видео
-            </label>
-            <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
-        </div>
-
-        <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
-
-        <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
-            Уникализировать
-        </button>
-
-        <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
-
-        <div id="resultBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
-            <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
-            <div id="resultLink"></div>
-        </div>
-    </div>
-
-    <!-- РАЗДЕЛ ССЫЛКИ -->
-    <div id="link-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="section-title text-xl mb-4 font-bold">Смарт-линк</h2>
-
-        <input
-            id="linkInput"
-            type="text"
-            placeholder="https://your-offer.com"
-            class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
-        />
-
-        <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
-
-        <button
-            id="generateLinkBtn"
-            class="primary-btn w-full p-4 rounded-2xl font-bold">
-            Сгенерировать
-        </button>
-
-        <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
-            <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
-            <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
-
-            <div class="flex gap-3">
-                <button
-                    id="copyLinkBtn"
-                    class="green-btn w-1/2 p-4 rounded-2xl font-bold">
-                    📋 Скопировать
+                <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
+                    Уникализировать
                 </button>
 
-                <a
-                    id="openLinkBtn"
-                    href="#"
-                    target="_blank"
-                    class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
-                    🔗 Открыть ссылку
+                <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
+
+                <div id="resultBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                    <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
+                    <div id="resultLink"></div>
+                </div>
+            </div>
+
+            <!-- РАЗДЕЛ ССЫЛКИ -->
+            <div id="link-section" class="hidden">
+                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-bold">Смарт-линк</h2>
+
+                <input
+                    id="linkInput"
+                    type="text"
+                    placeholder="https://your-offer.com"
+                    class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
+                />
+
+                <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
+
+                <button
+                    id="generateLinkBtn"
+                    class="primary-btn w-full p-4 rounded-2xl font-bold">
+                    Сгенерировать
+                </button>
+
+                <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                    <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
+                    <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
+
+                    <div class="flex gap-3">
+                        <button
+                            id="copyLinkBtn"
+                            class="green-btn w-1/2 p-4 rounded-2xl font-bold">
+                            📋 Скопировать
+                        </button>
+
+                        <a
+                            id="openLinkBtn"
+                            href="#"
+                            target="_blank"
+                            class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
+                            🔗 Открыть ссылку
+                        </a>
+                    </div>
+
+                    <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+                </div>
+            </div>
+
+            <!-- РАЗДЕЛ ТРЕНДЫ -->
+            <div id="spy-section" class="hidden">
+                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
+
+                <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
+                    <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Все</button>
+                    <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Дейтинг</button>
+                    <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Крипта</button>
+                    <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Гемблинг</button>
+                    <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Нутра</button>
+                </div>
+
+                <div id="spyList" class="flex flex-col gap-4"></div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН ПОДДЕРЖКИ -->
+        <div id="support-screen" class="hidden">
+            <h2 class="section-title text-xl mb-4 font-bold">💬 Поддержка</h2>
+
+            <div class="glass-box p-5 rounded-2xl mb-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-12 w-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🛟</div>
+                    <div>
+                        <div class="font-semibold">Служба поддержки</div>
+                        <div class="text-sm text-gray-400">Если есть вопросы или проблемы</div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-300 mb-4">
+                    Напиши нам в Telegram, и мы поможем с доступом, балансом, оплатой, видео или смарт-ссылками.
+                </p>
+
+                <a id="supportLinkBtn"
+                   href="#"
+                   target="_blank"
+                   class="primary-btn block w-full p-4 rounded-2xl font-bold text-center">
+                    Написать в поддержку
                 </a>
             </div>
 
-            <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+            <div class="glass-box p-5 rounded-2xl">
+                <div class="font-semibold mb-2">Что можно написать</div>
+                <div class="text-sm text-gray-400 space-y-2">
+                    <div>• Не работает функция</div>
+                    <div>• Нужна помощь с оплатой</div>
+                    <div>• Не хватает кредитов</div>
+                    <div>• Хочу тариф PRO</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- РАЗДЕЛ ТРЕНДЫ -->
-    <div id="spy-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
+    <!-- НИЖНЕЕ МЕНЮ -->
+    <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
+        <div class="max-w-xl mx-auto flex items-center justify-around">
+            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1 text-sm text-white" onclick="showBottomPage('home')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🏠</div>
+                <span>Домой</span>
+            </button>
 
-        <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
-            <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Все</button>
-            <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Дейтинг</button>
-            <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Крипта</button>
-            <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Гемблинг</button>
-            <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Нутра</button>
+            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1 text-sm text-white/70" onclick="showBottomPage('support')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
+                <span>Поддержка</span>
+            </button>
         </div>
-
-        <div id="spyList" class="flex flex-col gap-4"></div>
     </div>
 
     <script>
@@ -211,6 +309,12 @@
 
         // BACKEND УЖЕ ПОДКЛЮЧЕН
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
+
+        // =========================
+        // ВСТАВЬ СЮДА USERNAME ПОДДЕРЖКИ БЕЗ @
+        // пример: vitalik_support
+        // =========================
+        const SUPPORT_USERNAME = "ВСТАВЬ_USERNAME_ПОДДЕРЖКИ";
 
         const spyTrends = [
             {
@@ -297,6 +401,46 @@
                 document.getElementById('userAvatar').src = quickPhoto;
                 document.getElementById('userAvatar').classList.remove('hidden');
                 document.getElementById('userAvatarFallback').classList.add('hidden');
+            }
+        }
+
+        function setupSupportLink() {
+            const supportBtn = document.getElementById('supportLinkBtn');
+            if (!supportBtn) return;
+
+            if (!SUPPORT_USERNAME || SUPPORT_USERNAME === 'ВСТАВЬ_USERNAME_ПОДДЕРЖКИ') {
+                supportBtn.href = '#';
+                supportBtn.textContent = 'Укажи username поддержки';
+                return;
+            }
+
+            supportBtn.href = `https://t.me/${SUPPORT_USERNAME}`;
+        }
+
+        function showBottomPage(page) {
+            const homeScreen = document.getElementById('home-screen');
+            const supportScreen = document.getElementById('support-screen');
+            const navHomeBtn = document.getElementById('navHomeBtn');
+            const navSupportBtn = document.getElementById('navSupportBtn');
+
+            homeScreen.classList.add('hidden');
+            supportScreen.classList.add('hidden');
+
+            navHomeBtn.classList.remove('active');
+            navSupportBtn.classList.remove('active');
+            navHomeBtn.classList.add('text-white/70');
+            navSupportBtn.classList.add('text-white/70');
+
+            if (page === 'home') {
+                homeScreen.classList.remove('hidden');
+                navHomeBtn.classList.add('active');
+                navHomeBtn.classList.remove('text-white/70');
+            }
+
+            if (page === 'support') {
+                supportScreen.classList.remove('hidden');
+                navSupportBtn.classList.add('active');
+                navSupportBtn.classList.remove('text-white/70');
             }
         }
 
@@ -456,7 +600,7 @@
 
                     <div class="flex items-center justify-between mb-2 gap-2">
                         <h3 class="text-lg font-semibold">${item.title}</h3>
-                        <span class="text-xs bg-red-600 px-2 py-1 rounded-full whitespace-nowrap">${item.week}</span>
+                        <span class="danger-badge text-xs px-2 py-1 rounded-full whitespace-nowrap">${item.week}</span>
                     </div>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -666,6 +810,8 @@
 
         renderSpyTrends();
         registerTelegramUser();
+        setupSupportLink();
+        showBottomPage('home');
     </script>
 </body>
 </html>
