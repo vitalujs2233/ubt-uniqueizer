@@ -128,7 +128,16 @@
     <!-- РАЗДЕЛ ТРЕНДЫ -->
     <div id="spy-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Тренды УБТ</h2>
+        <h2 class="text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
+
+        <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
+            <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Все</button>
+            <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Дейтинг</button>
+            <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Крипта</button>
+            <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Гемблинг</button>
+            <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Нутра</button>
+        </div>
+
         <div id="spyList" class="flex flex-col gap-4"></div>
     </div>
 
@@ -139,28 +148,62 @@
         // ВСТАВЬ СЮДА СВОЙ АКТУАЛЬНЫЙ BITLY TOKEN
         const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1";
 
-        // Здесь потом заменишь тестовые картинки на свои
         const spyTrends = [
             {
-                title: "UGC Beauty Hook",
+                title: "Dating Hook - Chat Message",
+                niche: "dating",
                 platform: "TikTok",
-                niche: "Beauty",
                 week: "ТОП недели",
-                image: "https://via.placeholder.com/900x1200.png?text=Creative+1"
+                image: "https://via.placeholder.com/900x1200.png?text=Dating+Creative+1"
             },
             {
-                title: "Problem Solution Ad",
+                title: "Dating UGC Warm Opening",
+                niche: "dating",
                 platform: "Reels",
-                niche: "Nutra",
                 week: "ТОП недели",
-                image: "https://via.placeholder.com/900x1200.png?text=Creative+2"
+                image: "https://via.placeholder.com/900x1200.png?text=Dating+Creative+2"
             },
             {
-                title: "Before / After Creative",
+                title: "Crypto Rich Lifestyle",
+                niche: "crypto",
                 platform: "TikTok",
-                niche: "Ecom",
                 week: "ТОП недели",
-                image: "https://via.placeholder.com/900x1200.png?text=Creative+3"
+                image: "https://via.placeholder.com/900x1200.png?text=Crypto+Creative+1"
+            },
+            {
+                title: "Crypto Fast Hook Ad",
+                niche: "crypto",
+                platform: "Reels",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Crypto+Creative+2"
+            },
+            {
+                title: "Casino Big Win",
+                niche: "gambling",
+                platform: "TikTok",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Gambling+Creative+1"
+            },
+            {
+                title: "Slots Bonus Creative",
+                niche: "gambling",
+                platform: "Reels",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Gambling+Creative+2"
+            },
+            {
+                title: "Weight Loss Before/After",
+                niche: "nutra",
+                platform: "TikTok",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Nutra+Creative+1"
+            },
+            {
+                title: "Nutra Problem Solution",
+                niche: "nutra",
+                platform: "Reels",
+                week: "ТОП недели",
+                image: "https://via.placeholder.com/900x1200.png?text=Nutra+Creative+2"
             }
         ];
 
@@ -183,13 +226,34 @@
             return url.replace('/upload/', '/upload/fl_attachment/');
         }
 
+        let currentFilter = 'all';
+
+        function filterSpy(niche, button) {
+            currentFilter = niche;
+            renderSpyTrends();
+
+            document.querySelectorAll('.spy-filter').forEach(btn => {
+                btn.classList.remove('bg-blue-600');
+                btn.classList.add('bg-gray-700');
+            });
+
+            if (button) {
+                button.classList.remove('bg-gray-700');
+                button.classList.add('bg-blue-600');
+            }
+        }
+
         function renderSpyTrends() {
             const spyList = document.getElementById('spyList');
             if (!spyList) return;
 
             spyList.innerHTML = '';
 
-            spyTrends.forEach((item) => {
+            const filtered = currentFilter === 'all'
+                ? spyTrends
+                : spyTrends.filter(item => item.niche === currentFilter);
+
+            filtered.forEach((item) => {
                 const card = document.createElement('div');
                 card.className = 'bg-gray-800 p-4 rounded-xl border border-gray-700';
 
@@ -205,7 +269,7 @@
 
                     <div class="flex gap-2 flex-wrap mb-4">
                         <span class="text-xs bg-gray-700 px-3 py-1 rounded-full">Платформа: ${item.platform}</span>
-                        <span class="text-xs bg-gray-700 px-3 py-1 rounded-full">Ниша: ${item.niche}</span>
+                        <span class="text-xs bg-blue-700 px-3 py-1 rounded-full">${item.niche.toUpperCase()}</span>
                     </div>
 
                     <div class="flex gap-3">
@@ -223,6 +287,14 @@
 
                 spyList.appendChild(card);
             });
+
+            if (filtered.length === 0) {
+                spyList.innerHTML = `
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 text-gray-400 text-center">
+                        Пока нет креативов в этой нише
+                    </div>
+                `;
+            }
         }
 
         const videoInput = document.getElementById('videoInput');
