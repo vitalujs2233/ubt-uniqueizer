@@ -1,246 +1,160 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>UBT ToolKit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            background-color: #1c1c1e;
-            color: white;
-            font-family: sans-serif;
-            -webkit-user-select: none;
+<script>
+    const CLOUD_NAME = 'de7pheovq';
+    const UPLOAD_PRESET = 'ubt_preset';
+
+    // 🔴 ВСТАВЬ СЮДА СВОЙ BITLY TOKEN
+    const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1";
+
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+        tg.expand();
+        tg.ready();
+    }
+
+    function showSection(section) {
+        const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
+        sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
+        document
+            .getElementById(section === 'main' ? 'main-menu' : section + '-section')
+            .classList.remove('hidden');
+    }
+
+    function buildDownloadUrl(url) {
+        if (!url || !url.includes('/upload/')) return url;
+        return url.replace('/upload/', '/upload/fl_attachment/');
+    }
+
+    const videoInput = document.getElementById('videoInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const selectedFileName = document.getElementById('selectedFileName');
+    const statusMessage = document.getElementById('statusMessage');
+    const resultBox = document.getElementById('resultBox');
+    const resultLink = document.getElementById('resultLink');
+
+    const linkInput = document.getElementById('linkInput');
+    const generateLinkBtn = document.getElementById('generateLinkBtn');
+    const generatedLinkBox = document.getElementById('generatedLinkBox');
+    const generatedLink = document.getElementById('generatedLink');
+
+    let selectedFile = null;
+
+    // ================= VIDEO =================
+
+    videoInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+
+        resultBox.classList.add('hidden');
+        resultLink.innerHTML = '';
+
+        if (!file) {
+            selectedFile = null;
+            selectedFileName.textContent = 'Видео не выбрано';
+            statusMessage.textContent = '';
+            return;
         }
 
-        .card {
-            background: #2c2c2e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            border: 1px solid #3a3a3c;
+        selectedFile = file;
+        selectedFileName.textContent = `Выбрано: ${file.name}`;
+        statusMessage.textContent = 'Видео выбрано. Нажми "Уникализировать".';
+    });
+
+    uploadBtn.addEventListener('click', async function () {
+        if (!selectedFile) {
+            statusMessage.textContent = 'Сначала выбери видео.';
+            return;
         }
 
-        .card:active {
-            background: #3a3a3c;
+        uploadBtn.disabled = true;
+        uploadBtn.classList.add('btn-disabled');
+        uploadBtn.textContent = 'Загрузка...';
+        statusMessage.textContent = 'Загружаем видео...';
+        resultBox.classList.add('hidden');
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        try {
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.secure_url) {
+                statusMessage.textContent = 'Готово!';
+
+                const watchUrl = data.secure_url;
+                const downloadUrl = buildDownloadUrl(data.secure_url);
+
+                resultLink.innerHTML = `
+                    <div class="flex flex-col gap-3 mt-2">
+                        <a href="${watchUrl}" target="_blank"
+                           class="bg-blue-500 text-white p-3 rounded-lg text-center font-semibold">
+                           👁️ Смотреть видео
+                        </a>
+
+                        <a href="${downloadUrl}" target="_blank" download
+                           class="bg-green-500 text-white p-3 rounded-lg text-center font-semibold">
+                           ⬇️ Скачать видео
+                        </a>
+                    </div>
+                `;
+
+                resultBox.classList.remove('hidden');
+            } else {
+                statusMessage.textContent = 'Ошибка загрузки';
+                console.log(data);
+            }
+        } catch (error) {
+            statusMessage.textContent = 'Ошибка соединения';
+            console.error(error);
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.classList.remove('btn-disabled');
+            uploadBtn.textContent = 'Уникализировать';
+        }
+    });
+
+    // ================= BITLY =================
+
+    generateLinkBtn.addEventListener('click', async function () {
+        const url = linkInput.value.trim();
+
+        if (!url) {
+            alert('Вставь ссылку');
+            return;
         }
 
-        .hidden {
-            display: none;
-        }
+        generatedLinkBox.classList.remove('hidden');
+        generatedLink.textContent = "Сокращаем...";
 
-        .btn-disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-    </style>
-</head>
-<body class="p-4">
-    <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">UBT ToolKit</h1>
+        try {
+            const response = await fetch("https://api-ssl.bitly.com/v4/shorten", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${BITLY_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    long_url: url
+                })
+            });
 
-    <div id="main-menu">
-        <div class="card" onclick="showSection('video')">
-            <h2 class="text-lg font-semibold">🎥 Уникализатор видео</h2>
-            <p class="text-sm text-gray-400">Очистка метаданных и фильтры</p>
-        </div>
+            const data = await response.json();
 
-        <div class="card" onclick="showSection('link')">
-            <h2 class="text-lg font-semibold">🔗 Смарт-линк</h2>
-            <p class="text-sm text-gray-400">Маскировка ссылок для соцсетей</p>
-        </div>
-
-        <div class="card" onclick="showSection('spy')">
-            <h2 class="text-lg font-semibold">🔥 Тренды (Spy)</h2>
-            <p class="text-sm text-gray-400">Топ креативов недели</p>
-        </div>
-    </div>
-
-    <div id="video-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Уникализатор</h2>
-
-        <div class="bg-gray-800 p-8 rounded-xl border-2 border-dashed border-gray-600 text-center">
-            <input type="file" id="videoInput" class="hidden" accept="video/*" />
-            <label for="videoInput" class="cursor-pointer text-blue-400 block">
-                Нажми, чтобы выбрать видео
-            </label>
-            <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
-        </div>
-
-        <button id="uploadBtn" class="mt-6 w-full bg-blue-600 p-4 rounded-xl font-bold">
-            Уникализировать
-        </button>
-
-        <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
-
-        <div id="resultBox" class="mt-4 hidden bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
-            <div id="resultLink"></div>
-        </div>
-    </div>
-
-    <div id="link-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Смарт-линк</h2>
-
-        <input
-            id="linkInput"
-            type="text"
-            placeholder="https://your-offer.com"
-            class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 mb-4 outline-none"
-        />
-
-        <button
-            id="generateLinkBtn"
-            class="w-full bg-blue-600 p-4 rounded-xl font-bold">
-            Сгенерировать
-        </button>
-
-        <div id="generatedLinkBox" class="mt-4 hidden bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
-            <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline"></a>
-        </div>
-    </div>
-
-    <div id="spy-section" class="hidden">
-        <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-        <h2 class="text-xl mb-4 font-bold">Тренды УБТ</h2>
-        <div class="p-4 bg-gray-800 rounded-lg text-sm text-gray-400">
-            Тут скоро появятся ссылки на топовые креативы из TikTok и Reels...
-        </div>
-    </div>
-
-    <script>
-        const CLOUD_NAME = 'de7pheovq';
-        const UPLOAD_PRESET = 'ubt_preset';
-
-        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        if (tg) {
-            tg.expand();
-            tg.ready();
-        }
-
-        function showSection(section) {
-            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
-            sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
-            document
-                .getElementById(section === 'main' ? 'main-menu' : section + '-section')
-                .classList.remove('hidden');
-        }
-
-        function buildDownloadUrl(url) {
-            if (!url || !url.includes('/upload/')) return url;
-            return url.replace('/upload/', '/upload/fl_attachment/');
-        }
-
-        const videoInput = document.getElementById('videoInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const selectedFileName = document.getElementById('selectedFileName');
-        const statusMessage = document.getElementById('statusMessage');
-        const resultBox = document.getElementById('resultBox');
-        const resultLink = document.getElementById('resultLink');
-
-        const linkInput = document.getElementById('linkInput');
-        const generateLinkBtn = document.getElementById('generateLinkBtn');
-        const generatedLinkBox = document.getElementById('generatedLinkBox');
-        const generatedLink = document.getElementById('generatedLink');
-
-        let selectedFile = null;
-
-        videoInput.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-
-            resultBox.classList.add('hidden');
-            resultLink.innerHTML = '';
-
-            if (!file) {
-                selectedFile = null;
-                selectedFileName.textContent = 'Видео не выбрано';
-                statusMessage.textContent = '';
-                return;
+            if (data.link) {
+                generatedLink.href = data.link;
+                generatedLink.textContent = data.link;
+            } else {
+                generatedLink.textContent = "Ошибка Bitly";
+                console.log(data);
             }
 
-            selectedFile = file;
-            selectedFileName.textContent = `Выбрано: ${file.name}`;
-            statusMessage.textContent = 'Видео выбрано. Нажми "Уникализировать".';
-        });
-
-        uploadBtn.addEventListener('click', async function () {
-            if (!selectedFile) {
-                statusMessage.textContent = 'Сначала выбери видео.';
-                return;
-            }
-
-            uploadBtn.disabled = true;
-            uploadBtn.classList.add('btn-disabled');
-            uploadBtn.textContent = 'Загрузка...';
-            statusMessage.textContent = 'Загружаем видео...';
-            resultBox.classList.add('hidden');
-
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            formData.append('upload_preset', UPLOAD_PRESET);
-
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.secure_url) {
-                    statusMessage.textContent = 'Готово!';
-
-                    const watchUrl = data.secure_url;
-                    const downloadUrl = buildDownloadUrl(data.secure_url);
-
-                    resultLink.innerHTML = `
-                        <div class="flex flex-col gap-3 mt-2">
-                            <a href="${watchUrl}" target="_blank"
-                               class="bg-blue-500 text-white p-3 rounded-lg text-center font-semibold">
-                               👁️ Смотреть видео
-                            </a>
-
-                            <a href="${downloadUrl}" target="_blank" download
-                               class="bg-green-500 text-white p-3 rounded-lg text-center font-semibold">
-                               ⬇️ Скачать видео
-                            </a>
-                        </div>
-                    `;
-
-                    resultBox.classList.remove('hidden');
-                } else {
-                    statusMessage.textContent = 'Ошибка загрузки';
-                    console.log(data);
-                }
-            } catch (error) {
-                statusMessage.textContent = 'Ошибка соединения';
-                console.error(error);
-            } finally {
-                uploadBtn.disabled = false;
-                uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать';
-            }
-        });
-
-        generateLinkBtn.addEventListener('click', function () {
-            const url = linkInput.value.trim();
-
-            if (!url) {
-                alert('Вставь ссылку');
-                return;
-            }
-
-            const encoded = encodeURIComponent(url);
-            const smartLink = `${window.location.origin}/go.html?url=${encoded}`;
-
-            generatedLink.href = smartLink;
-            generatedLink.textContent = smartLink;
-            generatedLinkBox.classList.remove('hidden');
-        });
-    </script>
-</body>
-</html>
+        } catch (error) {
+            generatedLink.textContent = "Ошибка соединения";
+            console.error(error);
+        }
+    });
+</script>
