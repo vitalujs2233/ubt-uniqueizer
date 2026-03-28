@@ -38,7 +38,14 @@
     </style>
 </head>
 <body class="p-4">
-    <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">UBT ToolKit</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
+
+    <!-- НОВЫЙ БЛОК: пользователь и баланс -->
+    <div id="userBar" class="mb-6 bg-gray-800 p-4 rounded-xl border border-gray-700 hidden">
+        <div id="userName" class="font-semibold text-white">Пользователь</div>
+        <div id="userBalance" class="text-sm text-gray-400 mt-1">Баланс: 0 кредитов</div>
+        <div id="userPlan" class="text-sm text-gray-400 mt-1">Тариф: free</div>
+    </div>
 
     <!-- ГЛАВНОЕ МЕНЮ -->
     <div id="main-menu">
@@ -71,6 +78,8 @@
             <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
         </div>
 
+        <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
+
         <button id="uploadBtn" class="mt-6 w-full bg-blue-600 p-4 rounded-xl font-bold">
             Уникализировать
         </button>
@@ -94,6 +103,8 @@
             placeholder="https://your-offer.com"
             class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 mb-4 outline-none"
         />
+
+        <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
 
         <button
             id="generateLinkBtn"
@@ -145,8 +156,12 @@
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
 
-        // ВСТАВЬ СЮДА СВОЙ АКТУАЛЬНЫЙ BITLY TOKEN
-        const BITLY_TOKEN = "20780b383049d50d149180d910a56fa2158a9a91";
+        // ВСТАВЬ СЮДА НОВЫЙ АКТУАЛЬНЫЙ BITLY TOKEN
+        const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
+
+        // ВСТАВЬ СЮДА URL СВОЕГО BACKEND
+        // пример: https://ubt-backend.onrender.com
+        const API_BASE_URL = "ВСТАВЬ_СЮДА_URL_BACKEND";
 
         const spyTrends = [
             {
@@ -208,9 +223,104 @@
         ];
 
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        const appState = {
+            user: null
+        };
+
         if (tg) {
             tg.expand();
             tg.ready();
+        }
+
+        async function registerTelegramUser() {
+            if (!tg || !tg.initData) {
+                console.log('Telegram initData not found');
+                return;
+            }
+
+            if (!API_BASE_URL || API_BASE_URL === 'ВСТАВЬ_СЮДА_URL_BACKEND') {
+                console.log('API_BASE_URL not configured');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        initData: tg.initData
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    appState.user = data.user;
+                    updateUserBar();
+                } else {
+                    console.log('Register error:', data);
+                }
+            } catch (error) {
+                console.error('Register request failed:', error);
+            }
+        }
+
+        function updateUserBar() {
+            if (!appState.user) return;
+
+            const userBar = document.getElementById('userBar');
+            const userName = document.getElementById('userName');
+            const userBalance = document.getElementById('userBalance');
+            const userPlan = document.getElementById('userPlan');
+
+            userBar.classList.remove('hidden');
+            userName.textContent = appState.user.first_name || appState.user.username || 'Пользователь';
+            userBalance.textContent = `Баланс: ${appState.user.balance} кредитов`;
+            userPlan.textContent = `Тариф: ${appState.user.plan}`;
+        }
+
+        async function spendCredits(action, amount) {
+            if (!tg || !tg.initData) {
+                return { ok: false, message: 'Telegram initData not found' };
+            }
+
+            if (!API_BASE_URL || API_BASE_URL === 'ВСТАВЬ_СЮДА_URL_BACKEND') {
+                return { ok: false, message: 'Backend URL не настроен' };
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/spend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        action,
+                        amount
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    appState.user = data.user;
+                    updateUserBar();
+                    return { ok: true };
+                }
+
+                return {
+                    ok: false,
+                    message: data.message || 'Недостаточно баланса'
+                };
+            } catch (error) {
+                console.error(error);
+                return {
+                    ok: false,
+                    message: 'Ошибка соединения с backend'
+                };
+            }
         }
 
         function showSection(section) {
@@ -339,6 +449,12 @@
                 return;
             }
 
+            const spend = await spendCredits('video_unique', 5);
+            if (!spend.ok) {
+                statusMessage.textContent = spend.message;
+                return;
+            }
+
             uploadBtn.disabled = true;
             uploadBtn.classList.add('btn-disabled');
             uploadBtn.textContent = 'Загрузка...';
@@ -401,6 +517,14 @@
                 return;
             }
 
+            const spend = await spendCredits('smart_link', 2);
+            if (!spend.ok) {
+                generatedLinkBox.classList.remove('hidden');
+                generatedLink.textContent = spend.message;
+                generatedLink.removeAttribute('href');
+                return;
+            }
+
             generatedLinkBox.classList.remove('hidden');
             generatedLink.textContent = 'Сокращаем...';
             generatedLink.removeAttribute('href');
@@ -458,6 +582,7 @@
         });
 
         renderSpyTrends();
+        registerTelegramUser();
     </script>
 </body>
 </html>
