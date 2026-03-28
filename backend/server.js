@@ -12,6 +12,14 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// ✅ ДОБАВИЛ ВОТ ЭТО (главная страница)
+app.get('/', (req, res) => {
+  res.json({
+    ok: true,
+    message: 'UBT backend is running'
+  });
+});
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
