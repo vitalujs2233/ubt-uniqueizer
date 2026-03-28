@@ -129,9 +129,7 @@
     <div id="spy-section" class="hidden">
         <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
         <h2 class="text-xl mb-4 font-bold">Тренды УБТ</h2>
-        <div class="p-4 bg-gray-800 rounded-lg text-sm text-gray-400">
-            Тут скоро появятся ссылки на топовые креативы из TikTok и Reels...
-        </div>
+        <div id="spyList" class="flex flex-col gap-3"></div>
     </div>
 
     <script>
@@ -140,6 +138,30 @@
 
         // ВСТАВЬ СЮДА СВОЙ АКТУАЛЬНЫЙ BITLY TOKEN
         const BITLY_TOKEN = "9e03768933462626ec2c3b02d4ccfc88a39a31c1";
+
+        const spyTrends = [
+            {
+                title: "UGC креатив на товарку",
+                platform: "TikTok",
+                niche: "Товарка",
+                offer: "Beauty / Skin",
+                link: "https://example.com/creative1"
+            },
+            {
+                title: "Проблема → решение за 15 секунд",
+                platform: "Reels",
+                niche: "Nutra",
+                offer: "Похудение",
+                link: "https://example.com/creative2"
+            },
+            {
+                title: "До / после с сильным хуком",
+                platform: "TikTok",
+                niche: "Crypto",
+                offer: "Lead Gen",
+                link: "https://example.com/creative3"
+            }
+        ];
 
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
         if (tg) {
@@ -158,6 +180,31 @@
         function buildDownloadUrl(url) {
             if (!url || !url.includes('/upload/')) return url;
             return url.replace('/upload/', '/upload/fl_attachment/');
+        }
+
+        function renderSpyTrends() {
+            const spyList = document.getElementById('spyList');
+            if (!spyList) return;
+
+            spyList.innerHTML = '';
+
+            spyTrends.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-800 p-4 rounded-xl border border-gray-700';
+
+                card.innerHTML = `
+                    <h3 class="text-lg font-semibold mb-2">${item.title}</h3>
+                    <p class="text-sm text-gray-400 mb-1">Платформа: ${item.platform}</p>
+                    <p class="text-sm text-gray-400 mb-1">Ниша: ${item.niche}</p>
+                    <p class="text-sm text-gray-400 mb-3">Оффер: ${item.offer}</p>
+                    <a href="${item.link}" target="_blank"
+                       class="block bg-blue-600 text-white p-3 rounded-lg text-center font-semibold">
+                       🔥 Открыть креатив
+                    </a>
+                `;
+
+                spyList.appendChild(card);
+            });
         }
 
         const videoInput = document.getElementById('videoInput');
@@ -319,6 +366,8 @@
                 console.error(error);
             }
         });
+
+        renderSpyTrends();
     </script>
 </body>
 </html>
