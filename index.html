@@ -204,6 +204,11 @@
                     <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
                     <div id="resultLink"></div>
                 </div>
+
+                <div id="videoHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
+                    <p class="text-white font-semibold mb-3">📜 Последние 5 действий</p>
+                    <div id="videoHistoryList" class="space-y-2 text-sm text-gray-300"></div>
+                </div>
             </div>
 
             <!-- ССЫЛКИ -->
@@ -369,7 +374,6 @@
 
         // =========================
         // ВСТАВЬ СЮДА USERNAME ПОДДЕРЖКИ БЕЗ @
-        // пример: vitalik_support
         // =========================
         const SUPPORT_USERNAME = "ВСТАВЬ_USERNAME_ПОДДЕРЖКИ";
 
@@ -810,6 +814,84 @@
             }
         }
 
+        // ===== ИСТОРИЯ ВИДЕО =====
+        function getVideoHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('ubt_video_history')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveVideoHistory(history) {
+            localStorage.setItem('ubt_video_history', JSON.stringify(history));
+        }
+
+        function addVideoHistoryItem(fileName, status, url = '') {
+            const history = getVideoHistory();
+
+            history.unshift({
+                fileName,
+                status,
+                url,
+                createdAt: new Date().toLocaleString('ru-RU')
+            });
+
+            const trimmed = history.slice(0, 5);
+            saveVideoHistory(trimmed);
+            renderVideoHistory();
+        }
+
+        function renderVideoHistory() {
+            const videoHistoryList = document.getElementById('videoHistoryList');
+            if (!videoHistoryList) return;
+
+            const history = getVideoHistory();
+
+            if (!history.length) {
+                videoHistoryList.innerHTML = `
+                    <div class="text-gray-500 text-sm">
+                        История пока пустая
+                    </div>
+                `;
+                return;
+            }
+
+            videoHistoryList.innerHTML = '';
+
+            history.forEach((item) => {
+                const row = document.createElement('div');
+                row.className = 'bg-slate-900/60 border border-white/5 rounded-xl p-3';
+
+                const statusColor =
+                    item.status === 'success'
+                        ? 'text-green-400'
+                        : 'text-red-400';
+
+                const statusText =
+                    item.status === 'success'
+                        ? 'Успешно'
+                        : 'Ошибка';
+
+                row.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-medium text-white truncate">${item.fileName}</div>
+                            <div class="text-xs text-gray-500 mt-1">${item.createdAt}</div>
+                        </div>
+                        <div class="shrink-0 text-xs ${statusColor}">${statusText}</div>
+                    </div>
+                    ${
+                        item.url
+                            ? `<a href="${item.url}" target="_blank" class="text-blue-400 text-xs underline mt-2 inline-block">Открыть результат</a>`
+                            : ''
+                    }
+                `;
+
+                videoHistoryList.appendChild(row);
+            });
+        }
+
         const videoInput = document.getElementById('videoInput');
         const uploadBtn = document.getElementById('uploadBtn');
         const selectedFileName = document.getElementById('selectedFileName');
@@ -895,14 +977,17 @@
                         </div>
                     `;
 
+                    addVideoHistoryItem(selectedFile.name, 'success', watchUrl);
                     resultBox.classList.remove('hidden');
                     loadTransactions();
                 } else {
                     statusMessage.textContent = 'Ошибка загрузки';
+                    addVideoHistoryItem(selectedFile ? selectedFile.name : 'Неизвестный файл', 'error');
                     console.log(data);
                 }
             } catch (error) {
                 statusMessage.textContent = 'Ошибка соединения';
+                addVideoHistoryItem(selectedFile ? selectedFile.name : 'Неизвестный файл', 'error');
                 console.error(error);
             } finally {
                 uploadBtn.disabled = false;
@@ -1007,6 +1092,7 @@
         }
 
         renderSpyTrends();
+        renderVideoHistory();
         registerTelegramUser();
         setupSupportLink();
         showBottomPage('home');
