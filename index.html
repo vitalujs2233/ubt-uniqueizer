@@ -28,14 +28,18 @@
             transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .card:active { transform: scale(0.98); }
+        .card:active {
+            transform: scale(0.98);
+        }
 
         .card:hover {
             border-color: rgba(59,130,246,0.35);
             box-shadow: 0 14px 36px rgba(0,0,0,0.28);
         }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         .btn-disabled {
             opacity: 0.6;
@@ -54,7 +58,9 @@
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
         }
 
-        .primary-btn:active { transform: scale(0.99); }
+        .primary-btn:active {
+            transform: scale(0.99);
+        }
 
         .green-btn {
             background: linear-gradient(135deg, #059669, #10b981);
@@ -69,7 +75,9 @@
             background: linear-gradient(135deg, #dc2626, #ef4444);
         }
 
-        .section-title { letter-spacing: 0.2px; }
+        .section-title {
+            letter-spacing: 0.2px;
+        }
 
         .bottom-nav {
             background: rgba(15, 23, 42, 0.92);
@@ -78,15 +86,21 @@
             box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
         }
 
-        .bottom-nav-btn { transition: all 0.15s ease; }
+        .bottom-nav-btn {
+            transition: all 0.15s ease;
+        }
 
-        .bottom-nav-btn.active { color: #60a5fa; }
+        .bottom-nav-btn.active {
+            color: #60a5fa;
+        }
 
         .bottom-nav-btn.active .nav-icon-wrap {
             background: rgba(59,130,246,0.16);
         }
 
-        .page-wrap { padding-bottom: 92px; }
+        .page-wrap {
+            padding-bottom: 92px;
+        }
 
         .modal-backdrop {
             position: fixed;
@@ -253,6 +267,18 @@
             </div>
         </div>
 
+        <!-- ИСТОРИЯ -->
+        <div id="history-screen" class="hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="section-title text-xl font-bold">📜 История операций</h2>
+                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">
+                    Обновить
+                </button>
+            </div>
+
+            <div id="historyList" class="space-y-3"></div>
+        </div>
+
         <!-- ПОДДЕРЖКА -->
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-bold">💬 Поддержка</h2>
@@ -286,6 +312,11 @@
             <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1 text-sm text-white" onclick="showBottomPage('home')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🏠</div>
                 <span>Домой</span>
+            </button>
+
+            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1 text-sm text-white/70" onclick="showBottomPage('history')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">📜</div>
+                <span>История</span>
             </button>
 
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1 text-sm text-white/70" onclick="showBottomPage('support')">
@@ -329,12 +360,17 @@
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
 
+        // =========================
         // ВСТАВЬ СЮДА НОВЫЙ BITLY TOKEN
+        // =========================
         const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
 
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
 
+        // =========================
         // ВСТАВЬ СЮДА USERNAME ПОДДЕРЖКИ БЕЗ @
+        // пример: vitalik_support
+        // =========================
         const SUPPORT_USERNAME = "vilitolu";
 
         const spyTrends = [
@@ -349,13 +385,17 @@
         ];
 
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        const appState = { user: null };
+        const appState = {
+            user: null,
+            transactions: []
+        };
 
         const topupBtn = document.getElementById('topupBtn');
         const topupModal = document.getElementById('topupModal');
         const topupModalBackdrop = document.getElementById('topupModalBackdrop');
         const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
         const topupStatus = document.getElementById('topupStatus');
+        const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
 
         if (tg) {
             tg.expand();
@@ -396,22 +436,33 @@
 
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
+            const historyScreen = document.getElementById('history-screen');
             const supportScreen = document.getElementById('support-screen');
+
             const navHomeBtn = document.getElementById('navHomeBtn');
+            const navHistoryBtn = document.getElementById('navHistoryBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            navHomeBtn.classList.remove('active');
-            navSupportBtn.classList.remove('active');
-            navHomeBtn.classList.add('text-white/70');
-            navSupportBtn.classList.add('text-white/70');
+            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+                btn.classList.remove('active');
+                btn.classList.add('text-white/70');
+            });
 
             if (page === 'home') {
                 homeScreen.classList.remove('hidden');
                 navHomeBtn.classList.add('active');
                 navHomeBtn.classList.remove('text-white/70');
+            }
+
+            if (page === 'history') {
+                historyScreen.classList.remove('hidden');
+                navHistoryBtn.classList.add('active');
+                navHistoryBtn.classList.remove('text-white/70');
+                loadTransactions();
             }
 
             if (page === 'support') {
@@ -456,6 +507,106 @@
             } catch (error) {
                 console.error('Register request failed:', error);
             }
+        }
+
+        async function loadTransactions() {
+            const historyList = document.getElementById('historyList');
+
+            if (!tg || !tg.initData) {
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        Открой Mini App через Telegram
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = `
+                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    Загружаем историю...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/transactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    historyList.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                            Ошибка загрузки истории
+                        </div>
+                    `;
+                    return;
+                }
+
+                appState.transactions = data.transactions || [];
+                renderTransactions();
+            } catch (error) {
+                console.error(error);
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
+        function renderTransactions() {
+            const historyList = document.getElementById('historyList');
+            const transactions = appState.transactions || [];
+
+            if (!transactions.length) {
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        История пока пустая
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = '';
+
+            transactions.forEach((item) => {
+                const isTopup = item.type === 'topup';
+                const sign = isTopup ? '+' : '-';
+                const colorClass = isTopup ? 'text-green-400' : 'text-red-400';
+                const badgeClass = isTopup ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300';
+
+                const date = new Date(item.created_at).toLocaleString('ru-RU');
+
+                const card = document.createElement('div');
+                card.className = 'glass-box p-4 rounded-2xl';
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <div class="font-semibold ${colorClass}">
+                                ${sign}${Math.abs(item.credits)} кредитов
+                            </div>
+                            <div class="text-sm text-gray-300 mt-1">
+                                ${item.description || 'Операция'}
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">
+                                ${date}
+                            </div>
+                        </div>
+
+                        <div class="shrink-0">
+                            <span class="text-xs px-3 py-1 rounded-full ${badgeClass}">
+                                ${isTopup ? 'Пополнение' : 'Списание'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                historyList.appendChild(card);
+            });
         }
 
         function updateUserBar() {
@@ -560,8 +711,11 @@
 
                 tg.openInvoice(data.invoice_link, function (status) {
                     if (status === 'paid') {
-                        topupStatus.textContent = 'Оплата прошла. Обнови экран через пару секунд.';
-                        setTimeout(registerTelegramUser, 2000);
+                        topupStatus.textContent = 'Оплата прошла. Баланс скоро обновится.';
+                        setTimeout(async () => {
+                            await registerTelegramUser();
+                            await loadTransactions();
+                        }, 2000);
                     } else if (status === 'cancelled') {
                         topupStatus.textContent = 'Оплата отменена';
                     } else {
@@ -742,6 +896,7 @@
                     `;
 
                     resultBox.classList.remove('hidden');
+                    loadTransactions();
                 } else {
                     statusMessage.textContent = 'Ошибка загрузки';
                     console.log(data);
@@ -799,6 +954,7 @@
                     generatedLink.textContent = data.link;
                     openLinkBtn.href = data.link;
                     openLinkBtn.classList.remove('hidden');
+                    loadTransactions();
                 } else {
                     generatedLink.textContent = 'Ошибка Bitly';
                     console.log(data);
@@ -845,6 +1001,10 @@
                 createTopupInvoice(stars, credits);
             });
         });
+
+        if (refreshHistoryBtn) {
+            refreshHistoryBtn.addEventListener('click', loadTransactions);
+        }
 
         renderSpyTrends();
         registerTelegramUser();
