@@ -3,11 +3,13 @@ const cors = require('cors');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
+const geoip = require('geoip-lite');
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 
 app.use(cors());
 app.use(express.json());
@@ -77,6 +79,106 @@ async function addTransaction({
      values ($1, $2, $3, $4, $5, $6)`,
     [telegram_id, type, amount, credits, status, description]
   );
+}
+
+function generateShortCode(length = 6) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+
+  for (let i = 0; i < length; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return result;
+}
+
+async function generateUniqueShortCode() {
+  while (true) {
+    const code = generateShortCode(6);
+
+    const existing = await pool.query(
+      'select id from smart_links where short_code = $1 limit 1',
+      [code]
+    );
+
+    if (existing.rows.length === 0) {
+      return code;
+    }
+  }
+}
+
+function normalizeUrl(url) {
+  try {
+    const parsed = new URL(url);
+
+    if (!/^https?:$/i.test(parsed.protocol)) {
+      return null;
+    }
+
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  return req.socket.remoteAddress || '';
+}
+
+function hashIp(ip) {
+  return crypto
+    .createHash('sha256')
+    .update(ip + 'ubt_secret_salt')
+    .digest('hex');
+}
+
+function detectDevice(userAgent = '') {
+  const ua = userAgent.toLowerCase();
+
+  if (/iphone|ipad|ipod/.test(ua)) return 'iOS';
+  if (/android/.test(ua)) return 'Android';
+  if (/windows/.test(ua)) return 'Windows';
+  if (/macintosh|mac os/.test(ua)) return 'Mac';
+  if (/linux/.test(ua)) return 'Linux';
+
+  return 'Unknown';
+}
+
+async function spendUserCredits(telegramId, amount, description = 'Создание смарт-ссылки') {
+  const result = await pool.query(
+    'select * from users where telegram_id = $1',
+    [telegramId]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('Пользователь не найден');
+  }
+
+  const dbUser = result.rows[0];
+
+  if (Number(dbUser.balance) < Number(amount)) {
+    throw new Error('Недостаточно средств');
+  }
+
+  await pool.query(
+    'update users set balance = balance - $2 where telegram_id = $1',
+    [telegramId, amount]
+  );
+
+  await addTransaction({
+    telegram_id: telegramId,
+    type: 'spend',
+    amount: amount,
+    credits: -amount,
+    status: 'completed',
+    description
+  });
 }
 
 app.post('/register', async (req, res) => {
@@ -245,7 +347,7 @@ app.post('/telegram-webhook', async (req, res) => {
             amount: payment.total_amount,
             credits: credits,
             status: 'completed',
-            description: `Пополнение через Telegram Stars`
+            description: 'Пополнение через Telegram Stars'
           });
         }
       }
@@ -284,6 +386,193 @@ app.post('/transactions', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/smart-link/create', async (req, res) => {
+  try {
+    const { initData, original_url } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const normalizedUrl = normalizeUrl(original_url);
+
+    if (!normalizedUrl) {
+      return res.status(400).json({ message: 'Некорректная ссылка' });
+    }
+
+    await spendUserCredits(user.id, 2, 'Создание смарт-ссылки');
+
+    const shortCode = await generateUniqueShortCode();
+    const shortUrl = `${PUBLIC_BASE_URL}/r/${shortCode}`;
+
+    const result = await pool.query(
+      `insert into smart_links (user_id, original_url, short_code, short_url, clicks, unique_clicks)
+       values ($1, $2, $3, $4, 0, 0)
+       returning *`,
+      [user.id, normalizedUrl, shortCode, shortUrl]
+    );
+
+    res.json({
+      ok: true,
+      link: result.rows[0]
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
+      return res.status(400).json({ message: error.message });
+    }
+
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/smart-link/list', async (req, res) => {
+  try {
+    const { initData, limit = 5 } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const result = await pool.query(
+      `select id, original_url, short_code, short_url, clicks, unique_clicks, created_at
+       from smart_links
+       where user_id = $1
+       order by created_at desc
+       limit $2`,
+      [user.id, Number(limit)]
+    );
+
+    res.json({
+      ok: true,
+      links: result.rows
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/smart-link/stats', async (req, res) => {
+  try {
+    const { initData, smart_link_id } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const linkResult = await pool.query(
+      `select id, original_url, short_url, clicks, unique_clicks
+       from smart_links
+       where id = $1 and user_id = $2
+       limit 1`,
+      [smart_link_id, user.id]
+    );
+
+    if (linkResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Ссылка не найдена' });
+    }
+
+    const clicksResult = await pool.query(
+      `select country, device
+       from smart_link_clicks
+       where smart_link_id = $1`,
+      [smart_link_id]
+    );
+
+    const countries = {};
+    const devices = {};
+
+    for (const row of clicksResult.rows) {
+      const country = row.country || 'Unknown';
+      const device = row.device || 'Unknown';
+
+      countries[country] = (countries[country] || 0) + 1;
+      devices[device] = (devices[device] || 0) + 1;
+    }
+
+    res.json({
+      ok: true,
+      stats: {
+        ...linkResult.rows[0],
+        countries,
+        devices
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/r/:code', async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    const linkResult = await pool.query(
+      `select *
+       from smart_links
+       where short_code = $1
+       limit 1`,
+      [code]
+    );
+
+    if (linkResult.rows.length === 0) {
+      return res.status(404).send('Link not found');
+    }
+
+    const link = linkResult.rows[0];
+    const ip = getClientIp(req);
+    const ipHash = hashIp(ip);
+    const userAgent = req.headers['user-agent'] || '';
+    const geo = geoip.lookup(ip);
+    const country = geo?.country || 'Unknown';
+    const device = detectDevice(userAgent);
+
+    const uniqueResult = await pool.query(
+      `select id
+       from smart_link_clicks
+       where smart_link_id = $1 and ip_hash = $2
+       limit 1`,
+      [link.id, ipHash]
+    );
+
+    const isUnique = uniqueResult.rows.length === 0;
+
+    await pool.query(
+      `insert into smart_link_clicks (smart_link_id, ip_hash, country, device, user_agent)
+       values ($1, $2, $3, $4, $5)`,
+      [link.id, ipHash, country, device, userAgent]
+    );
+
+    if (isUnique) {
+      await pool.query(
+        `update smart_links
+         set clicks = clicks + 1,
+             unique_clicks = unique_clicks + 1
+         where id = $1`,
+        [link.id]
+      );
+    } else {
+      await pool.query(
+        `update smart_links
+         set clicks = clicks + 1
+         where id = $1`,
+        [link.id]
+      );
+    }
+
+    return res.redirect(link.original_url);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal server error');
   }
 });
 
