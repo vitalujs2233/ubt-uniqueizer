@@ -255,8 +255,16 @@
                 </div>
 
                 <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
-                    <p class="text-white font-semibold mb-3">🔗 Последние 5 ссылок</p>
-                    <div id="linkHistoryList" class="space-y-2 text-sm text-gray-300"></div>
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
+                        <button
+                            id="refreshLinksBtn"
+                            class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            Обновить
+                        </button>
+                    </div>
+
+                    <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
                 </div>
             </div>
 
@@ -366,15 +374,27 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА СТАТИСТИКИ СМАРТ-ССЫЛКИ -->
+    <div id="statsModalBackdrop" class="modal-backdrop hidden"></div>
+    <div id="statsModal" class="modal-card hidden">
+        <div class="glass-box rounded-3xl p-5">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="text-xl font-bold">📊 Статистика ссылки</div>
+                    <div class="text-sm text-gray-400">Клики, уникальные, страны, устройства</div>
+                </div>
+                <button id="closeStatsModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">Закрыть</button>
+            </div>
+
+            <div id="statsContent" class="space-y-3 text-sm text-gray-300">
+                Загрузка...
+            </div>
+        </div>
+    </div>
+
     <script>
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
-
-        // =========================
-        // ВСТАВЬ СЮДА НОВЫЙ BITLY TOKEN
-        // =========================
-        const BITLY_TOKEN = "ВСТАВЬ_СЮДА_НОВЫЙ_BITLY_TOKEN";
-
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
 
         // =========================
@@ -909,33 +929,6 @@
             });
         }
 
-        // ===== ИСТОРИЯ СМАРТ-ССЫЛОК =====
-        function getLinkHistory() {
-            try {
-                return JSON.parse(localStorage.getItem('ubt_link_history')) || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveLinkHistory(history) {
-            localStorage.setItem('ubt_link_history', JSON.stringify(history));
-        }
-
-        function addLinkHistoryItem(originalUrl, shortUrl) {
-            const history = getLinkHistory();
-
-            history.unshift({
-                originalUrl,
-                shortUrl,
-                createdAt: new Date().toLocaleString('ru-RU')
-            });
-
-            const trimmed = history.slice(0, 5);
-            saveLinkHistory(trimmed);
-            renderLinkHistory();
-        }
-
         async function copyText(text) {
             try {
                 await navigator.clipboard.writeText(text);
@@ -946,16 +939,53 @@
             }
         }
 
-        function renderLinkHistory() {
+        async function createSmartLinkRequest(originalUrl) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    original_url: originalUrl
+                })
+            });
+
+            return await response.json();
+        }
+
+        async function fetchSmartLinksRequest(limit = 5) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/list`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    limit
+                })
+            });
+
+            return await response.json();
+        }
+
+        async function fetchSmartLinkStatsRequest(smartLinkId) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/stats`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    smart_link_id: smartLinkId
+                })
+            });
+
+            return await response.json();
+        }
+
+        function renderLinkHistory(links = []) {
             const linkHistoryList = document.getElementById('linkHistoryList');
             if (!linkHistoryList) return;
 
-            const history = getLinkHistory();
-
-            if (!history.length) {
+            if (!links.length) {
                 linkHistoryList.innerHTML = `
                     <div class="text-gray-500 text-sm">
-                        История пока пустая
+                        Ссылок пока нет
                     </div>
                 `;
                 return;
@@ -963,23 +993,42 @@
 
             linkHistoryList.innerHTML = '';
 
-            history.forEach((item, index) => {
+            links.forEach((item) => {
                 const row = document.createElement('div');
                 row.className = 'bg-slate-900/60 border border-white/5 rounded-xl p-3';
 
                 row.innerHTML = `
                     <div class="min-w-0">
-                        <div class="font-medium text-white truncate">${item.shortUrl}</div>
-                        <div class="text-xs text-gray-500 mt-1 truncate">${item.originalUrl}</div>
-                        <div class="text-xs text-gray-500 mt-1">${item.createdAt}</div>
+                        <div class="font-medium text-white break-all">${item.short_url}</div>
+                        <div class="text-xs text-gray-500 mt-1 break-all">${item.original_url}</div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            ${new Date(item.created_at).toLocaleString('ru-RU')}
+                        </div>
                     </div>
 
-                    <div class="flex gap-3 mt-2">
-                        <a href="${item.shortUrl}" target="_blank" class="text-blue-400 text-xs underline inline-block">
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+                        <div class="bg-slate-800/80 rounded-xl p-3">
+                            <div class="text-[11px] text-gray-400">Клики</div>
+                            <div class="text-white text-lg font-bold">${item.clicks || 0}</div>
+                        </div>
+
+                        <div class="bg-slate-800/80 rounded-xl p-3">
+                            <div class="text-[11px] text-gray-400">Уникальные</div>
+                            <div class="text-white text-lg font-bold">${item.unique_clicks || 0}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-3 flex-wrap">
+                        <a href="${item.short_url}" target="_blank" class="text-blue-400 text-xs underline inline-block">
                             🔗 Открыть
                         </a>
-                        <button class="text-green-400 text-xs underline inline-block" onclick="copyHistoryLink(${index})">
+
+                        <button class="text-green-400 text-xs underline inline-block" onclick="copySmartLink('${item.short_url.replace(/'/g, "\\'")}')">
                             📋 Скопировать
+                        </button>
+
+                        <button class="text-yellow-400 text-xs underline inline-block" onclick="openStatsModal(${item.id})">
+                            📊 Статистика
                         </button>
                     </div>
                 `;
@@ -988,17 +1037,129 @@
             });
         }
 
-        async function copyHistoryLink(index) {
-            const history = getLinkHistory();
-            const item = history[index];
-            if (!item) return;
+        async function loadSmartLinks() {
+            const linkHistoryList = document.getElementById('linkHistoryList');
+            if (!linkHistoryList) return;
 
-            const ok = await copyText(item.shortUrl);
-            if (ok) {
-                const copyStatus = document.getElementById('copyStatus');
-                if (copyStatus) {
-                    copyStatus.textContent = '✅ Ссылка из истории скопирована';
+            linkHistoryList.innerHTML = `
+                <div class="text-gray-500 text-sm">
+                    Загружаем ссылки...
+                </div>
+            `;
+
+            try {
+                const data = await fetchSmartLinksRequest(5);
+
+                if (!data.ok) {
+                    linkHistoryList.innerHTML = `
+                        <div class="text-red-400 text-sm">
+                            Ошибка загрузки ссылок
+                        </div>
+                    `;
+                    return;
                 }
+
+                renderLinkHistory(data.links || []);
+            } catch (error) {
+                console.error(error);
+                linkHistoryList.innerHTML = `
+                    <div class="text-red-400 text-sm">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
+        async function copySmartLink(url) {
+            const ok = await copyText(url);
+            const copyStatus = document.getElementById('copyStatus');
+
+            if (!copyStatus) return;
+
+            copyStatus.textContent = ok
+                ? '✅ Ссылка скопирована'
+                : 'Не удалось скопировать автоматически';
+        }
+
+        function closeStatsModal() {
+            const statsModal = document.getElementById('statsModal');
+            const statsModalBackdrop = document.getElementById('statsModalBackdrop');
+
+            statsModal.classList.add('hidden');
+            statsModalBackdrop.classList.add('hidden');
+        }
+
+        async function openStatsModal(linkId) {
+            const statsModal = document.getElementById('statsModal');
+            const statsModalBackdrop = document.getElementById('statsModalBackdrop');
+            const statsContent = document.getElementById('statsContent');
+
+            statsModal.classList.remove('hidden');
+            statsModalBackdrop.classList.remove('hidden');
+
+            statsContent.innerHTML = 'Загрузка...';
+
+            try {
+                const data = await fetchSmartLinkStatsRequest(linkId);
+
+                if (!data.ok || !data.stats) {
+                    statsContent.innerHTML = `<div class="text-red-400">Не удалось загрузить статистику</div>`;
+                    return;
+                }
+
+                const stats = data.stats;
+
+                const countriesHtml = Object.keys(stats.countries || {}).length
+                    ? Object.entries(stats.countries)
+                        .map(([country, count]) => `
+                            <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                <span>${country}</span>
+                                <span class="text-white font-semibold">${count}</span>
+                            </div>
+                        `).join('')
+                    : `<div class="text-gray-500">Нет данных</div>`;
+
+                const devicesHtml = Object.keys(stats.devices || {}).length
+                    ? Object.entries(stats.devices)
+                        .map(([device, count]) => `
+                            <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                <span>${device}</span>
+                                <span class="text-white font-semibold">${count}</span>
+                            </div>
+                        `).join('')
+                    : `<div class="text-gray-500">Нет данных</div>`;
+
+                statsContent.innerHTML = `
+                    <div class="bg-slate-900/60 rounded-xl p-3">
+                        <div class="text-xs text-gray-400 mb-1">Короткая ссылка</div>
+                        <div class="text-blue-400 break-all">${stats.short_url}</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-900/60 rounded-xl p-3">
+                            <div class="text-xs text-gray-400 mb-1">Клики</div>
+                            <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                        </div>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3">
+                            <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                            <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-white font-semibold mb-2">🌍 Страны</div>
+                        <div class="space-y-2">${countriesHtml}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-white font-semibold mb-2">📱 Устройства</div>
+                        <div class="space-y-2">${devicesHtml}</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error(error);
+                statsContent.innerHTML = `<div class="text-red-400">Ошибка соединения</div>`;
             }
         }
 
@@ -1016,6 +1177,10 @@
         const copyLinkBtn = document.getElementById('copyLinkBtn');
         const openLinkBtn = document.getElementById('openLinkBtn');
         const copyStatus = document.getElementById('copyStatus');
+        const refreshLinksBtn = document.getElementById('refreshLinksBtn');
+        const statsModal = document.getElementById('statsModal');
+        const statsModalBackdrop = document.getElementById('statsModalBackdrop');
+        const closeStatsModalBtn = document.getElementById('closeStatsModalBtn');
 
         let selectedFile = null;
 
@@ -1114,15 +1279,6 @@
                 return;
             }
 
-            const spend = await spendCredits('smart_link', 2);
-            if (!spend.ok) {
-                generatedLinkBox.classList.remove('hidden');
-                generatedLink.textContent = spend.message;
-                generatedLink.removeAttribute('href');
-                openLinkBtn.classList.add('hidden');
-                return;
-            }
-
             generatedLinkBox.classList.remove('hidden');
             generatedLink.textContent = 'Сокращаем...';
             generatedLink.removeAttribute('href');
@@ -1131,29 +1287,22 @@
             openLinkBtn.href = '#';
 
             try {
-                const response = await fetch('https://api-ssl.bitly.com/v4/shorten', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${BITLY_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        long_url: url
-                    })
-                });
+                const data = await createSmartLinkRequest(url);
 
-                const data = await response.json();
-
-                if (data.link) {
-                    generatedLink.href = data.link;
-                    generatedLink.textContent = data.link;
-                    openLinkBtn.href = data.link;
+                if (data.ok && data.link) {
+                    generatedLink.href = data.link.short_url;
+                    generatedLink.textContent = data.link.short_url;
+                    openLinkBtn.href = data.link.short_url;
                     openLinkBtn.classList.remove('hidden');
-                    addLinkHistoryItem(url, data.link);
-                    loadTransactions();
+                    linkInput.value = '';
+                    copyStatus.textContent = '✅ Ссылка создана';
+                    await registerTelegramUser();
+                    await loadTransactions();
+                    await loadSmartLinks();
                 } else {
-                    generatedLink.textContent = 'Ошибка Bitly';
-                    console.log(data);
+                    generatedLink.textContent = data.message || 'Ошибка создания ссылки';
+                    generatedLink.removeAttribute('href');
+                    openLinkBtn.classList.add('hidden');
                 }
             } catch (error) {
                 generatedLink.textContent = 'Ошибка соединения';
@@ -1164,7 +1313,7 @@
         copyLinkBtn.addEventListener('click', async function () {
             const link = generatedLink.textContent.trim();
 
-            if (!link || link === 'Сокращаем...' || link === 'Ошибка Bitly' || link === 'Ошибка соединения') {
+            if (!link || link === 'Сокращаем...' || link === 'Ошибка создания ссылки' || link === 'Ошибка соединения') {
                 copyStatus.textContent = 'Сначала создай ссылку.';
                 return;
             }
@@ -1202,9 +1351,21 @@
             refreshHistoryBtn.addEventListener('click', loadTransactions);
         }
 
+        if (refreshLinksBtn) {
+            refreshLinksBtn.addEventListener('click', loadSmartLinks);
+        }
+
+        if (closeStatsModalBtn) {
+            closeStatsModalBtn.addEventListener('click', closeStatsModal);
+        }
+
+        if (statsModalBackdrop) {
+            statsModalBackdrop.addEventListener('click', closeStatsModal);
+        }
+
         renderSpyTrends();
         renderVideoHistory();
-        renderLinkHistory();
+        loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
         showBottomPage('home');
