@@ -873,6 +873,8 @@
                         ? 'Успешно'
                         : 'Ошибка';
 
+                const downloadUrl = item.url ? buildDownloadUrl(item.url) : '';
+
                 row.innerHTML = `
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
@@ -881,9 +883,19 @@
                         </div>
                         <div class="shrink-0 text-xs ${statusColor}">${statusText}</div>
                     </div>
+
                     ${
                         item.url
-                            ? `<a href="${item.url}" target="_blank" class="text-blue-400 text-xs underline mt-2 inline-block">Открыть результат</a>`
+                            ? `
+                                <div class="flex gap-2 mt-2">
+                                    <a href="${item.url}" target="_blank" class="text-blue-400 text-xs underline inline-block">
+                                        Открыть
+                                    </a>
+                                    <a href="${downloadUrl}" target="_blank" download class="text-green-400 text-xs underline inline-block">
+                                        ⬇️ Скачать
+                                    </a>
+                                </div>
+                            `
                             : ''
                     }
                 `;
