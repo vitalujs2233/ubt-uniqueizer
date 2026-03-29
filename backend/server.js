@@ -64,6 +64,21 @@ async function telegramApi(method, body) {
   return response.json();
 }
 
+async function addTransaction({
+  telegram_id,
+  type,
+  amount,
+  credits,
+  status = 'completed',
+  description = null
+}) {
+  await pool.query(
+    `insert into transactions (telegram_id, type, amount, credits, status, description)
+     values ($1, $2, $3, $4, $5, $6)`,
+    [telegram_id, type, amount, credits, status, description]
+  );
+}
+
 app.post('/register', async (req, res) => {
   try {
     const { initData } = req.body;
@@ -108,7 +123,7 @@ app.post('/register', async (req, res) => {
 
 app.post('/spend', async (req, res) => {
   try {
-    const { initData, amount } = req.body;
+    const { initData, action, amount } = req.body;
 
     const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
     if (!user) return res.status(401).json({ message: 'Invalid user' });
@@ -134,6 +149,15 @@ app.post('/spend', async (req, res) => {
     );
 
     const updatedUser = updated.rows[0];
+
+    await addTransaction({
+      telegram_id: user.id,
+      type: 'spend',
+      amount: amount,
+      credits: -amount,
+      status: 'completed',
+      description: action || 'Списание кредитов'
+    });
 
     res.json({
       user: {
@@ -211,9 +235,18 @@ app.post('/telegram-webhook', async (req, res) => {
 
         if (telegramId && credits) {
           await pool.query(
-            'update users set balance = balance + $2 where telegram_id = $1',
+            'update users set balance = balance + $2 where telegram_id = $1 returning *',
             [telegramId, credits]
           );
+
+          await addTransaction({
+            telegram_id: telegramId,
+            type: 'topup',
+            amount: payment.total_amount,
+            credits: credits,
+            status: 'completed',
+            description: `Пополнение через Telegram Stars`
+          });
         }
       }
 
@@ -224,6 +257,33 @@ app.post('/telegram-webhook', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Webhook error' });
+  }
+});
+
+app.post('/transactions', async (req, res) => {
+  try {
+    const { initData } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const result = await pool.query(
+      `select id, type, amount, credits, status, description, created_at
+       from transactions
+       where telegram_id = $1
+       order by created_at desc
+       limit 30`,
+      [user.id]
+    );
+
+    res.json({
+      transactions: result.rows
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
