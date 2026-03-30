@@ -945,6 +945,98 @@ body::after {
     50% { opacity: 1; transform: translateY(-2px); }
 }
 
+
+.page-wrap {
+    position: relative;
+    padding-top: 72px;
+}
+
+.brand-title {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 22px;
+}
+
+.userbar-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    z-index: 3;
+    padding: 0 2px;
+}
+
+.userbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    max-width: calc(100% - 164px);
+}
+
+.userbar-text {
+    line-height: 1.15;
+}
+
+#userName {
+    font-size: 15px !important;
+}
+
+#userBalance {
+    font-size: 13px !important;
+    margin-top: 2px !important;
+}
+
+.userbar-topup,
+#topupBtn.userbar-topup {
+    min-width: 146px;
+    padding: 12px 18px !important;
+    border-radius: 20px !important;
+    background: linear-gradient(135deg, #22c55e, #34d399) !important;
+    box-shadow:
+        0 0 22px rgba(34,197,94,0.22),
+        0 10px 24px rgba(16,185,129,0.22) !important;
+}
+
+@media (max-width: 420px) {
+    .page-wrap {
+        padding-top: 76px;
+    }
+
+    .userbar-overlay {
+        top: 56px;
+        gap: 10px;
+    }
+
+    .userbar-left {
+        max-width: calc(100% - 152px);
+    }
+
+    #userAvatarWrap {
+        width: 44px !important;
+        height: 44px !important;
+    }
+
+    #userName {
+        font-size: 14px !important;
+    }
+
+    #userBalance {
+        font-size: 12px !important;
+    }
+
+    .userbar-topup,
+    #topupBtn.userbar-topup {
+        min-width: 138px;
+        padding: 11px 16px !important;
+        font-size: 14px !important;
+    }
+}
+
 </style>
 </head>
 <body class="p-4">
@@ -964,25 +1056,24 @@ body::after {
     <div class="page-wrap">
         <h1 class="brand-title">UBT ToolKit</h1>
 
-        <div id="userBar" class="mb-4 hidden fade-up">
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                        <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
-                        <span id="userAvatarFallback">U</span>
-                    </div>
-
-                    <div class="min-w-0">
-                        <div id="userName" class="font-bold text-white text-[16px] leading-tight truncate">Пользователь</div>
-                        <div id="userBalance" class="text-[14px] text-gray-300 mt-1">Баланс: 0 кредитов</div>
-                        <span id="userPlan" class="hidden">Тариф: free</span>
-                    </div>
+        
+        <div id="userBar" class="hidden fade-up userbar-overlay">
+            <div class="userbar-left">
+                <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
+                    <span id="userAvatarFallback">U</span>
                 </div>
 
-                <button id="topupBtn" class="green-btn px-5 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px]">
-                    ⭐ Пополнить
-                </button>
+                <div class="min-w-0 userbar-text">
+                    <div id="userName" class="font-bold text-white text-[16px] leading-tight truncate">Пользователь</div>
+                    <div id="userBalance" class="text-[14px] text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                    <span id="userPlan" class="hidden">Тариф: free</span>
+                </div>
             </div>
+
+            <button id="topupBtn" class="green-btn px-5 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px] userbar-topup">
+                ⭐ Пополнить
+            </button>
         </div>
 
         <div id="home-screen">
