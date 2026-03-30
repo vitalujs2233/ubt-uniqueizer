@@ -441,7 +441,7 @@
             }
         }
     
-.loader-wrap {
+.loader-screen {
     position: fixed;
     inset: 0;
     background: #020305;
@@ -452,17 +452,17 @@
     transition: opacity 0.4s ease;
 }
 
-.loader-ring {
-    width: 64px;
-    height: 64px;
+.loader-logo {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.08);
-    border-top-color: #8b5cf6;
-    border-right-color: #3b82f6;
+    border: 2px solid transparent;
+    border-top-color: #00ffa3;
+    border-right-color: #00d4ff;
     box-shadow:
-        0 0 25px rgba(139,92,246,0.25),
-        0 0 40px rgba(59,130,246,0.15);
-    animation: spin 0.9s linear infinite;
+        0 0 25px rgba(0,255,163,0.3),
+        0 0 40px rgba(0,212,255,0.2);
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -2283,8 +2283,8 @@
         showBottomPage('home');
     </script>
 
-<div id="loader" class="loader-wrap">
-    <div class="loader-ring"></div>
+<div id="loader" class="loader-screen">
+    <div class="loader-logo"></div>
 </div>
 
 <script>
@@ -2294,9 +2294,7 @@ window.addEventListener("load", () => {
     setTimeout(() => {
         if (loader) {
             loader.style.opacity = "0";
-            setTimeout(() => {
-                loader.remove();
-            }, 400);
+            setTimeout(() => loader.remove(), 400);
         }
     }, 1200);
 });
