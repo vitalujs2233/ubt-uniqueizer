@@ -2,40 +2,39 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>UBT ToolKit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-0: #030303;
-            --bg-1: #060914;
-            --bg-2: #09101d;
-            --panel: rgba(15, 23, 42, 0.62);
-            --panel-strong: rgba(17, 24, 39, 0.84);
+            --bg-0: #03050b;
+            --bg-1: #0a0f1c;
+            --bg-2: #0f1625;
+            --panel: rgba(15, 25, 45, 0.7);
+            --panel-strong: rgba(20, 30, 55, 0.9);
             --panel-soft: rgba(255,255,255,0.04);
-            --stroke: rgba(255,255,255,0.08);
-            --stroke-strong: rgba(255,255,255,0.14);
-            --text: #ffffff;
-            --muted: #9ca3af;
-            --muted-2: #6b7280;
+            --stroke: rgba(255,255,255,0.06);
+            --stroke-strong: rgba(255,255,255,0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a8c3;
+            --muted: #7e85a6;
             --blue: #3b82f6;
-            --blue-2: #2563eb;
+            --blue-dark: #2563eb;
             --violet: #8b5cf6;
-            --violet-2: #a855f7;
+            --violet-dark: #7c3aed;
             --green: #10b981;
-            --green-2: #34d399;
-            --gold: #d4af37;
+            --green-dark: #059669;
+            --gold: #fbbf24;
             --danger: #ef4444;
-            --shadow-dark: 0 18px 50px rgba(0,0,0,0.42);
-            --shadow-blue: 0 12px 34px rgba(59,130,246,0.24);
-            --shadow-violet: 0 12px 34px rgba(139,92,246,0.24);
-            --shadow-green: 0 12px 30px rgba(16,185,129,0.26);
-            --shadow-gold: 0 12px 34px rgba(212,175,55,0.18);
-            --radius-xl: 24px;
-            --radius-lg: 20px;
-            --radius-md: 16px;
+            --shadow-sm: 0 8px 20px rgba(0,0,0,0.2);
+            --shadow-md: 0 12px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.4);
+            --radius-sm: 20px;
+            --radius-md: 28px;
+            --radius-lg: 36px;
         }
 
         * {
@@ -44,28 +43,16 @@
         }
 
         body {
-            background:
-                radial-gradient(circle at top left, rgba(139,92,246,0.20), transparent 26%),
-                radial-gradient(circle at top right, rgba(59,130,246,0.16), transparent 28%),
-                radial-gradient(circle at bottom center, rgba(34,197,94,0.08), transparent 30%),
-                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 42%, var(--bg-2) 100%);
-            color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            -webkit-user-select: none;
+            background: radial-gradient(circle at 10% 0%, rgba(139,92,246,0.12), transparent 35%),
+                        radial-gradient(circle at 90% 20%, rgba(59,130,246,0.08), transparent 40%),
+                        linear-gradient(145deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.4;
+            padding: 20px 16px 0 16px;
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background:
-                linear-gradient(rgba(255,255,255,0.015), rgba(255,255,255,0)),
-                radial-gradient(circle at 20% 10%, rgba(255,255,255,0.035), transparent 22%);
-            mix-blend-mode: screen;
-            opacity: 0.35;
         }
 
         .hidden {
@@ -73,27 +60,28 @@
         }
 
         .page-wrap {
-            padding-bottom: 104px;
-            max-width: 820px;
+            max-width: 720px;
             margin: 0 auto;
-            padding-top: 0;
+            padding-bottom: 104px;
         }
 
         .brand-title {
-            font-size: 23px;
-            font-weight: 900;
-            letter-spacing: -0.04em;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
             text-align: center;
-            margin-bottom: 10px;
-            margin-top: -2px;
-            background: linear-gradient(90deg, #ddd6fe 0%, #93c5fd 48%, #86efac 100%);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #c4b5fd 0%, #93c5fd 50%, #6ee7b7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 24px rgba(139,92,246,0.10);
+            background-clip: text;
         }
 
         .section-title {
-            letter-spacing: -0.02em;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            font-size: 24px;
+            margin-bottom: 16px;
         }
 
         .glass-box,
@@ -101,32 +89,17 @@
         .bento-card,
         .stat-card,
         .action-card {
-            position: relative;
-            overflow: hidden;
+            background: var(--panel);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--stroke);
-            background: linear-gradient(180deg, rgba(12,18,31,0.84), rgba(6,10,20,0.90));
-            backdrop-filter: blur(18px);
-            box-shadow: var(--shadow-dark);
-        }
-
-        .glass-box::before,
-        .card::before,
-        .bento-card::before,
-        .stat-card::before,
-        .action-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent 30%, transparent 70%, rgba(255,255,255,0.02));
+            border-radius: var(--radius-md);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card {
-            border-radius: var(--radius-xl);
             padding: 20px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             cursor: pointer;
-            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         .card:active,
@@ -135,72 +108,55 @@
         .green-btn:active,
         .secondary-btn:active,
         .gold-btn:active {
-            transform: scale(0.985);
+            transform: scale(0.98);
         }
 
         .card:hover,
         .bento-card:hover {
-            border-color: rgba(139,92,246,0.30);
-            box-shadow:
-                var(--shadow-dark),
-                0 0 0 1px rgba(139,92,246,0.12),
-                0 0 28px rgba(59,130,246,0.08);
+            border-color: rgba(139,92,246,0.4);
+            box-shadow: 0 0 0 1px rgba(139,92,246,0.2), var(--shadow-sm);
         }
 
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 14px;
             margin-top: 0;
         }
 
         .bento-card {
-            border-radius: 28px;
-            padding: 16px;
-            min-height: 148px;
-            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            padding: 18px;
+            min-height: 150px;
+            transition: all 0.2s;
         }
 
         .bento-large {
             grid-column: span 2;
-            min-height: 178px;
-            background:
-                radial-gradient(circle at top left, rgba(139,92,246,0.16), transparent 30%),
-                radial-gradient(circle at right center, rgba(59,130,246,0.14), transparent 28%),
-                linear-gradient(180deg, rgba(10,16,28,0.92), rgba(4,8,18,0.96));
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.04),
-                0 22px 60px rgba(0,0,0,0.48);
+            min-height: 180px;
+            background: radial-gradient(circle at 0% 0%, rgba(139,92,246,0.15), transparent 50%),
+                        linear-gradient(135deg, rgba(20,30,55,0.8), rgba(10,15,30,0.9));
         }
 
         .bento-tall {
-            min-height: 220px;
+            min-height: 230px;
         }
 
-        .neon-ring {
-            box-shadow:
-                0 0 0 2px rgba(255,255,255,0.05),
-                0 0 0 6px rgba(16,185,129,0.10),
-                0 0 20px rgba(16,185,129,0.26);
+        .inner-panel {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
         }
 
-        .premium-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #f8e7a1;
-            background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(255,215,0,0.08));
-            border: 1px solid rgba(212,175,55,0.24);
-            box-shadow: var(--shadow-gold);
+        .metric-tile {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 16px;
         }
 
-        .btn-disabled {
-            opacity: 0.6;
-            pointer-events: none;
+        .metric-tile-strong {
+            background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
         }
 
         .primary-btn,
@@ -209,133 +165,120 @@
         .gold-btn {
             position: relative;
             overflow: hidden;
-            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .primary-btn::before,
-        .green-btn::before,
-        .secondary-btn::before,
-        .gold-btn::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 35%, transparent 65%, rgba(255,255,255,0.04));
-            pointer-events: none;
+            border: none;
+            border-radius: 32px;
+            padding: 16px 20px;
+            font-weight: 600;
+            text-align: center;
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         .primary-btn {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            box-shadow:
-                0 0 24px rgba(139,92,246,0.22),
-                0 12px 28px rgba(59,130,246,0.22);
+            background: linear-gradient(135deg, var(--violet), var(--blue));
+            box-shadow: 0 8px 20px rgba(59,130,246,0.25);
+            color: white;
         }
 
         .green-btn {
-            background: linear-gradient(135deg, #22c55e, #34d399);
-            box-shadow:
-                0 0 22px rgba(34,197,94,0.24),
-                0 10px 24px rgba(16,185,129,0.24);
+            background: linear-gradient(135deg, var(--green), #34d399);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.2);
         }
 
         .secondary-btn {
-            background: linear-gradient(135deg, rgba(51,65,85,0.94), rgba(71,85,105,0.94));
-            box-shadow: 0 8px 22px rgba(0,0,0,0.24);
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: none;
         }
 
         .gold-btn {
-            background: linear-gradient(135deg, #8a6a18, #d4af37 55%, #f6d365);
-            box-shadow: 0 10px 26px rgba(212,175,55,0.22);
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            box-shadow: 0 8px 20px rgba(245,158,11,0.2);
         }
 
-        .danger-badge {
-            background: linear-gradient(135deg, rgba(239,68,68,0.92), rgba(220,38,38,0.92));
-            box-shadow: 0 8px 18px rgba(239,68,68,0.18);
-        }
-
-        .glow-badge {
-            background: linear-gradient(135deg, rgba(139,92,246,0.26), rgba(59,130,246,0.20));
-            border: 1px solid rgba(139,92,246,0.24);
-            box-shadow: 0 0 20px rgba(139,92,246,0.14);
+        .btn-disabled {
+            opacity: 0.6;
+            pointer-events: none;
         }
 
         .neo-input {
             width: 100%;
-            padding: 16px 18px;
-            border-radius: 20px;
-            background:
-                linear-gradient(180deg, rgba(2,6,23,0.92), rgba(15,23,42,0.92));
-            border: 1px solid rgba(255,255,255,0.08);
+            padding: 16px 20px;
+            border-radius: 28px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            font-size: 16px;
             outline: none;
-            color: white;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.02);
-            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-        }
-
-        .neo-input::placeholder {
-            color: #6b7280;
+            transition: all 0.2s;
         }
 
         .neo-input:focus {
-            border-color: rgba(139,92,246,0.45);
-            box-shadow:
-                0 0 0 1px rgba(139,92,246,0.20),
-                0 0 0 6px rgba(139,92,246,0.08),
-                inset 0 0 20px rgba(59,130,246,0.05);
+            border-color: var(--violet);
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
         }
 
-        .metric-tile {
-            background: linear-gradient(180deg, rgba(15,23,42,0.78), rgba(17,24,39,0.64));
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 18px;
-            padding: 14px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        .neo-input::placeholder {
+            color: var(--muted);
         }
 
-        .metric-tile-strong {
-            background:
-                radial-gradient(circle at top left, rgba(139,92,246,0.14), transparent 40%),
-                linear-gradient(180deg, rgba(15,23,42,0.84), rgba(17,24,39,0.74));
+        .progress-shell {
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
         }
 
-        .inner-panel {
-            background: linear-gradient(180deg, rgba(3,9,25,0.84), rgba(10,18,40,0.70));
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 18px;
-            padding: 14px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--violet), var(--blue), var(--green));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         .trend-preview {
-            position: relative;
+            border-radius: 24px;
             overflow: hidden;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
             background: #0f172a;
-            box-shadow: inset 0 0 18px rgba(255,255,255,0.02);
+            position: relative;
         }
 
         .trend-preview::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, transparent 20%, rgba(2,6,23,0.16) 50%, rgba(2,6,23,0.82) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
             pointer-events: none;
         }
 
         .bottom-nav {
-            background: linear-gradient(180deg, rgba(2,6,23,0.82), rgba(15,23,42,0.92));
-            backdrop-filter: blur(18px);
-            border-top: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 -12px 30px rgba(0,0,0,0.34);
+            background: rgba(10, 20, 35, 0.85);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 16px;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .bottom-nav .flex {
+            max-width: 720px;
+            margin: 0 auto;
         }
 
         .bottom-nav-btn {
-            transition: all 0.16s ease;
-        }
-
-        .bottom-nav-btn .nav-icon-wrap {
-            transition: all 0.16s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.6);
         }
 
         .bottom-nav-btn.active {
@@ -343,124 +286,129 @@
         }
 
         .bottom-nav-btn.active .nav-icon-wrap {
-            background: linear-gradient(135deg, rgba(139,92,246,0.28), rgba(59,130,246,0.22));
-            border: 1px solid rgba(139,92,246,0.24);
-            box-shadow: 0 0 18px rgba(139,92,246,0.16);
+            background: rgba(139,92,246,0.2);
+            box-shadow: 0 0 12px rgba(139,92,246,0.3);
+        }
+
+        .nav-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.2s;
+        }
+
+        #topupModalBackdrop {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
         }
 
         .topup-modal-box {
-            border-radius: 28px;
-            background:
-                radial-gradient(circle at top left, rgba(212,175,55,0.10), transparent 32%),
-                radial-gradient(circle at right center, rgba(139,92,246,0.10), transparent 28%),
-                linear-gradient(180deg, rgba(17,24,39,0.92), rgba(7,11,20,0.96));
+            background: rgba(12, 20, 35, 0.96);
+            backdrop-filter: blur(24px);
+            border-radius: 48px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .progress-shell {
-            height: 10px;
-            width: 100%;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.05);
+        .topup-option {
+            padding: 18px 20px;
+            border-radius: 32px;
+            font-weight: 600;
+            text-align: left;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s;
         }
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
-            box-shadow: 0 0 18px rgba(59,130,246,0.32);
-            transition: width 0.45s ease;
-        }
-
-        .terminal-line {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            color: #c4b5fd;
-            letter-spacing: 0.01em;
+        .topup-option:active {
+            transform: scale(0.98);
         }
 
         .fade-up {
-            animation: fadeUp 0.36s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .soft-pulse {
-            animation: softPulse 3s ease-in-out infinite;
-        }
-
-        .hero-accent {
-            color: #c4b5fd;
-            text-shadow: 0 0 22px rgba(139,92,246,0.10);
+            animation: fadeUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+            opacity: 0;
+            transform: translateY(12px);
         }
 
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes softPulse {
-            0%, 100% {
-                box-shadow:
-                    0 0 16px rgba(59,130,246,0.12),
-                    0 0 18px rgba(139,92,246,0.12);
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px 0 12px;
             }
-            50% {
-                box-shadow:
-                    0 0 28px rgba(59,130,246,0.20),
-                    0 0 26px rgba(139,92,246,0.18);
+            .brand-title {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+            .bento-grid {
+                gap: 12px;
+            }
+            .bento-card {
+                padding: 14px;
+            }
+            .bento-large {
+                min-height: 160px;
+            }
+            .section-title {
+                font-size: 22px;
+            }
+            .primary-btn, .green-btn, .secondary-btn, .gold-btn {
+                padding: 14px 18px;
             }
         }
 
-        @media (max-width: 640px) {
-            .bento-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
+        .text-muted {
+            color: var(--text-secondary);
+        }
 
-            .bento-card {
-                min-height: 142px;
-                padding: 14px;
-            }
+        .glow-badge {
+            background: rgba(139,92,246,0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-            .bento-large {
-                min-height: 168px;
-            }
-
-            .bento-tall {
-                min-height: 204px;
-            }
-
-            .brand-title {
-                font-size: 23px;
-            }
+        .danger-badge {
+            background: rgba(239,68,68,0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
         }
     </style>
 </head>
-<body class="p-4">
+<body>
     <div class="page-wrap">
         <h1 class="brand-title">UBT ToolKit</h1>
 
-        <div id="userBar" class="mb-4 hidden fade-up">
+        <div id="userBar" class="mb-5 hidden fade-up">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    <div id="userAvatarWrap" class="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                         <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
                         <span id="userAvatarFallback">U</span>
                     </div>
-
                     <div class="min-w-0">
                         <div id="userName" class="font-bold text-white text-[16px] leading-tight truncate">Пользователь</div>
-                        <div id="userBalance" class="text-[14px] text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                        <div id="userBalance" class="text-[14px] text-secondary mt-1">Баланс: 0 кредитов</div>
                         <span id="userPlan" class="hidden">Тариф: free</span>
                     </div>
                 </div>
-
                 <button id="topupBtn" class="green-btn px-5 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px]">
                     ⭐ Пополнить
                 </button>
@@ -474,19 +422,18 @@
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
-                                    <div class="text-xs uppercase tracking-[0.22em] hero-accent mb-2">Core Tool</div>
+                                    <div class="text-xs uppercase tracking-[0.2em] text-violet-300 mb-2">Core Tool</div>
                                     <h2 class="text-[22px] font-extrabold leading-tight">Уникализатор видео</h2>
-                                    <p class="text-[15px] text-gray-400 mt-3 max-w-xs leading-relaxed">
+                                    <p class="text-[15px] text-secondary mt-3 max-w-xs leading-relaxed">
                                         Очистка метаданных, подготовка к заливу и быстрый результат.
                                     </p>
                                 </div>
-                                <div class="h-16 w-16 rounded-[22px] bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl soft-pulse shrink-0">
+                                <div class="h-16 w-16 rounded-[28px] bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl shrink-0">
                                     🎥
                                 </div>
                             </div>
-
                             <div class="flex items-end justify-between mt-6 gap-3">
-                                <div class="text-xs text-gray-500 tracking-wide">FAST • PREMIUM • CLEAN</div>
+                                <div class="text-xs text-muted tracking-wide">FAST • PREMIUM • CLEAN</div>
                                 <div class="primary-btn px-5 py-3 rounded-2xl font-semibold text-sm">
                                     Открыть
                                 </div>
@@ -498,14 +445,12 @@
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="text-[15px] font-bold">Смарт-линк</div>
-                                <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
+                                <div class="h-12 w-12 rounded-[24px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
                             </div>
-
                             <div class="mt-3 inner-panel">
-                                <div class="text-xs text-gray-400 mb-1">Трекинг и маскировка</div>
+                                <div class="text-xs text-muted mb-1">Трекинг и маскировка</div>
                                 <div class="text-[15px] text-white leading-relaxed">Сокращай, отслеживай, анализируй</div>
                             </div>
-
                             <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
                         </div>
                     </div>
@@ -515,43 +460,39 @@
                             <div class="flex items-center justify-between gap-3">
                                 <div>
                                     <div class="text-[15px] font-bold">Тренды</div>
-                                    <div class="text-xs text-gray-400 mt-1">ТОП креативы дня</div>
+                                    <div class="text-xs text-muted mt-1">ТОП креативы дня</div>
                                 </div>
-                                <div class="h-12 w-12 rounded-[18px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
+                                <div class="h-12 w-12 rounded-[24px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
                             </div>
-
                             <div class="trend-preview mt-4">
-                                <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" alt="trend" class="w-full h-36 object-cover opacity-75" />
+                                <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" alt="trend" class="w-full h-36 object-cover opacity-80" />
                                 <div class="absolute left-3 bottom-3 z-10">
                                     <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">ТОП КРЕО ДНЯ</span>
                                 </div>
                             </div>
-
-                            <div class="text-xs text-gray-400 mt-4 leading-relaxed">Смотри, что сейчас заходит в ленте</div>
+                            <div class="text-xs text-muted mt-4 leading-relaxed">Смотри, что сейчас заходит в ленте</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="video-section" class="hidden">
-                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-                <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
+                <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
+                <h2 class="section-title">Уникализатор</h2>
 
-                <div class="glass-box p-8 rounded-[26px] border border-white/10 text-center fade-up">
+                <div class="glass-box p-8 rounded-[32px] text-center fade-up">
                     <input type="file" id="videoInput" class="hidden" accept="video/*" />
-                    <label for="videoInput" class="cursor-pointer text-blue-400 block">
-                        Нажми, чтобы выбрать видео
-                    </label>
-                    <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
+                    <label for="videoInput" class="cursor-pointer text-blue-400 block font-medium">Нажми, чтобы выбрать видео</label>
+                    <p id="selectedFileName" class="mt-3 text-sm text-muted">Видео не выбрано</p>
                 </div>
 
-                <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
+                <div class="mt-3 text-xs text-muted">Списание: 5 кредитов</div>
 
                 <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
                     Уникализировать
                 </button>
 
-                <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
+                <div id="statusMessage" class="mt-4 text-sm text-secondary"></div>
 
                 <div id="resultBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
                     <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
@@ -560,111 +501,75 @@
 
                 <div id="videoHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
                     <p class="text-white font-semibold mb-3">📜 Последние 5 действий</p>
-                    <div id="videoHistoryList" class="space-y-2 text-sm text-gray-300"></div>
+                    <div id="videoHistoryList" class="space-y-2 text-sm text-secondary"></div>
                 </div>
             </div>
 
             <div id="link-section" class="hidden">
                 <div id="smartLinkMainView">
                     <div class="flex items-center justify-between mb-4 gap-3">
-                        <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
-
+                        <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
                         <div class="flex items-center gap-2">
                             <h2 class="section-title text-xl font-bold">Смарт-линк</h2>
-                            <button
-                                id="openSmartStatsBtn"
-                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            <button id="openSmartStatsBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
                                 Статистика
                             </button>
                         </div>
                     </div>
 
-                    <input
-                        id="linkInput"
-                        type="text"
-                        placeholder="https://your-offer.com"
-                        class="neo-input mb-4"
-                    />
+                    <input id="linkInput" type="text" placeholder="https://your-offer.com" class="neo-input mb-4" />
 
-                    <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
+                    <div class="mt-3 text-xs text-muted">Списание: 2 кредита</div>
 
-                    <button
-                        id="generateLinkBtn"
-                        class="primary-btn w-full p-4 rounded-2xl font-bold">
+                    <button id="generateLinkBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
                         Сгенерировать
                     </button>
 
                     <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
                         <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
                         <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
-
                         <div class="flex gap-3">
-                            <button
-                                id="copyLinkBtn"
-                                class="green-btn w-1/2 p-4 rounded-2xl font-bold">
-                                📋 Скопировать
-                            </button>
-
-                            <a
-                                id="openLinkBtn"
-                                href="#"
-                                target="_blank"
-                                class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
-                                🔗 Открыть ссылку
-                            </a>
+                            <button id="copyLinkBtn" class="green-btn w-1/2 p-4 rounded-2xl font-bold">📋 Скопировать</button>
+                            <a id="openLinkBtn" href="#" target="_blank" class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">🔗 Открыть ссылку</a>
                         </div>
-
-                        <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+                        <p id="copyStatus" class="mt-3 text-sm text-secondary"></p>
                     </div>
 
                     <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
-                            <button
-                                id="refreshLinksBtn"
-                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                                Обновить
-                            </button>
+                            <button id="refreshLinksBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">Обновить</button>
                         </div>
-
-                        <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                        <div id="linkHistoryList" class="space-y-3 text-sm text-secondary"></div>
                     </div>
                 </div>
 
                 <div id="smartLinkStatsView" class="hidden">
-                                         <div class="flex items-center justify-between mb-4 gap-3">
+                    <div class="flex items-center justify-between mb-4 gap-3">
                         <button id="backToSmartLinkBtn" class="text-blue-400 font-medium">← Назад</button>
                         <div class="flex items-center gap-2">
                             <h2 class="section-title text-xl font-extrabold">Статистика</h2>
-                            <button
-                                id="refreshSmartStatsBtn"
-                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                                Обновить
-                            </button>
+                            <button id="refreshSmartStatsBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">Обновить</button>
                         </div>
                     </div>
 
-                    <div id="smartStatsSummary" class="glass-box p-4 rounded-[24px] mb-4">
+                    <div id="smartStatsSummary" class="glass-box p-4 rounded-[28px] mb-4">
                         <p class="text-white font-semibold mb-3 tracking-wide">📊 Общая статистика</p>
-
                         <div class="grid grid-cols-2 gap-3">
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400 mb-1">Всего ссылок</div>
+                                <div class="text-xs text-muted mb-1">Всего ссылок</div>
                                 <div id="summaryTotalLinks" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
-
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400 mb-1">Всего кликов</div>
+                                <div class="text-xs text-muted mb-1">Всего кликов</div>
                                 <div id="summaryTotalClicks" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
-
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div class="text-xs text-muted mb-1">Уникальные</div>
                                 <div id="summaryTotalUnique" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
-
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400 mb-1">Топ ссылка</div>
+                                <div class="text-xs text-muted mb-1">Топ ссылка</div>
                                 <div id="summaryTopLink" class="text-white text-xs font-bold break-all leading-relaxed">—</div>
                             </div>
                         </div>
@@ -676,7 +581,7 @@
 
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
-                <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Тренды УБТ</h2>
+                <h2 class="section-title">🔥 Тренды УБТ</h2>
 
                 <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
                     <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Все</button>
@@ -692,55 +597,44 @@
 
         <div id="history-screen" class="hidden">
             <div class="flex items-center justify-between mb-4 gap-3">
-                <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
-                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
-                    Обновить
-                </button>
+                <h2 class="section-title">📜 История операций</h2>
+                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Обновить</button>
             </div>
-
             <div id="historyList" class="space-y-3"></div>
         </div>
 
         <div id="support-screen" class="hidden">
-            <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
-
-            <div class="glass-box p-5 rounded-[24px] mb-4">
+            <h2 class="section-title">💬 Поддержка</h2>
+            <div class="glass-box p-5 rounded-[32px] mb-4">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🛟</div>
+                    <div class="h-12 w-12 rounded-[24px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🛟</div>
                     <div>
                         <div class="font-bold">Служба поддержки</div>
-                        <div class="text-sm text-gray-400">Если есть вопросы или проблемы</div>
+                        <div class="text-sm text-muted">Если есть вопросы или проблемы</div>
                     </div>
                 </div>
-
-                <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                <p class="text-sm text-secondary mb-4 leading-relaxed">
                     Напиши нам в Telegram, и мы поможем с доступом, балансом, оплатой, видео или смарт-ссылками.
                 </p>
-
-                <a id="supportLinkBtn"
-                   href="#"
-                   target="_blank"
-                   class="primary-btn block w-full p-4 rounded-2xl font-bold text-center">
+                <a id="supportLinkBtn" href="#" target="_blank" class="primary-btn block w-full p-4 rounded-2xl font-bold text-center">
                     Написать в поддержку
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
-        <div class="max-w-xl mx-auto flex items-center justify-around">
-            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1.5 text-sm text-white" onclick="showBottomPage('home')">
-                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🏠</div>
+    <div class="bottom-nav">
+        <div class="flex items-center justify-around max-w-xl mx-auto">
+            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1.5 text-sm" onclick="showBottomPage('home')">
+                <div class="nav-icon-wrap">🏠</div>
                 <span class="font-medium">Домой</span>
             </button>
-
-            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('history')">
-                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">📜</div>
+            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm" onclick="showBottomPage('history')">
+                <div class="nav-icon-wrap">📜</div>
                 <span class="font-medium">История</span>
             </button>
-
-            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
-                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
+            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm" onclick="showBottomPage('support')">
+                <div class="nav-icon-wrap">💬</div>
                 <span class="font-medium">Поддержка</span>
             </button>
         </div>
@@ -748,34 +642,31 @@
 
     <div id="topupModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
     <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
-        <div class="glass-box topup-modal-box rounded-[28px] p-5">
+        <div class="topup-modal-box">
             <div class="flex items-center justify-between mb-4 gap-3">
                 <div>
                     <div class="text-[22px] font-extrabold">⭐ Пополнить баланс</div>
-                    <div class="text-sm text-gray-400 mt-1">Выбери пакет кредитов</div>
+                    <div class="text-sm text-muted mt-1">Выбери пакет кредитов</div>
                 </div>
                 <button id="closeTopupModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
             </div>
-
             <div class="space-y-3">
                 <button class="topup-option w-full gold-btn p-4 rounded-2xl font-bold text-left" data-stars="50" data-credits="50">
                     ⭐ 50 Stars → 50 кредитов
                 </button>
-
                 <button class="topup-option w-full primary-btn p-4 rounded-2xl font-bold text-left" data-stars="100" data-credits="120">
                     ⭐ 100 Stars → 120 кредитов
                 </button>
-
                 <button class="topup-option w-full secondary-btn p-4 rounded-2xl font-bold text-left" data-stars="250" data-credits="350">
                     ⭐ 250 Stars → 350 кредитов
                 </button>
             </div>
-
-            <p id="topupStatus" class="mt-4 text-sm text-gray-300"></p>
+            <p id="topupStatus" class="mt-4 text-sm text-secondary"></p>
         </div>
     </div>
 
     <script>
+        // ==================== ПОЛНЫЙ JAVASCRIPT (БЕЗ ИЗМЕНЕНИЙ) ====================
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
@@ -1140,7 +1031,8 @@
                 };
             }
         }
-              async function createTopupInvoice(stars, credits) {
+
+        async function createTopupInvoice(stars, credits) {
             if (!tg || !tg.initData) {
                 topupStatus.textContent = 'Открой Mini App через Telegram';
                 return;
