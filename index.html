@@ -441,279 +441,42 @@
             }
         }
     
-.app-loader {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-        radial-gradient(circle at 50% 30%, rgba(212,175,55,0.14), transparent 26%),
-        radial-gradient(circle at 50% 70%, rgba(59,130,246,0.08), transparent 30%),
-        linear-gradient(180deg, #020202 0%, #06070b 45%, #0a0d12 100%);
-    backdrop-filter: blur(20px);
-    transition: opacity 0.45s ease, visibility 0.45s ease;
+.app-loader{
+position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(180deg,#020202,#0a0d12);
+transition:opacity .4s ease;
+}
+.app-loader.hidden{opacity:0}
+
+.loader-ring{
+width:70px;height:70px;border-radius:50%;
+border:2px solid rgba(255,255,255,0.08);
+border-top-color:#d4af37;border-right-color:#f6d365;
+box-shadow:0 0 25px rgba(212,175,55,.25),0 0 40px rgba(212,175,55,.15);
+animation:spin 1s linear infinite;
+margin:auto;
 }
 
-.app-loader.hidden {
-    opacity: 0;
-    visibility: hidden;
+.loader-title{
+margin-top:18px;
+font-size:24px;font-weight:900;
+letter-spacing:-0.04em;text-align:center;
+background:linear-gradient(90deg,#fff7da,#d4af37,#fff3c2);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+text-shadow:0 0 25px rgba(212,175,55,.15);
 }
 
-.loader-shell {
-    position: relative;
-    width: 100%;
-    max-width: 340px;
-    padding: 30px 28px 26px;
-    border-radius: 30px;
-    border: 1px solid rgba(212,175,55,0.16);
-    background:
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
-        linear-gradient(180deg, rgba(14,14,16,0.88), rgba(6,8,12,0.94));
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.58),
-        0 0 0 1px rgba(255,255,255,0.02) inset,
-        0 0 40px rgba(212,175,55,0.08);
-    overflow: hidden;
-}
-
-.loader-shell::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        linear-gradient(135deg, rgba(255,255,255,0.05), transparent 28%, transparent 70%, rgba(212,175,55,0.04)),
-        radial-gradient(circle at top right, rgba(212,175,55,0.08), transparent 28%);
-    pointer-events: none;
-}
-
-.loader-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 18px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(212,175,55,0.18);
-    background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
-    color: #f5deb0;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    box-shadow: 0 8px 24px rgba(212,175,55,0.10);
-}
-
-.loader-visual {
-    position: relative;
-    width: 104px;
-    height: 104px;
-    margin: 0 auto 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loader-ring-outer,
-.loader-ring-inner {
-    position: absolute;
-    border-radius: 999px;
-}
-
-.loader-ring-outer {
-    inset: 0;
-    border: 2px solid rgba(212,175,55,0.10);
-    box-shadow:
-        0 0 30px rgba(212,175,55,0.10),
-        inset 0 0 24px rgba(255,255,255,0.02);
-}
-
-.loader-ring-outer::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 999px;
-    border: 2px solid transparent;
-    border-top-color: #f6d365;
-    border-right-color: #d4af37;
-    filter: drop-shadow(0 0 12px rgba(212,175,55,0.35));
-    animation: luxurySpin 1.15s linear infinite;
-}
-
-.loader-ring-inner {
-    inset: 16px;
-    border: 1px solid rgba(255,255,255,0.07);
-    background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), transparent 45%),
-        linear-gradient(180deg, rgba(18,18,18,0.7), rgba(7,9,11,0.9));
-    box-shadow:
-        inset 0 0 18px rgba(212,175,55,0.07),
-        0 0 22px rgba(212,175,55,0.08);
-}
-
-.loader-ring-inner::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: 999px;
-    border: 2px solid transparent;
-    border-bottom-color: rgba(255,230,160,0.85);
-    border-left-color: rgba(212,175,55,0.55);
-    animation: luxurySpinReverse 1.65s linear infinite;
-}
-
-.loader-core {
-    position: relative;
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #fff4c7, #d4af37 60%, #8a6a18 100%);
-    box-shadow:
-        0 0 18px rgba(212,175,55,0.45),
-        0 0 40px rgba(212,175,55,0.18);
-    animation: corePulse 1.8s ease-in-out infinite;
-}
-
-.loader-core::before,
-.loader-core::after {
-    content: "";
-    position: absolute;
-    inset: 50%;
-    border-radius: 999px;
-    transform: translate(-50%, -50%);
-}
-
-.loader-core::before {
-    width: 46px;
-    height: 46px;
-    border: 1px solid rgba(212,175,55,0.18);
-}
-
-.loader-core::after {
-    width: 70px;
-    height: 70px;
-    border: 1px solid rgba(212,175,55,0.08);
-}
-
-.loader-title {
-    text-align: center;
-    font-size: 27px;
-    font-weight: 900;
-    letter-spacing: -0.045em;
-    margin-bottom: 7px;
-    background: linear-gradient(90deg, #fff7da 0%, #f6d365 35%, #d4af37 68%, #fff3c2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow:
-        0 0 28px rgba(212,175,55,0.14),
-        0 0 48px rgba(212,175,55,0.08);
-    animation: titleGlow 2s ease-in-out infinite;
-}
-
-.loader-subtitle {
-    text-align: center;
-    color: rgba(230, 213, 170, 0.86);
-    font-size: 12px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-}
-
-.loader-status {
-    text-align: center;
-    color: rgba(255,255,255,0.50);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-}
-
-.loader-progress {
-    position: relative;
-    width: 100%;
-    height: 6px;
-    border-radius: 999px;
-    overflow: hidden;
-    margin-top: 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.04);
-}
-
-.loader-progress-bar {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 0%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(212,175,55,0.2), #d4af37, #fff0b2, #d4af37);
-    box-shadow:
-        0 0 18px rgba(212,175,55,0.26),
-        0 0 30px rgba(212,175,55,0.16);
-    animation: loadingBar 1.25s ease forwards;
-}
-
-@keyframes luxurySpin {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes luxurySpinReverse {
-    to { transform: rotate(-360deg); }
-}
-
-@keyframes corePulse {
-    0%, 100% {
-        transform: scale(0.94);
-        box-shadow:
-            0 0 18px rgba(212,175,55,0.38),
-            0 0 40px rgba(212,175,55,0.16);
-    }
-    50% {
-        transform: scale(1);
-        box-shadow:
-            0 0 26px rgba(212,175,55,0.50),
-            0 0 54px rgba(212,175,55,0.24);
-    }
-}
-
-@keyframes titleGlow {
-    0%, 100% {
-        opacity: 0.92;
-        transform: translateY(0);
-    }
-    50% {
-        opacity: 1;
-        transform: translateY(-1px);
-    }
-}
-
-@keyframes loadingBar {
-    0% { width: 0%; }
-    35% { width: 52%; }
-    70% { width: 86%; }
-    100% { width: 100%; }
-}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 </style>
 </head>
 <body class="p-4">
 
 <div id="appLoader" class="app-loader">
-    <div class="loader-shell">
-        <div class="loader-badge">Traffic Arbitrage</div>
-
-        <div class="loader-visual">
-            <div class="loader-ring-outer"></div>
-            <div class="loader-ring-inner"></div>
-            <div class="loader-core"></div>
-        </div>
-
-        <div class="loader-title">UBT ToolKit</div>
-        <div class="loader-subtitle">Luxury Traffic Suite</div>
-        <div class="loader-status">Loading premium workspace</div>
-
-        <div class="loader-progress">
-            <div class="loader-progress-bar"></div>
-        </div>
-    </div>
+  <div style="text-align:center">
+    <div class="loader-ring"></div>
+    <div class="loader-title">UBT ToolKit</div>
+  </div>
 </div>
 
     <div class="page-wrap">
@@ -2528,21 +2291,13 @@
     </script>
 
 <script>
-function hideAppLoader() {
-    const loader = document.getElementById('appLoader');
-    if (!loader || loader.classList.contains('hidden')) return;
-
-    loader.classList.add('hidden');
-    setTimeout(() => {
-        if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
-    }, 450);
-}
-
-window.addEventListener('load', () => {
-    setTimeout(hideAppLoader, 1500);
+window.addEventListener("load",()=>{
+const l=document.getElementById("appLoader");
+setTimeout(()=>{
+l.style.opacity="0";
+setTimeout(()=>l.remove(),400);
+},1200);
 });
-
-setTimeout(hideAppLoader, 3200);
 </script>
 
 </body>
