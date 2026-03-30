@@ -1077,18 +1077,11 @@ body::after {
 }
 
 
-/* make video block slightly narrower */
+/* make only the video block itself slightly narrower, without touching text */
 .bento-card.bento-large{
-    padding: 14px !important;
-    min-height: 160px !important;
-}
-
-.bento-card.bento-large h2{
-    font-size: 20px !important;
-}
-
-.bento-card.bento-large p{
-    font-size: 14px !important;
+    width: calc(100% - 12px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 </style>
