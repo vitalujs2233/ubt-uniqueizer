@@ -74,14 +74,16 @@
             padding-bottom: 104px;
             max-width: 820px;
             margin: 0 auto;
+            padding-top: 0;
         }
 
         .brand-title {
-            font-size: 30px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.03em;
             text-align: center;
-            margin-bottom: 18px;
+            margin-bottom: 6px;
+            margin-top: -4px;
             background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 38%, #60a5fa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -142,23 +144,24 @@
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
+            margin-top: -4px;
         }
 
         .bento-card {
             border-radius: 26px;
-            padding: 18px;
-            min-height: 158px;
+            padding: 16px;
+            min-height: 148px;
             transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         .bento-large {
             grid-column: span 2;
-            min-height: 180px;
+            min-height: 170px;
         }
 
         .bento-tall {
-            min-height: 230px;
+            min-height: 210px;
         }
 
         .neon-ring {
@@ -166,17 +169,6 @@
                 0 0 0 2px rgba(255,255,255,0.06),
                 0 0 0 6px rgba(16,185,129,0.10),
                 0 0 20px rgba(16,185,129,0.28);
-        }
-
-        .user-panel {
-            border-radius: 28px;
-            padding: 16px;
-            background:
-                radial-gradient(circle at top left, rgba(139,92,246,0.14), transparent 35%),
-                radial-gradient(circle at right center, rgba(59,130,246,0.10), transparent 28%),
-                linear-gradient(180deg, rgba(17,24,39,0.82), rgba(7,11,20,0.88));
-            border: 1px solid rgba(255,255,255,0.10);
-            box-shadow: var(--shadow-dark), 0 0 30px rgba(139,92,246,0.08);
         }
 
         .premium-pill {
@@ -225,8 +217,8 @@
         }
 
         .green-btn {
-            background: linear-gradient(135deg, #059669, #10b981);
-            box-shadow: 0 10px 26px rgba(16,185,129,0.22);
+            background: linear-gradient(135deg, #059669, #34d399);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.24);
         }
 
         .secondary-btn {
@@ -400,24 +392,24 @@
         @media (max-width: 640px) {
             .bento-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 12px;
+                gap: 10px;
             }
 
             .bento-card {
-                min-height: 150px;
-                padding: 16px;
+                min-height: 142px;
+                padding: 14px;
             }
 
             .bento-large {
-                min-height: 172px;
+                min-height: 162px;
             }
 
             .bento-tall {
-                min-height: 220px;
+                min-height: 198px;
             }
 
             .brand-title {
-                font-size: 28px;
+                font-size: 24px;
             }
         }
     </style>
@@ -426,24 +418,22 @@
     <div class="page-wrap">
         <h1 class="brand-title">UBT ToolKit</h1>
 
-        <div id="userBar" class="user-panel mb-6 hidden fade-up">
-            <div class="flex items-center justify-between gap-3">
+        <div id="userBar" class="mb-3 hidden fade-up">
+            <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div id="userAvatarWrap" class="neon-ring h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                    <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                         <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
                         <span id="userAvatarFallback">U</span>
                     </div>
 
                     <div class="min-w-0">
-                        <div id="userName" class="font-semibold text-white text-base truncate">Пользователь</div>
+                        <div id="userName" class="font-semibold text-white text-[15px] leading-tight truncate">Пользователь</div>
                         <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
-                        <div class="mt-2">
-                            <span id="userPlan" class="premium-pill">Тариф: free</span>
-                        </div>
+                        <span id="userPlan" class="hidden">Тариф: free</span>
                     </div>
                 </div>
 
-                <button id="topupBtn" class="gold-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap">
+                <button id="topupBtn" class="green-btn px-4 py-2.5 rounded-2xl font-bold whitespace-nowrap text-sm">
                     ⭐ Пополнить
                 </button>
             </div>
@@ -614,7 +604,7 @@
                 </div>
 
                 <div id="smartLinkStatsView" class="hidden">
-                    <div class="flex items-center justify-between mb-4 gap-3">
+                                        <div class="flex items-center justify-between mb-4 gap-3">
                         <button id="backToSmartLinkBtn" class="text-blue-400">← Назад</button>
                         <div class="flex items-center gap-2">
                             <h2 class="section-title text-xl font-bold">Статистика</h2>
@@ -1068,7 +1058,7 @@
 
             userName.textContent = displayName;
             userBalance.textContent = `Баланс: ${appState.user.balance} кредитов`;
-            userPlan.textContent = `Тариф: ${appState.user.plan}`;
+            if (userPlan) userPlan.textContent = `Тариф: ${appState.user.plan}`;
 
             const photoUrl =
                 tg?.initDataUnsafe?.user?.photo_url ||
@@ -1174,8 +1164,7 @@
         }
 
         let currentFilter = 'all';
-
-        function filterSpy(niche, button) {
+                function filterSpy(niche, button) {
             currentFilter = niche;
             renderSpyTrends();
 
