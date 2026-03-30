@@ -487,6 +487,18 @@ app.post('/smart-link/stats', async (req, res) => {
       [smart_link_id]
     );
 
+    const dailyResult = await pool.query(
+      `select
+          to_char(created_at::date, 'YYYY-MM-DD') as date,
+          count(*)::int as clicks,
+          count(distinct ip_hash)::int as unique_clicks
+       from smart_link_clicks
+       where smart_link_id = $1
+       group by created_at::date
+       order by created_at::date asc`,
+      [smart_link_id]
+    );
+
     const countries = {};
     const devices = {};
 
@@ -503,7 +515,8 @@ app.post('/smart-link/stats', async (req, res) => {
       stats: {
         ...linkResult.rows[0],
         countries,
-        devices
+        devices,
+        daily: dailyResult.rows || []
       }
     });
   } catch (error) {
