@@ -1091,6 +1091,159 @@ body::after {
     font-size: 14px !important;
 }
 
+
+/* === Preland live showcase === */
+.preland-template-card {
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.preland-template-card:hover {
+    transform: translateY(-2px);
+}
+.preland-thumb {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.preland-thumb-browser {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.preland-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.45);
+}
+.preland-thumb-body {
+    padding: 10px;
+    min-height: 124px;
+}
+.preland-line {
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    margin-bottom: 7px;
+}
+.preland-line.sm { width: 36%; }
+.preland-line.md { width: 58%; }
+.preland-line.lg { width: 82%; }
+.preland-line.full { width: 100%; }
+.preland-image-block {
+    width: 100%;
+    border-radius: 14px;
+    margin: 8px 0 10px;
+    position: relative;
+    overflow: hidden;
+}
+.preland-image-block::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 45%, rgba(255,255,255,0.04));
+}
+.preland-news-bg { background: linear-gradient(135deg, #bfdbfe, #60a5fa 52%, #e0f2fe); height: 70px; }
+.preland-blog-bg { background: linear-gradient(135deg, #ddd6fe, #a78bfa 52%, #f5d0fe); height: 70px; }
+.preland-story-bg { background: linear-gradient(135deg, #bbf7d0, #34d399 52%, #99f6e4); height: 80px; }
+.preland-quiz-bg { background: linear-gradient(135deg, #fdba74, #fb923c 52%, #fde68a); height: 68px; }
+.preland-cta-chip {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+}
+.preland-cta-blue { background: linear-gradient(135deg, #2563eb, #38bdf8); }
+.preland-cta-violet { background: linear-gradient(135deg, #7c3aed, #c026d3); }
+.preland-cta-green { background: linear-gradient(135deg, #059669, #22c55e); }
+.preland-cta-orange { background: linear-gradient(135deg, #ea580c, #f59e0b); }
+.preland-showcase-shell {
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.22);
+}
+.preland-showcase-browser {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+}
+.preland-showcase-address {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    color: #cbd5e1;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.preland-showcase-body {
+    padding: 16px;
+    min-height: 360px;
+    background: #ffffff;
+    color: #111827;
+}
+.preland-mini-hero {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    margin: 12px 0 14px;
+}
+.preland-mini-hero.news { background: linear-gradient(135deg, #dbeafe, #93c5fd, #ecfeff); height: 170px; }
+.preland-mini-hero.blog { background: linear-gradient(135deg, #ede9fe, #c4b5fd, #fae8ff); height: 170px; }
+.preland-mini-hero.story { background: linear-gradient(135deg, #d1fae5, #6ee7b7, #ccfbf1); height: 180px; }
+.preland-mini-hero.quiz { background: linear-gradient(135deg, #ffedd5, #fdba74, #fde68a); height: 160px; }
+.preland-news-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0;
+}
+.preland-news-tile, .preland-story-stat, .preland-quiz-option, .preland-blog-quote {
+    border-radius: 16px;
+    padding: 12px;
+}
+.preland-news-tile { background: #f8fafc; border: 1px solid #dbeafe; }
+.preland-story-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 16px; }
+.preland-story-stat { background: #ecfdf5; border: 1px solid #a7f3d0; text-align: center; }
+.preland-blog-author { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.preland-blog-avatar { width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(135deg, #8b5cf6, #d946ef); }
+.preland-blog-quote { background: #faf5ff; border: 1px solid #ddd6fe; margin: 12px 0; }
+.preland-quiz-progress { height: 8px; border-radius: 999px; background: #fed7aa; overflow: hidden; margin: 12px 0 16px; }
+.preland-quiz-progress > span { display: block; width: 66%; height: 100%; background: #ea580c; }
+.preland-quiz-option { background: #fff7ed; border: 1px solid #fdba74; margin-bottom: 8px; }
+.preland-real-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 14px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 13px;
+    margin-top: 10px;
+}
+.preland-showcase-note {
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
 </style>
 </head>
 <body class="p-4">
@@ -1386,17 +1539,25 @@ body::after {
                             <div id="selectedTemplateBadge" class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">NEWS</div>
                         </div>
 
-                        <div id="prelandTemplatePicker" class="grid grid-cols-2 gap-3">
+                        <div id="prelandTemplatePicker" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="news">
                                 <div class="flex items-center justify-between gap-2 mb-2">
                                     <div class="text-sm font-bold text-white">📰 Новостной</div>
                                     <span class="text-[10px] text-blue-300 font-semibold">NEWS</span>
                                 </div>
                                 <div class="text-[11px] text-gray-400 mb-2">Статья, редакционный формат, срочная подача</div>
-                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
-                                    Крупный заголовок<br>
-                                    Фото сверху<br>
-                                    Блоки “что известно”
+                                <div class="preland-thumb">
+                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                                    <div class="preland-thumb-body">
+                                        <div class="preland-line sm"></div>
+                                        <div class="preland-line lg"></div>
+                                        <div class="preland-image-block preland-news-bg"></div>
+                                        <div class="preland-news-grid">
+                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
+                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
+                                        </div>
+                                        <span class="preland-cta-chip preland-cta-blue">Открыть</span>
+                                    </div>
                                 </div>
                             </button>
 
@@ -1406,10 +1567,14 @@ body::after {
                                     <span class="text-[10px] text-violet-300 font-semibold">BLOG</span>
                                 </div>
                                 <div class="text-[11px] text-gray-400 mb-2">Личный опыт, мягкий прогрев, история от первого лица</div>
-                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
-                                    Автор и аватар<br>
-                                    Личный текст<br>
-                                    Мягкий CTA
+                                <div class="preland-thumb">
+                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                                    <div class="preland-thumb-body">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="preland-blog-avatar" style="width:28px;height:28px"></div><div style="flex:1"><div class="preland-line md"></div><div class="preland-line sm"></div></div></div>
+                                        <div class="preland-image-block preland-blog-bg"></div>
+                                        <div class="preland-blog-quote"><div class="preland-line lg"></div><div class="preland-line md"></div></div>
+                                        <span class="preland-cta-chip preland-cta-violet">Читать</span>
+                                    </div>
                                 </div>
                             </button>
 
@@ -1419,10 +1584,17 @@ body::after {
                                     <span class="text-[10px] text-emerald-300 font-semibold">STORY</span>
                                 </div>
                                 <div class="text-[11px] text-gray-400 mb-2">Яркий результат, цифры, эффект “до / после”</div>
-                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
-                                    Hero-блок<br>
-                                    Метрики и рост<br>
-                                    Сильная кнопка
+                                <div class="preland-thumb">
+                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                                    <div class="preland-thumb-body">
+                                        <div class="preland-image-block preland-story-bg"></div>
+                                        <div class="preland-story-stats">
+                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
+                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
+                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
+                                        </div>
+                                        <span class="preland-cta-chip preland-cta-green">Получить</span>
+                                    </div>
                                 </div>
                             </button>
 
@@ -1432,12 +1604,30 @@ body::after {
                                     <span class="text-[10px] text-orange-300 font-semibold">QUIZ</span>
                                 </div>
                                 <div class="text-[11px] text-gray-400 mb-2">Пошаговый формат, вопросники, вовлечение перед кликом</div>
-                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
-                                    Вопрос + прогресс<br>
-                                    Варианты ответа<br>
-                                    Кнопка продолжения
+                                <div class="preland-thumb">
+                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                                    <div class="preland-thumb-body">
+                                        <div class="preland-line lg"></div>
+                                        <div class="preland-quiz-progress"><span></span></div>
+                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
+                                        <div class="preland-quiz-option"><div class="preland-line lg"></div></div>
+                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
+                                        <span class="preland-cta-chip preland-cta-orange">Продолжить</span>
+                                    </div>
                                 </div>
                             </button>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <div>
+                                    <div class="text-white font-semibold">Как будет выглядеть сайт</div>
+                                    <div class="text-sm text-gray-400 mt-1">Это уже не слепой выбор: ниже показан реальный макет страницы до генерации</div>
+                                </div>
+                                <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LIVE PREVIEW</div>
+                            </div>
+                            <div id="prelandTemplateShowcase" class="preland-showcase-shell"></div>
+                            <div class="preland-showcase-note">Макет меняется сразу при выборе карточки. После заполнения полей итоговый HTML будет в таком же стиле.</div>
                         </div>
                     </div>
 
@@ -2804,6 +2994,7 @@ body::after {
         const prelandHistoryList = document.getElementById('prelandHistoryList');
         const clearPrelandHistoryBtn = document.getElementById('clearPrelandHistoryBtn');
         const prelandTemplatePicker = document.getElementById('prelandTemplatePicker');
+        const prelandTemplateShowcase = document.getElementById('prelandTemplateShowcase');
         const selectedTemplateBadge = document.getElementById('selectedTemplateBadge');
 
         let selectedFile = null;
@@ -2978,6 +3169,109 @@ body::after {
             }
         };
 
+
+        function renderPrelandTemplateShowcase(template) {
+            if (!prelandTemplateShowcase) return;
+
+            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
+            let markup = '';
+
+            if (normalized === 'blog') {
+                markup = `
+                    <div class="preland-showcase-browser">
+                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                        <div class="preland-showcase-address">preview.ubt/blog-review</div>
+                        <div class="text-[11px] text-gray-400">BLOG</div>
+                    </div>
+                    <div class="preland-showcase-body">
+                        <div class="preland-blog-author">
+                            <div class="preland-blog-avatar"></div>
+                            <div>
+                                <div style="font-weight:800;font-size:14px">Автор блога</div>
+                                <div style="font-size:12px;color:#6b7280">Личный опыт • обновлено сегодня</div>
+                            </div>
+                        </div>
+                        <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:800">Личный отзыв</div>
+                        <div style="font-size:30px;line-height:1.1;font-weight:900;margin:14px 0 8px">Преленд в формате личной истории</div>
+                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит, когда нужно сделать отзыв, прогрев и мягкую подводку к кнопке.</div>
+                        <div class="preland-mini-hero blog"></div>
+                        <div class="preland-blog-quote">
+                            <div style="font-size:12px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Почему это цепляет</div>
+                            <div style="font-size:15px;line-height:1.7;color:#374151">Здесь будет выделенный блок-цитата, который создаёт ощущение личного опыта и доверия.</div>
+                        </div>
+                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут обычные абзацы истории, а в конце — заметная кнопка перехода.</div>
+                        <a class="preland-real-btn preland-cta-violet" href="javascript:void(0)">Посмотреть дальше</a>
+                    </div>`;
+            } else if (normalized === 'story') {
+                markup = `
+                    <div class="preland-showcase-browser">
+                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                        <div class="preland-showcase-address">preview.ubt/success-story</div>
+                        <div class="text-[11px] text-gray-400">STORY</div>
+                    </div>
+                    <div class="preland-showcase-body" style="background:#ffffff">
+                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff">
+                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:800;margin-bottom:12px">История успеха</div>
+                            <div style="font-size:32px;line-height:1.05;font-weight:900;margin-bottom:8px">Яркий макет с акцентом на результат</div>
+                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.88)">Подходит под кейсы “до / после”, рост, цифры и сильный CTA.</div>
+                        </div>
+                        <div class="preland-mini-hero story"></div>
+                        <div class="preland-story-stats">
+                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">+127%</div><div style="font-size:12px;color:#6b7280">рост</div></div>
+                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">24 ч</div><div style="font-size:12px;color:#6b7280">первые результаты</div></div>
+                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">TOP</div><div style="font-size:12px;color:#6b7280">эффект</div></div>
+                        </div>
+                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идёт объяснение, почему решение сработало, а затем — большая кнопка.</div>
+                        <a class="preland-real-btn preland-cta-green" href="javascript:void(0)">Получить доступ</a>
+                    </div>`;
+            } else if (normalized === 'quiz') {
+                markup = `
+                    <div class="preland-showcase-browser">
+                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                        <div class="preland-showcase-address">preview.ubt/quiz-flow</div>
+                        <div class="text-[11px] text-gray-400">QUIZ</div>
+                    </div>
+                    <div class="preland-showcase-body" style="background:#fff">
+                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff">
+                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-size:12px;font-weight:800;margin-bottom:12px">Интерактивный quiz</div>
+                            <div style="font-size:30px;line-height:1.08;font-weight:900;margin-bottom:8px">Пошаговый преленд с вовлечением</div>
+                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.92)">Подходит, когда нужно прогреть человека через вопросы и ответы.</div>
+                        </div>
+                        <div class="preland-quiz-progress"><span></span></div>
+                        <div class="preland-mini-hero quiz"></div>
+                        <div class="preland-quiz-option"><strong style="display:block;margin-bottom:4px">Шаг 1 из 3</strong><span style="font-size:14px;color:#374151">Да, мне интересен такой формат</span></div>
+                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Хочу сначала посмотреть детали</span></div>
+                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Интересно узнать отзывы</span></div>
+                        <a class="preland-real-btn preland-cta-orange" href="javascript:void(0)">Продолжить</a>
+                    </div>`;
+            } else {
+                markup = `
+                    <div class="preland-showcase-browser">
+                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
+                        <div class="preland-showcase-address">preview.ubt/news-page</div>
+                        <div class="text-[11px] text-gray-400">NEWS</div>
+                    </div>
+                    <div class="preland-showcase-body">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #e5e7eb">
+                            <div style="font-size:12px;font-weight:900;color:#2563eb;letter-spacing:.08em;text-transform:uppercase">Новости дня</div>
+                            <div style="font-size:12px;color:#6b7280">${__import__('datetime').datetime.now().strftime('%d.%m.%Y')}</div>
+                        </div>
+                        <div style="display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-top:14px"><span style="width:8px;height:8px;border-radius:999px;background:#2563eb"></span>Срочное обновление</div>
+                        <div style="font-size:32px;line-height:1.08;font-weight:900;margin:14px 0 8px">Новостной преленд как мини-СМИ сайт</div>
+                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит под формат статьи, новости, разбор ситуации и редакционный стиль.</div>
+                        <div class="preland-mini-hero news"></div>
+                        <div class="preland-news-grid">
+                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Что известно</div><div style="font-size:14px;line-height:1.7;color:#374151">Два информативных блока сразу под заголовком.</div></div>
+                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Почему обсуждают</div><div style="font-size:14px;line-height:1.7;color:#374151">Редакционная подача создаёт ощущение настоящего сайта.</div></div>
+                        </div>
+                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут абзацы текста и большая синяя кнопка перехода.</div>
+                        <a class="preland-real-btn preland-cta-blue" href="javascript:void(0)">Открыть материал</a>
+                    </div>`;
+            }
+
+            prelandTemplateShowcase.innerHTML = markup;
+        }
+
         function applyPrelandTemplateSelection(template) {
             if (!prelandTemplate) return;
 
@@ -3000,6 +3294,7 @@ body::after {
                 card.classList.toggle('bg-white/5', !isActive);
             });
 
+            renderPrelandTemplateShowcase(normalized);
             renderPrelandPreview(collectPrelandPayload());
         }
 
