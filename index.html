@@ -441,7 +441,7 @@
             }
         }
     
-.loader-screen {
+.loader-wrap {
     position: fixed;
     inset: 0;
     background: #020305;
@@ -452,25 +452,21 @@
     transition: opacity 0.4s ease;
 }
 
-.loader-logo {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    background: linear-gradient(90deg, #00ffa3, #00d4ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: pulseLogo 1.2s ease-in-out infinite;
+.loader-ring {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-top-color: #8b5cf6;
+    border-right-color: #3b82f6;
+    box-shadow:
+        0 0 25px rgba(139,92,246,0.25),
+        0 0 40px rgba(59,130,246,0.15);
+    animation: spin 0.9s linear infinite;
 }
 
-@keyframes pulseLogo {
-    0%, 100% {
-        opacity: 0.6;
-        transform: scale(0.95);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1);
-    }
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 </style>
@@ -2287,21 +2283,22 @@
         showBottomPage('home');
     </script>
 
-<div id="appLoader" class="loader-screen">
-    <div class="loader-logo">UBT</div>
+<div id="loader" class="loader-wrap">
+    <div class="loader-ring"></div>
 </div>
 
 <script>
 window.addEventListener("load", () => {
-    const loader = document.getElementById("appLoader");
+    const loader = document.getElementById("loader");
 
     setTimeout(() => {
-        loader.style.opacity = "0";
-
-        setTimeout(() => {
-            loader.remove();
-        }, 400);
-    }, 1000);
+        if (loader) {
+            loader.style.opacity = "0";
+            setTimeout(() => {
+                loader.remove();
+            }, 400);
+        }
+    }, 1200);
 });
 </script>
 
