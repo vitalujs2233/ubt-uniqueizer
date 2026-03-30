@@ -2,264 +2,2256 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>UBT ToolKit — премиум инструменты для арбитража</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>UBT ToolKit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #03050B;
-            --bg-surface: #0A0F1C;
-            --bg-card: rgba(15, 25, 45, 0.65);
-            --stroke-light: rgba(255, 255, 255, 0.06);
-            --stroke-glow: rgba(139, 92, 246, 0.3);
-            --text-primary: #FFFFFF;
-            --text-secondary: #A1A8C3;
-            --accent-violet: #8B5CF6;
-            --accent-blue: #3B82F6;
-            --accent-green: #10B981;
-            --accent-gold: #FBBF24;
-            --gradient-primary: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
-            --gradient-success: linear-gradient(135deg, var(--accent-green), #34D399);
-            --shadow-glow: 0 8px 20px rgba(59, 130, 246, 0.2);
-            --radius-card: 28px;
-            --radius-btn: 32px;
+            --bg-0: #030303;
+            --bg-1: #060914;
+            --bg-2: #09101d;
+            --panel: rgba(15, 23, 42, 0.62);
+            --panel-strong: rgba(17, 24, 39, 0.84);
+            --panel-soft: rgba(255,255,255,0.04);
+            --stroke: rgba(255,255,255,0.08);
+            --stroke-strong: rgba(255,255,255,0.14);
+            --text: #ffffff;
+            --muted: #9ca3af;
+            --muted-2: #6b7280;
+            --blue: #3b82f6;
+            --blue-2: #2563eb;
+            --violet: #8b5cf6;
+            --violet-2: #a855f7;
+            --green: #10b981;
+            --green-2: #34d399;
+            --gold: #d4af37;
+            --danger: #ef4444;
+            --shadow-dark: 0 18px 50px rgba(0,0,0,0.42);
+            --shadow-blue: 0 12px 34px rgba(59,130,246,0.24);
+            --shadow-violet: 0 12px 34px rgba(139,92,246,0.24);
+            --shadow-green: 0 12px 30px rgba(16,185,129,0.26);
+            --shadow-gold: 0 12px 34px rgba(212,175,55,0.18);
+            --radius-xl: 24px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
 
         body {
-            background: radial-gradient(circle at 10% 0%, rgba(139, 92, 246, 0.12), transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.08), transparent 45%),
-                        var(--bg-deep);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            padding: 20px 16px 0;
+            background:
+                radial-gradient(circle at top left, rgba(139,92,246,0.20), transparent 26%),
+                radial-gradient(circle at top right, rgba(59,130,246,0.16), transparent 28%),
+                radial-gradient(circle at bottom center, rgba(34,197,94,0.08), transparent 30%),
+                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 42%, var(--bg-2) 100%);
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-user-select: none;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Утилиты */
-        .hidden { display: none; }
-        .page-wrap { max-width: 720px; margin: 0 auto; padding-bottom: 100px; }
-
-        /* Стеклянные карточки */
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--stroke-light);
-            border-radius: var(--radius-card);
-            transition: all 0.2s ease;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,0.015), rgba(255,255,255,0)),
+                radial-gradient(circle at 20% 10%, rgba(255,255,255,0.035), transparent 22%);
+            mix-blend-mode: screen;
+            opacity: 0.35;
         }
 
-        /* Анимации */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards; }
-
-        @keyframes skeleton-pulse {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
-            background-size: 200% 100%;
-            animation: skeleton-pulse 1.5s infinite;
-            border-radius: 12px;
+        .hidden {
+            display: none;
         }
 
-        /* Кнопки */
-        .btn-primary, .btn-success, .btn-secondary, .btn-gold {
-            border: none;
-            border-radius: var(--radius-btn);
-            padding: 14px 20px;
-            font-weight: 600;
-            transition: transform 0.16s, box-shadow 0.16s;
+        .page-wrap {
+            padding-bottom: 104px;
+            max-width: 820px;
+            margin: 0 auto;
+            padding-top: 0;
+        }
+
+        .brand-title {
+            font-size: 23px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            text-align: center;
+            margin-bottom: 10px;
+            margin-top: -2px;
+            background: linear-gradient(90deg, #ddd6fe 0%, #93c5fd 48%, #86efac 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 24px rgba(139,92,246,0.10);
+        }
+
+        .section-title {
+            letter-spacing: -0.02em;
+        }
+
+        .glass-box,
+        .card,
+        .bento-card,
+        .stat-card,
+        .action-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--stroke);
+            background: linear-gradient(180deg, rgba(12,18,31,0.84), rgba(6,10,20,0.90));
+            backdrop-filter: blur(18px);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .glass-box::before,
+        .card::before,
+        .bento-card::before,
+        .stat-card::before,
+        .action-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent 30%, transparent 70%, rgba(255,255,255,0.02));
+        }
+
+        .card {
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 15px;
             cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
-        .btn-primary { background: var(--gradient-primary); box-shadow: var(--shadow-glow); color: white; }
-        .btn-success { background: var(--gradient-success); box-shadow: 0 8px 20px rgba(16,185,129,0.2); color: white; }
-        .btn-secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--stroke-light); backdrop-filter: blur(4px); }
-        .btn-gold { background: linear-gradient(135deg, #F59E0B, #FBBF24); box-shadow: 0 8px 20px rgba(245,158,11,0.2); color: #1e293b; }
-        .btn-primary:active, .btn-success:active, .btn-secondary:active, .btn-gold:active { transform: scale(0.98); }
 
-        /* Инпут */
+        .card:active,
+        .bento-card:active,
+        .primary-btn:active,
+        .green-btn:active,
+        .secondary-btn:active,
+        .gold-btn:active {
+            transform: scale(0.985);
+        }
+
+        .card:hover,
+        .bento-card:hover {
+            border-color: rgba(139,92,246,0.30);
+            box-shadow:
+                var(--shadow-dark),
+                0 0 0 1px rgba(139,92,246,0.12),
+                0 0 28px rgba(59,130,246,0.08);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 0;
+        }
+
+        .bento-card {
+            border-radius: 28px;
+            padding: 16px;
+            min-height: 148px;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .bento-large {
+            grid-column: span 2;
+            min-height: 178px;
+            background:
+                radial-gradient(circle at top left, rgba(139,92,246,0.16), transparent 30%),
+                radial-gradient(circle at right center, rgba(59,130,246,0.14), transparent 28%),
+                linear-gradient(180deg, rgba(10,16,28,0.92), rgba(4,8,18,0.96));
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 22px 60px rgba(0,0,0,0.48);
+        }
+
+        .bento-tall {
+            min-height: 220px;
+        }
+
+        .neon-ring {
+            box-shadow:
+                0 0 0 2px rgba(255,255,255,0.05),
+                0 0 0 6px rgba(16,185,129,0.10),
+                0 0 20px rgba(16,185,129,0.26);
+        }
+
+        .premium-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #f8e7a1;
+            background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(255,215,0,0.08));
+            border: 1px solid rgba(212,175,55,0.24);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .primary-btn,
+        .green-btn,
+        .secondary-btn,
+        .gold-btn {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .primary-btn::before,
+        .green-btn::before,
+        .secondary-btn::before,
+        .gold-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 35%, transparent 65%, rgba(255,255,255,0.04));
+            pointer-events: none;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            box-shadow:
+                0 0 24px rgba(139,92,246,0.22),
+                0 12px 28px rgba(59,130,246,0.22);
+        }
+
+        .green-btn {
+            background: linear-gradient(135deg, #22c55e, #34d399);
+            box-shadow:
+                0 0 22px rgba(34,197,94,0.24),
+                0 10px 24px rgba(16,185,129,0.24);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, rgba(51,65,85,0.94), rgba(71,85,105,0.94));
+            box-shadow: 0 8px 22px rgba(0,0,0,0.24);
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, #8a6a18, #d4af37 55%, #f6d365);
+            box-shadow: 0 10px 26px rgba(212,175,55,0.22);
+        }
+
+        .danger-badge {
+            background: linear-gradient(135deg, rgba(239,68,68,0.92), rgba(220,38,38,0.92));
+            box-shadow: 0 8px 18px rgba(239,68,68,0.18);
+        }
+
+        .glow-badge {
+            background: linear-gradient(135deg, rgba(139,92,246,0.26), rgba(59,130,246,0.20));
+            border: 1px solid rgba(139,92,246,0.24);
+            box-shadow: 0 0 20px rgba(139,92,246,0.14);
+        }
+
         .neo-input {
             width: 100%;
-            padding: 16px 20px;
-            border-radius: 32px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--stroke-light);
-            color: white;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-        .neo-input:focus {
-            border-color: var(--accent-violet);
+            padding: 16px 18px;
+            border-radius: 20px;
+            background:
+                linear-gradient(180deg, rgba(2,6,23,0.92), rgba(15,23,42,0.92));
+            border: 1px solid rgba(255,255,255,0.08);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+            color: white;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.02);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-        /* Нижняя навигация */
-        .bottom-nav {
-            background: rgba(10, 20, 35, 0.85);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--stroke-light);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 8px 20px;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-secondary);
-            transition: color 0.2s;
-        }
-        .nav-item.active { color: white; }
-        .nav-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .nav-item.active .nav-icon {
-            background: rgba(139,92,246,0.2);
-            box-shadow: 0 0 12px rgba(139,92,246,0.3);
+        .neo-input::placeholder {
+            color: #6b7280;
         }
 
-        /* Метрики */
-        .metric-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--stroke-light);
-            border-radius: 24px;
-            padding: 16px;
-        }
-        .metric-value {
-            font-size: 28px;
-            font-weight: 800;
-            line-height: 1.2;
+        .neo-input:focus {
+            border-color: rgba(139,92,246,0.45);
+            box-shadow:
+                0 0 0 1px rgba(139,92,246,0.20),
+                0 0 0 6px rgba(139,92,246,0.08),
+                inset 0 0 20px rgba(59,130,246,0.05);
         }
 
-        /* Модалка */
-        .modal-glass {
-            background: rgba(12, 20, 35, 0.96);
-            backdrop-filter: blur(24px);
-            border-radius: 48px;
-            border: 1px solid var(--stroke-light);
+        .metric-tile {
+            background: linear-gradient(180deg, rgba(15,23,42,0.78), rgba(17,24,39,0.64));
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
 
-        /* Прогресс-бар */
-        .progress-bar-custom {
-            height: 6px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 10px;
+        .metric-tile-strong {
+            background:
+                radial-gradient(circle at top left, rgba(139,92,246,0.14), transparent 40%),
+                linear-gradient(180deg, rgba(15,23,42,0.84), rgba(17,24,39,0.74));
+        }
+
+        .inner-panel {
+            background: linear-gradient(180deg, rgba(3,9,25,0.84), rgba(10,18,40,0.70));
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+
+        .trend-preview {
+            position: relative;
             overflow: hidden;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #0f172a;
+            box-shadow: inset 0 0 18px rgba(255,255,255,0.02);
         }
-        .progress-fill {
+
+        .trend-preview::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 20%, rgba(2,6,23,0.16) 50%, rgba(2,6,23,0.82) 100%);
+            pointer-events: none;
+        }
+
+        .bottom-nav {
+            background: linear-gradient(180deg, rgba(2,6,23,0.82), rgba(15,23,42,0.92));
+            backdrop-filter: blur(18px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 -12px 30px rgba(0,0,0,0.34);
+        }
+
+        .bottom-nav-btn {
+            transition: all 0.16s ease;
+        }
+
+        .bottom-nav-btn .nav-icon-wrap {
+            transition: all 0.16s ease;
+        }
+
+        .bottom-nav-btn.active {
+            color: white;
+        }
+
+        .bottom-nav-btn.active .nav-icon-wrap {
+            background: linear-gradient(135deg, rgba(139,92,246,0.28), rgba(59,130,246,0.22));
+            border: 1px solid rgba(139,92,246,0.24);
+            box-shadow: 0 0 18px rgba(139,92,246,0.16);
+        }
+
+        .topup-modal-box {
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at top left, rgba(212,175,55,0.10), transparent 32%),
+                radial-gradient(circle at right center, rgba(139,92,246,0.10), transparent 28%),
+                linear-gradient(180deg, rgba(17,24,39,0.92), rgba(7,11,20,0.96));
+        }
+
+        .progress-shell {
+            height: 10px;
+            width: 100%;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .progress-bar {
             height: 100%;
-            background: var(--gradient-primary);
             width: 0%;
-            transition: width 0.3s;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
+            box-shadow: 0 0 18px rgba(59,130,246,0.32);
+            transition: width 0.45s ease;
+        }
+
+        .terminal-line {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            color: #c4b5fd;
+            letter-spacing: 0.01em;
+        }
+
+        .fade-up {
+            animation: fadeUp 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .soft-pulse {
+            animation: softPulse 3s ease-in-out infinite;
+        }
+
+        .hero-accent {
+            color: #c4b5fd;
+            text-shadow: 0 0 22px rgba(139,92,246,0.10);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes softPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 16px rgba(59,130,246,0.12),
+                    0 0 18px rgba(139,92,246,0.12);
+            }
+            50% {
+                box-shadow:
+                    0 0 28px rgba(59,130,246,0.20),
+                    0 0 26px rgba(139,92,246,0.18);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .bento-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .bento-card {
+                min-height: 142px;
+                padding: 14px;
+            }
+
+            .bento-large {
+                min-height: 168px;
+            }
+
+            .bento-tall {
+                min-height: 204px;
+            }
+
+            .brand-title {
+                font-size: 23px;
+            }
         }
     </style>
 </head>
-<body>
-<div class="page-wrap">
-    <!-- Шапка -->
-    <div id="userBar" class="mb-5 hidden fade-up">
-        <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div id="userAvatarWrap" class="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
-                    <img id="userAvatar" class="hidden w-full h-full object-cover" alt="avatar" />
-                    <span id="userAvatarFallback">U</span>
+<body class="p-4">
+    <div class="page-wrap">
+        <h1 class="brand-title">UBT ToolKit</h1>
+
+        <div id="userBar" class="mb-4 hidden fade-up">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
+                        <span id="userAvatarFallback">U</span>
+                    </div>
+
+                    <div class="min-w-0">
+                        <div id="userName" class="font-bold text-white text-[16px] leading-tight truncate">Пользователь</div>
+                        <div id="userBalance" class="text-[14px] text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                        <span id="userPlan" class="hidden">Тариф: free</span>
+                    </div>
                 </div>
+
+                <button id="topupBtn" class="green-btn px-5 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px]">
+                    ⭐ Пополнить
+                </button>
+            </div>
+        </div>
+
+        <div id="home-screen">
+            <div id="main-menu" class="fade-up">
+                <div class="bento-grid">
+                    <div class="bento-card bento-large cursor-pointer" onclick="showSection('video')">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <div class="text-xs uppercase tracking-[0.22em] hero-accent mb-2">Core Tool</div>
+                                    <h2 class="text-[22px] font-extrabold leading-tight">Уникализатор видео</h2>
+                                    <p class="text-[15px] text-gray-400 mt-3 max-w-xs leading-relaxed">
+                                        Очистка метаданных, подготовка к заливу и быстрый результат.
+                                    </p>
+                                </div>
+                                <div class="h-16 w-16 rounded-[22px] bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl soft-pulse shrink-0">
+                                    🎥
+                                </div>
+                            </div>
+
+                            <div class="flex items-end justify-between mt-6 gap-3">
+                                <div class="text-xs text-gray-500 tracking-wide">FAST • PREMIUM • CLEAN</div>
+                                <div class="primary-btn px-5 py-3 rounded-2xl font-semibold text-sm">
+                                    Открыть
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card cursor-pointer" onclick="showSection('link')">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="text-[15px] font-bold">Смарт-линк</div>
+                                <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
+                            </div>
+
+                            <div class="mt-3 inner-panel">
+                                <div class="text-xs text-gray-400 mb-1">Трекинг и маскировка</div>
+                                <div class="text-[15px] text-white leading-relaxed">Сокращай, отслеживай, анализируй</div>
+                            </div>
+
+                            <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card bento-tall cursor-pointer" onclick="showSection('spy')">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <div class="text-[15px] font-bold">Тренды</div>
+                                    <div class="text-xs text-gray-400 mt-1">ТОП креативы дня</div>
+                                </div>
+                                <div class="h-12 w-12 rounded-[18px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
+                            </div>
+
+                            <div class="trend-preview mt-4">
+                                <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" alt="trend" class="w-full h-36 object-cover opacity-75" />
+                                <div class="absolute left-3 bottom-3 z-10">
+                                    <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">ТОП КРЕО ДНЯ</span>
+                                </div>
+                            </div>
+
+                            <div class="text-xs text-gray-400 mt-4 leading-relaxed">Смотри, что сейчас заходит в ленте</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="video-section" class="hidden">
+                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
+
+                <div class="glass-box p-8 rounded-[26px] border border-white/10 text-center fade-up">
+                    <input type="file" id="videoInput" class="hidden" accept="video/*" />
+                    <label for="videoInput" class="cursor-pointer text-blue-400 block">
+                        Нажми, чтобы выбрать видео
+                    </label>
+                    <p id="selectedFileName" class="mt-3 text-sm text-gray-400">Видео не выбрано</p>
+                </div>
+
+                <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
+
+                <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
+                    Уникализировать
+                </button>
+
+                <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
+
+                <div id="resultBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                    <p class="text-green-400 font-semibold mb-2">✅ Видео обработано</p>
+                    <div id="resultLink"></div>
+                </div>
+
+                <div id="videoHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
+                    <p class="text-white font-semibold mb-3">📜 Последние 5 действий</p>
+                    <div id="videoHistoryList" class="space-y-2 text-sm text-gray-300"></div>
+                </div>
+            </div>
+
+            <div id="link-section" class="hidden">
+                <div id="smartLinkMainView">
+                    <div class="flex items-center justify-between mb-4 gap-3">
+                        <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
+
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-bold">Смарт-линк</h2>
+                            <button
+                                id="openSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Статистика
+                            </button>
+                        </div>
+                    </div>
+
+                    <input
+                        id="linkInput"
+                        type="text"
+                        placeholder="https://your-offer.com"
+                        class="neo-input mb-4"
+                    />
+
+                    <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
+
+                    <button
+                        id="generateLinkBtn"
+                        class="primary-btn w-full p-4 rounded-2xl font-bold">
+                        Сгенерировать
+                    </button>
+
+                    <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                        <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
+                        <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
+
+                        <div class="flex gap-3">
+                            <button
+                                id="copyLinkBtn"
+                                class="green-btn w-1/2 p-4 rounded-2xl font-bold">
+                                📋 Скопировать
+                            </button>
+
+                            <a
+                                id="openLinkBtn"
+                                href="#"
+                                target="_blank"
+                                class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
+                                🔗 Открыть ссылку
+                            </a>
+                        </div>
+
+                        <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+                    </div>
+
+                    <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
+                            <button
+                                id="refreshLinksBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
+
+                        <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                    </div>
+                </div>
+
+                <div id="smartLinkStatsView" class="hidden">
+                                         <div class="flex items-center justify-between mb-4 gap-3">
+                        <button id="backToSmartLinkBtn" class="text-blue-400 font-medium">← Назад</button>
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-extrabold">Статистика</h2>
+                            <button
+                                id="refreshSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="smartStatsSummary" class="glass-box p-4 rounded-[24px] mb-4">
+                        <p class="text-white font-semibold mb-3 tracking-wide">📊 Общая статистика</p>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Всего ссылок</div>
+                                <div id="summaryTotalLinks" class="text-white text-[22px] font-extrabold">0</div>
+                            </div>
+
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Всего кликов</div>
+                                <div id="summaryTotalClicks" class="text-white text-[22px] font-extrabold">0</div>
+                            </div>
+
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div id="summaryTotalUnique" class="text-white text-[22px] font-extrabold">0</div>
+                            </div>
+
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Топ ссылка</div>
+                                <div id="summaryTopLink" class="text-white text-xs font-bold break-all leading-relaxed">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="allSmartLinksStatsList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <div id="spy-section" class="hidden">
+                <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Тренды УБТ</h2>
+
+                <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
+                    <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Все</button>
+                    <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Дейтинг</button>
+                    <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Крипта</button>
+                    <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Гемблинг</button>
+                    <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Нутра</button>
+                </div>
+
+                <div id="spyList" class="flex flex-col gap-4"></div>
+            </div>
+        </div>
+
+        <div id="history-screen" class="hidden">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
+                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
+                    Обновить
+                </button>
+            </div>
+
+            <div id="historyList" class="space-y-3"></div>
+        </div>
+
+        <div id="support-screen" class="hidden">
+            <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
+
+            <div class="glass-box p-5 rounded-[24px] mb-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🛟</div>
+                    <div>
+                        <div class="font-bold">Служба поддержки</div>
+                        <div class="text-sm text-gray-400">Если есть вопросы или проблемы</div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                    Напиши нам в Telegram, и мы поможем с доступом, балансом, оплатой, видео или смарт-ссылками.
+                </p>
+
+                <a id="supportLinkBtn"
+                   href="#"
+                   target="_blank"
+                   class="primary-btn block w-full p-4 rounded-2xl font-bold text-center">
+                    Написать в поддержку
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
+        <div class="max-w-xl mx-auto flex items-center justify-around">
+            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1.5 text-sm text-white" onclick="showBottomPage('home')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🏠</div>
+                <span class="font-medium">Домой</span>
+            </button>
+
+            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('history')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">📜</div>
+                <span class="font-medium">История</span>
+            </button>
+
+            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
+                <span class="font-medium">Поддержка</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="topupModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
+    <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
+        <div class="glass-box topup-modal-box rounded-[28px] p-5">
+            <div class="flex items-center justify-between mb-4 gap-3">
                 <div>
-                    <div id="userName" class="font-bold text-white text-base">Пользователь</div>
-                    <div id="userBalance" class="text-sm text-secondary">Баланс: 0 кредитов</div>
+                    <div class="text-[22px] font-extrabold">⭐ Пополнить баланс</div>
+                    <div class="text-sm text-gray-400 mt-1">Выбери пакет кредитов</div>
                 </div>
+                <button id="closeTopupModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
             </div>
-            <button id="topupBtn" class="btn-success px-5 py-3 rounded-2xl font-bold text-sm">⭐ Пополнить</button>
+
+            <div class="space-y-3">
+                <button class="topup-option w-full gold-btn p-4 rounded-2xl font-bold text-left" data-stars="50" data-credits="50">
+                    ⭐ 50 Stars → 50 кредитов
+                </button>
+
+                <button class="topup-option w-full primary-btn p-4 rounded-2xl font-bold text-left" data-stars="100" data-credits="120">
+                    ⭐ 100 Stars → 120 кредитов
+                </button>
+
+                <button class="topup-option w-full secondary-btn p-4 rounded-2xl font-bold text-left" data-stars="250" data-credits="350">
+                    ⭐ 250 Stars → 350 кредитов
+                </button>
+            </div>
+
+            <p id="topupStatus" class="mt-4 text-sm text-gray-300"></p>
         </div>
     </div>
 
-    <!-- Главный экран -->
-    <div id="home-screen">
-        <div id="main-menu" class="fade-up">
-            <div class="grid grid-cols-2 gap-3">
-                <!-- Уникализатор (большая карточка) -->
-                <div class="glass-card col-span-2 p-5 cursor-pointer" onclick="showSection('video')">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="text-xs uppercase tracking-wider text-violet-300 mb-1">Core Tool</div>
-                            <h2 class="text-2xl font-extrabold">Уникализатор видео</h2>
-                            <p class="text-sm text-secondary mt-2">Очистка метаданных, подготовка к заливу</p>
+    <script>
+        const CLOUD_NAME = 'de7pheovq';
+        const UPLOAD_PRESET = 'ubt_preset';
+        const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
+        const SUPPORT_USERNAME = "vilitolu";
+
+        const spyTrends = [
+            { title: "Dating Hook - Chat Message", niche: "dating", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" },
+            { title: "Dating UGC Warm Opening", niche: "dating", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_6_xiaazz.png" },
+            { title: "Crypto Rich Lifestyle", niche: "crypto", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_9_fqfanz.png" },
+            { title: "Crypto Fast Hook Ad", niche: "crypto", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707531/Screenshot_10_xyid9a.png" },
+            { title: "Casino Big Win", niche: "gambling", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_5_fj9uma.png" },
+            { title: "Slots Bonus Creative", niche: "gambling", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774706794/Screenshot_4_moh3qi.png" },
+            { title: "Weight Loss Before/After", niche: "nutra", platform: "TikTok", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_7_eelvre.png" },
+            { title: "Nutra Problem Solution", niche: "nutra", platform: "Reels", week: "ТОП недели", image: "https://res.cloudinary.com/de7pheovq/image/upload/v1774707115/Screenshot_8_s8ytms.png" }
+        ];
+
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        const appState = {
+            user: null,
+            transactions: []
+        };
+
+        function hapticLight() {
+            try {
+                tg?.HapticFeedback?.impactOccurred?.('light');
+            } catch (e) {}
+        }
+
+        function hapticMedium() {
+            try {
+                tg?.HapticFeedback?.impactOccurred?.('medium');
+            } catch (e) {}
+        }
+
+        function hapticSuccess() {
+            try {
+                tg?.HapticFeedback?.notificationOccurred?.('success');
+            } catch (e) {}
+        }
+
+        function hapticError() {
+            try {
+                tg?.HapticFeedback?.notificationOccurred?.('error');
+            } catch (e) {}
+        }
+
+        const inlineCharts = {};
+        const statsCharts = {};
+
+        function destroyInlineChart(chartId) {
+            if (inlineCharts[chartId]) {
+                try {
+                    inlineCharts[chartId].destroy();
+                } catch (e) {}
+                delete inlineCharts[chartId];
+            }
+        }
+
+        function destroyAllInlineCharts() {
+            Object.keys(inlineCharts).forEach(destroyInlineChart);
+        }
+
+        function destroyStatsChart(chartId) {
+            if (statsCharts[chartId]) {
+                try {
+                    statsCharts[chartId].destroy();
+                } catch (e) {}
+                delete statsCharts[chartId];
+            }
+        }
+
+        function destroyAllStatsCharts() {
+            Object.keys(statsCharts).forEach(destroyStatsChart);
+        }
+
+        const topupBtn = document.getElementById('topupBtn');
+        const topupModal = document.getElementById('topupModal');
+        const topupModalBackdrop = document.getElementById('topupModalBackdrop');
+        const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
+        const topupStatus = document.getElementById('topupStatus');
+        const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+
+        if (tg) {
+            tg.expand();
+            tg.ready();
+
+            const quickName =
+                tg.initDataUnsafe?.user?.first_name ||
+                tg.initDataUnsafe?.user?.username ||
+                '';
+
+            const quickPhoto = tg.initDataUnsafe?.user?.photo_url || '';
+
+            if (quickName) {
+                document.getElementById('userBar').classList.remove('hidden');
+                document.getElementById('userName').textContent = quickName;
+                document.getElementById('userAvatarFallback').textContent = quickName.charAt(0).toUpperCase();
+            }
+
+            if (quickPhoto) {
+                document.getElementById('userAvatar').src = quickPhoto;
+                document.getElementById('userAvatar').classList.remove('hidden');
+                document.getElementById('userAvatarFallback').classList.add('hidden');
+            }
+        }
+
+        function setupSupportLink() {
+            const supportBtn = document.getElementById('supportLinkBtn');
+            if (!supportBtn) return;
+            supportBtn.href = `https://t.me/${SUPPORT_USERNAME}`;
+        }
+
+        function showBottomPage(page) {
+            const homeScreen = document.getElementById('home-screen');
+            const historyScreen = document.getElementById('history-screen');
+            const supportScreen = document.getElementById('support-screen');
+
+            const navHomeBtn = document.getElementById('navHomeBtn');
+            const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navSupportBtn = document.getElementById('navSupportBtn');
+
+            homeScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
+            supportScreen.classList.add('hidden');
+
+            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+                btn.classList.remove('active');
+                btn.classList.add('text-white/70');
+            });
+
+            if (page === 'home') {
+                homeScreen.classList.remove('hidden');
+                navHomeBtn.classList.add('active');
+                navHomeBtn.classList.remove('text-white/70');
+            }
+
+            if (page === 'history') {
+                historyScreen.classList.remove('hidden');
+                navHistoryBtn.classList.add('active');
+                navHistoryBtn.classList.remove('text-white/70');
+                loadTransactions();
+            }
+
+            if (page === 'support') {
+                supportScreen.classList.remove('hidden');
+                navSupportBtn.classList.add('active');
+                navSupportBtn.classList.remove('text-white/70');
+            }
+        }
+
+        function showSection(section) {
+            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
+            sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
+            document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
+
+            if (section === 'link') {
+                closeSmartStatsView();
+                loadSmartLinks();
+            }
+        }
+
+        function openTopupModal() {
+            hapticMedium();
+            topupModal.classList.remove('hidden');
+            topupModalBackdrop.classList.remove('hidden');
+            topupStatus.textContent = '';
+        }
+
+        function closeTopupModal() {
+            topupModal.classList.add('hidden');
+            topupModalBackdrop.classList.add('hidden');
+            topupStatus.textContent = '';
+        }
+
+        async function registerTelegramUser() {
+            if (!tg || !tg.initData) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    appState.user = data.user;
+                    updateUserBar();
+                }
+            } catch (error) {
+                console.error('Register request failed:', error);
+            }
+        }
+
+        async function loadTransactions() {
+            const historyList = document.getElementById('historyList');
+
+            if (!tg || !tg.initData) {
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        Открой Mini App через Telegram
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = `
+                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    Загружаем историю...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/transactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    historyList.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                            Ошибка загрузки истории
                         </div>
-                        <div class="w-14 h-14 rounded-3xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl">🎥</div>
-                    </div>
-                    <div class="flex justify-between items-end mt-4">
-                        <span class="text-xs text-muted">FAST · PREMIUM</span>
-                        <span class="btn-primary text-sm px-4 py-2 rounded-2xl">Открыть</span>
-                    </div>
-                </div>
+                    `;
+                    return;
+                }
 
-                <!-- Смарт-линк -->
-                <div class="glass-card p-4 cursor-pointer" onclick="showSection('link')">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-base">Смарт-линк</span>
-                        <div class="w-10 h-10 rounded-2xl bg-blue-500/15 flex items-center justify-center text-xl">🔗</div>
+                appState.transactions = data.transactions || [];
+                renderTransactions();
+            } catch (error) {
+                console.error(error);
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                        Ошибка соединения
                     </div>
-                    <div class="mt-3 text-xs text-secondary">Трекинг и маскировка</div>
-                    <div class="mt-2 text-sm">Сокращай, отслеживай, анализируй</div>
-                </div>
+                `;
+            }
+        }
 
-                <!-- Тренды -->
-                <div class="glass-card p-4 cursor-pointer" onclick="showSection('spy')">
-                    <div class="flex justify-between items-center">
+        function renderTransactions() {
+            const historyList = document.getElementById('historyList');
+            const transactions = appState.transactions || [];
+
+            if (!transactions.length) {
+                historyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        История пока пустая
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = '';
+
+            transactions.forEach((item) => {
+                const isTopup = item.type === 'topup';
+                const sign = isTopup ? '+' : '-';
+                const colorClass = isTopup ? 'text-green-400' : 'text-red-400';
+                const badgeClass = isTopup ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300';
+                const date = new Date(item.created_at).toLocaleString('ru-RU');
+
+                const card = document.createElement('div');
+                card.className = 'glass-box p-4 rounded-[24px]';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
                         <div>
-                            <div class="font-bold text-base">Тренды</div>
-                            <div class="text-xs text-secondary">ТОП креативы дня</div>
+                            <div class="font-semibold ${colorClass}">
+                                ${sign}${Math.abs(item.credits)} кредитов
+                            </div>
+                            <div class="text-sm text-gray-300 mt-1">
+                                ${item.description || 'Операция'}
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">
+                                ${date}
+                            </div>
                         </div>
-                        <div class="w-10 h-10 rounded-2xl bg-violet-500/15 flex items-center justify-center text-xl">🔥</div>
+
+                        <div class="shrink-0">
+                            <span class="text-xs px-3 py-1 rounded-full ${badgeClass}">
+                                ${isTopup ? 'Пополнение' : 'Списание'}
+                            </span>
+                        </div>
                     </div>
-                    <div class="mt-3 relative overflow-hidden rounded-2xl h-28">
-                        <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" class="w-full h-full object-cover opacity-80" />
-                        <div class="absolute bottom-2 left-2"><span class="glow-badge text-xs px-2 py-1 rounded-full">ТОП КРЕО</span></div>
+                `;
+                historyList.appendChild(card);
+            });
+        }
+
+        function updateUserBar() {
+            if (!appState.user) return;
+
+            const userBar = document.getElementById('userBar');
+            const userName = document.getElementById('userName');
+            const userBalance = document.getElementById('userBalance');
+            const userPlan = document.getElementById('userPlan');
+            const userAvatar = document.getElementById('userAvatar');
+            const userAvatarFallback = document.getElementById('userAvatarFallback');
+
+            userBar.classList.remove('hidden');
+
+            const displayName =
+                appState.user.first_name ||
+                appState.user.username ||
+                'Пользователь';
+
+            userName.textContent = displayName;
+            userBalance.textContent = `Баланс: ${appState.user.balance} кредитов`;
+            if (userPlan) userPlan.textContent = `Тариф: ${appState.user.plan}`;
+
+            const photoUrl =
+                tg?.initDataUnsafe?.user?.photo_url ||
+                appState.user.photo_url ||
+                '';
+
+            if (photoUrl) {
+                userAvatar.src = photoUrl;
+                userAvatar.classList.remove('hidden');
+                userAvatarFallback.classList.add('hidden');
+            } else {
+                userAvatar.classList.add('hidden');
+                userAvatarFallback.classList.remove('hidden');
+                userAvatarFallback.textContent = displayName.charAt(0).toUpperCase();
+            }
+        }
+
+        async function spendCredits(action, amount) {
+            if (!tg || !tg.initData) {
+                return { ok: false, message: 'Telegram initData not found' };
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/spend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        action,
+                        amount
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    appState.user = data.user;
+                    updateUserBar();
+                    return { ok: true };
+                }
+
+                return {
+                    ok: false,
+                    message: data.message || 'Недостаточно баланса'
+                };
+            } catch (error) {
+                console.error(error);
+                return {
+                    ok: false,
+                    message: 'Ошибка соединения с backend'
+                };
+            }
+        }
+              async function createTopupInvoice(stars, credits) {
+            if (!tg || !tg.initData) {
+                topupStatus.textContent = 'Открой Mini App через Telegram';
+                return;
+            }
+
+            topupStatus.textContent = 'Создаём оплату...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/create-topup-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        amount: stars,
+                        credits: credits
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.invoice_link) {
+                    topupStatus.textContent = data.message || 'Не удалось создать оплату';
+                    return;
+                }
+
+                tg.openInvoice(data.invoice_link, function (status) {
+                    if (status === 'paid') {
+                        topupStatus.textContent = 'Оплата прошла. Баланс скоро обновится.';
+                        setTimeout(async () => {
+                            await registerTelegramUser();
+                            await loadTransactions();
+                        }, 2000);
+                    } else if (status === 'cancelled') {
+                        topupStatus.textContent = 'Оплата отменена';
+                    } else {
+                        topupStatus.textContent = `Статус: ${status}`;
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                topupStatus.textContent = 'Ошибка соединения';
+            }
+        }
+
+        function buildDownloadUrl(url) {
+            if (!url || !url.includes('/upload/')) return url;
+            return url.replace('/upload/', '/upload/fl_attachment/');
+        }
+
+        let currentFilter = 'all';
+
+        function filterSpy(niche, button) {
+            currentFilter = niche;
+            renderSpyTrends();
+
+            document.querySelectorAll('.spy-filter').forEach(btn => {
+                btn.classList.remove('bg-blue-600');
+                btn.classList.add('bg-gray-700');
+            });
+
+            if (button) {
+                button.classList.remove('bg-gray-700');
+                button.classList.add('bg-blue-600');
+            }
+        }
+
+        function renderSpyTrends() {
+            const spyList = document.getElementById('spyList');
+            if (!spyList) return;
+
+            spyList.innerHTML = '';
+
+            const filtered = currentFilter === 'all'
+                ? spyTrends
+                : spyTrends.filter(item => item.niche === currentFilter);
+
+            filtered.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'glass-box p-4 rounded-[24px] fade-up';
+
+                card.innerHTML = `
+                    <div class="overflow-hidden rounded-[20px] mb-4 border border-white/10">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-auto block" />
                     </div>
+
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <h3 class="text-lg font-bold leading-tight">${item.title}</h3>
+                        <span class="danger-badge text-xs px-3 py-1 rounded-full whitespace-nowrap font-semibold">${item.week}</span>
+                    </div>
+
+                    <div class="flex gap-2 flex-wrap mb-4">
+                        <span class="text-xs bg-slate-800/90 px-3 py-1.5 rounded-full border border-white/5">Платформа: ${item.platform}</span>
+                        <span class="text-xs bg-blue-700/90 px-3 py-1.5 rounded-full">${item.niche.toUpperCase()}</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <a href="${item.image}" target="_blank"
+                           class="w-1/2 primary-btn text-white p-3 rounded-2xl text-center font-semibold">
+                           👁️ Открыть
+                        </a>
+
+                        <a href="${item.image}" download
+                           class="w-1/2 green-btn text-white p-3 rounded-2xl text-center font-semibold">
+                           ⬇️ Скачать
+                        </a>
+                    </div>
+                `;
+
+                spyList.appendChild(card);
+            });
+
+            if (filtered.length === 0) {
+                spyList.innerHTML = `
+                    <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
+                        Пока нет креативов в этой нише
+                    </div>
+                `;
+            }
+        }
+
+        function getVideoHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('ubt_video_history')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveVideoHistory(history) {
+            localStorage.setItem('ubt_video_history', JSON.stringify(history));
+        }
+
+        function addVideoHistoryItem(fileName, status, url = '') {
+            const history = getVideoHistory();
+
+            history.unshift({
+                fileName,
+                status,
+                url,
+                createdAt: new Date().toLocaleString('ru-RU')
+            });
+
+            const trimmed = history.slice(0, 5);
+            saveVideoHistory(trimmed);
+            renderVideoHistory();
+        }
+
+        function renderVideoHistory() {
+            const videoHistoryList = document.getElementById('videoHistoryList');
+            if (!videoHistoryList) return;
+
+            const history = getVideoHistory();
+
+            if (!history.length) {
+                videoHistoryList.innerHTML = `
+                    <div class="text-gray-500 text-sm">
+                        История пока пустая
+                    </div>
+                `;
+                return;
+            }
+
+            videoHistoryList.innerHTML = '';
+
+            history.forEach((item) => {
+                const row = document.createElement('div');
+                row.className = 'inner-panel';
+
+                const statusColor =
+                    item.status === 'success'
+                        ? 'text-green-400'
+                        : 'text-red-400';
+
+                const statusText =
+                    item.status === 'success'
+                        ? 'Успешно'
+                        : 'Ошибка';
+
+                const downloadUrl = item.url ? buildDownloadUrl(item.url) : '';
+
+                row.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-semibold text-white truncate">${item.fileName}</div>
+                            <div class="text-xs text-gray-500 mt-1">${item.createdAt}</div>
+                        </div>
+                        <div class="shrink-0 text-xs font-medium ${statusColor}">${statusText}</div>
+                    </div>
+
+                    ${
+                        item.url
+                            ? `
+                                <div class="flex gap-3 mt-3 flex-wrap">
+                                    <a href="${item.url}" target="_blank" class="text-blue-400 text-xs underline inline-block">
+                                        Открыть
+                                    </a>
+                                    <a href="${downloadUrl}" target="_blank" download class="text-green-400 text-xs underline inline-block">
+                                        ⬇️ Скачать
+                                    </a>
+                                </div>
+                            `
+                            : ''
+                    }
+                `;
+
+                videoHistoryList.appendChild(row);
+            });
+        }
+
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        }
+
+        async function createSmartLinkRequest(originalUrl) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    original_url: originalUrl
+                })
+            });
+
+            return await response.json();
+        }
+
+        async function fetchSmartLinksRequest(limit = 5) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/list`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    limit
+                })
+            });
+
+            return await response.json();
+        }
+
+        async function fetchSmartLinkStatsRequest(smartLinkId) {
+            const response = await fetch(`${API_BASE_URL}/smart-link/stats`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initData: tg ? tg.initData : '',
+                    smart_link_id: smartLinkId
+                })
+            });
+
+            return await response.json();
+        }
+
+        function renderLinkHistory(links = []) {
+            const linkHistoryList = document.getElementById('linkHistoryList');
+            if (!linkHistoryList) return;
+
+            destroyAllInlineCharts();
+
+            if (!links.length) {
+                linkHistoryList.innerHTML = `
+                    <div class="text-gray-500 text-sm">
+                        Ссылок пока нет
+                    </div>
+                `;
+                return;
+            }
+
+            linkHistoryList.innerHTML = '';
+
+            links.forEach((item) => {
+                const row = document.createElement('div');
+                row.className = 'glass-box rounded-[24px] p-4 fade-up';
+
+                const inlineStatsId = `inline-stats-${item.id}`;
+                const inlineChartId = `inline-chart-${item.id}`;
+
+                row.innerHTML = `
+                    <div class="min-w-0">
+                        <div class="font-semibold text-white break-all">${item.short_url}</div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            ${new Date(item.created_at).toLocaleString('ru-RU')}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+                        <div class="metric-tile">
+                            <div class="text-[11px] text-gray-400 mb-1">Клики</div>
+                            <div class="text-white text-lg font-extrabold">${item.clicks || 0}</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-[11px] text-gray-400 mb-1">Уникальные</div>
+                            <div class="text-white text-lg font-extrabold">${item.unique_clicks || 0}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-3 flex-wrap">
+                        <a href="${item.short_url}" target="_blank" class="text-blue-400 text-xs underline inline-block">
+                            🔗 Открыть
+                        </a>
+
+                        <button class="text-green-400 text-xs underline inline-block" onclick="copySmartLink('${item.short_url.replace(/'/g, "\\'")}')">
+                            📋 Скопировать
+                        </button>
+
+                        <button class="text-yellow-400 text-xs underline inline-block" onclick="toggleInlineStats(${item.id}, '${inlineStatsId}', '${inlineChartId}')">
+                            📊 Статистика
+                        </button>
+                    </div>
+
+                    <div id="${inlineStatsId}" class="hidden mt-4"></div>
+                `;
+
+                linkHistoryList.appendChild(row);
+            });
+        }
+
+        async function toggleInlineStats(linkId, containerId, chartId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const isHidden = container.classList.contains('hidden');
+
+            document.querySelectorAll('[id^="inline-stats-"]').forEach(el => {
+                if (el.id !== containerId) {
+                    el.classList.add('hidden');
+                    el.innerHTML = '';
+                }
+            });
+
+            Object.keys(inlineCharts).forEach((key) => {
+                if (key !== chartId) destroyInlineChart(key);
+            });
+
+            if (!isHidden) {
+                destroyInlineChart(chartId);
+                container.classList.add('hidden');
+                container.innerHTML = '';
+                return;
+            }
+
+            container.classList.remove('hidden');
+            container.innerHTML = `
+                <div class="glass-box rounded-[22px] p-4 text-gray-300">
+                    Загружаем статистику...
                 </div>
-            </div>
-        </div>
-    </div>
+            `;
 
-    <!-- Остальные экраны (видео, ссылки, тренды, история, поддержка) -->
-    <!-- В целях сохранения длины ответа я не дублирую весь HTML полностью, но он идентичен предыдущей версии с обновлёнными классами. 
-         Для экономии места я опишу изменения: все классы приведены к единому стилю, добавлены skeleton-загрузки, SVG-иконки заменены на эмодзи (но можно добавить SVG по желанию). 
-         В реальном файле все секции будут присутствовать с обновлёнными стилями. 
-         Ниже приведена только структура, полный файл можно получить, запросив его целиком. 
-         Я сформирую полный код, но он большой. Пожалуйста, дайте знать, если нужен именно полный код со всеми секциями. 
-         Сейчас я предоставлю компактную версию с основными улучшениями, а полную версию вышлю следующим сообщением, если потребуется. -->
+            try {
+                const data = await fetchSmartLinkStatsRequest(linkId);
 
-    <!-- Для экономии места я пропустил полное тело, но в финальном ответе предоставлю полный код. -->
-</div>
+                if (!data.ok || !data.stats) {
+                    container.innerHTML = `
+                        <div class="glass-box rounded-[22px] p-4 text-red-400">
+                            Не удалось загрузить статистику
+                        </div>
+                    `;
+                    return;
+                }
 
-<script>
-    // Вся JavaScript логика остаётся без изменений (полностью скопирована из предыдущей версии)
-    // Она не показана здесь для краткости, но в финальном файле будет присутствовать.
-</script>
+                const stats = data.stats;
+
+                const countriesHtml = Object.keys(stats.countries || {}).length
+                    ? Object.entries(stats.countries)
+                        .map(([country, count]) => `
+                            <div class="flex items-center justify-between inner-panel px-3 py-2">
+                                <span>${country}</span>
+                                <span class="text-white font-semibold">${count}</span>
+                            </div>
+                        `).join('')
+                    : `<div class="text-gray-500">Нет данных</div>`;
+
+                const devicesHtml = Object.keys(stats.devices || {}).length
+                    ? Object.entries(stats.devices)
+                        .map(([device, count]) => `
+                            <div class="flex items-center justify-between inner-panel px-3 py-2">
+                                <span>${device}</span>
+                                <span class="text-white font-semibold">${count}</span>
+                            </div>
+                        `).join('')
+                    : `<div class="text-gray-500">Нет данных</div>`;
+
+                container.innerHTML = `
+                    <div class="glass-box rounded-[22px] p-4 fade-up">
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Клики</div>
+                                <div class="text-white text-xl font-extrabold">${stats.clicks || 0}</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div class="text-white text-xl font-extrabold">${stats.unique_clicks || 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">🌍 Страны</div>
+                            <div class="space-y-2">${countriesHtml}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">📱 Устройства</div>
+                            <div class="space-y-2">${devicesHtml}</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
+                            <div class="relative h-44">
+                                <canvas id="${chartId}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const canvas = document.getElementById(chartId);
+                if (canvas && window.Chart) {
+                    const labels = (stats.daily || []).map(item => item.date);
+                    const clicksData = (stats.daily || []).map(item => Number(item.clicks || 0));
+                    const uniqueData = (stats.daily || []).map(item => Number(item.unique_clicks || 0));
+
+                    destroyInlineChart(chartId);
+
+                    inlineCharts[chartId] = new Chart(canvas, {
+                        type: 'line',
+                        data: {
+                            labels,
+                            datasets: [
+                                {
+                                    label: 'Клики',
+                                    data: clicksData,
+                                    borderColor: '#3b82f6',
+                                    backgroundColor: 'rgba(59,130,246,0.12)',
+                                    tension: 0.35,
+                                    fill: false,
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 4
+                                },
+                                {
+                                    label: 'Уникальные',
+                                    data: uniqueData,
+                                    borderColor: '#10b981',
+                                    backgroundColor: 'rgba(16,185,129,0.12)',
+                                    tension: 0.35,
+                                    fill: false,
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#d1d5db',
+                                        boxWidth: 12
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: '#9ca3af',
+                                        maxRotation: 0,
+                                        autoSkip: true,
+                                        maxTicksLimit: 6
+                                    },
+                                    grid: {
+                                        color: 'rgba(255,255,255,0.05)'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#9ca3af',
+                                        precision: 0,
+                                        stepSize: 1
+                                    },
+                                    grid: {
+                                        color: 'rgba(255,255,255,0.05)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `
+                    <div class="glass-box rounded-[22px] p-4 text-red-400">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
+        function openSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
+
+            destroyAllInlineCharts();
+            smartLinkMainView.classList.add('hidden');
+            smartLinkStatsView.classList.remove('hidden');
+            loadAllSmartLinksStats();
+        }
+
+        function closeSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
+
+            destroyAllStatsCharts();
+            smartLinkStatsView.classList.add('hidden');
+            smartLinkMainView.classList.remove('hidden');
+        }
+
+        function renderLinksSummary(links = []) {
+            const totalLinksEl = document.getElementById('summaryTotalLinks');
+            const totalClicksEl = document.getElementById('summaryTotalClicks');
+            const totalUniqueEl = document.getElementById('summaryTotalUnique');
+            const topLinkEl = document.getElementById('summaryTopLink');
+
+            if (!totalLinksEl || !totalClicksEl || !totalUniqueEl || !topLinkEl) return;
+
+            const totalLinks = links.length;
+            const totalClicks = links.reduce((sum, item) => sum + Number(item.clicks || 0), 0);
+            const totalUnique = links.reduce((sum, item) => sum + Number(item.unique_clicks || 0), 0);
+
+            let topLink = null;
+
+            if (links.length) {
+                topLink = [...links].sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0))[0];
+            }
+
+            totalLinksEl.textContent = totalLinks;
+            totalClicksEl.textContent = totalClicks;
+            totalUniqueEl.textContent = totalUnique;
+            topLinkEl.textContent = topLink ? topLink.short_url : '—';
+        }
+
+        async function loadAllSmartLinksStats() {
+            const list = document.getElementById('allSmartLinksStatsList');
+            if (!list) return;
+
+            destroyAllStatsCharts();
+
+            list.innerHTML = `
+                <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
+                    Загружаем статистику...
+                </div>
+            `;
+
+            try {
+                const data = await fetchSmartLinksRequest(100);
+
+                if (!data.ok || !data.links) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-[24px] text-red-400 text-center">
+                            Ошибка загрузки статистики
+                        </div>
+                    `;
+                    return;
+                }
+
+                const links = data.links || [];
+                renderLinksSummary(links);
+
+                if (!links.length) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
+                            Пока нет ссылок
+                        </div>
+                    `;
+                    return;
+                }
+
+                const statsResults = await Promise.all(
+                    links.map(async (link) => {
+                        try {
+                            const statsData = await fetchSmartLinkStatsRequest(link.id);
+                            if (statsData.ok && statsData.stats) {
+                                return statsData.stats;
+                            }
+                            return null;
+                        } catch (e) {
+                            return null;
+                        }
+                    })
+                );
+
+                list.innerHTML = '';
+
+                statsResults.forEach((stats, index) => {
+                    if (!stats) return;
+
+                    const countriesHtml = Object.keys(stats.countries || {}).length
+                        ? Object.entries(stats.countries)
+                            .map(([country, count]) => `
+                                <div class="flex items-center justify-between inner-panel px-3 py-2">
+                                    <span>${country}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const devicesHtml = Object.keys(stats.devices || {}).length
+                        ? Object.entries(stats.devices)
+                            .map(([device, count]) => `
+                                <div class="flex items-center justify-between inner-panel px-3 py-2">
+                                    <span>${device}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-box p-4 rounded-[24px] fade-up';
+
+                    const chartId = `stats-chart-${stats.id || index}`;
+
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div class="font-semibold text-white">Ссылка #${index + 1}</div>
+                            <button
+                                class="text-green-400 text-xs underline"
+                                onclick="copySmartLink('${stats.short_url.replace(/'/g, "\\'")}')">
+                                📋 Скопировать
+                            </button>
+                        </div>
+
+                        <div class="metric-tile mb-3">
+                            <div class="text-xs text-gray-400 mb-1">Короткая ссылка</div>
+                            <div class="text-blue-400 break-all">${stats.short_url}</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Клики</div>
+                                <div class="text-white text-xl font-extrabold">${stats.clicks || 0}</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div class="text-white text-xl font-extrabold">${stats.unique_clicks || 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">🌍 Страны</div>
+                            <div class="space-y-2">${countriesHtml}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">📱 Устройства</div>
+                            <div class="space-y-2">${devicesHtml}</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
+                            <div class="relative h-44">
+                                <canvas id="${chartId}"></canvas>
+                            </div>
+                        </div>
+                    `;
+
+                    list.appendChild(card);
+
+                    const canvas = document.getElementById(chartId);
+                    if (canvas && window.Chart) {
+                        const labels = (stats.daily || []).map(item => item.date);
+                        const clicksData = (stats.daily || []).map(item => Number(item.clicks || 0));
+                        const uniqueData = (stats.daily || []).map(item => Number(item.unique_clicks || 0));
+
+                        statsCharts[chartId] = new Chart(canvas, {
+                            type: 'line',
+                            data: {
+                                labels,
+                                datasets: [
+                                    {
+                                        label: 'Клики',
+                                        data: clicksData,
+                                        borderColor: '#3b82f6',
+                                        backgroundColor: 'rgba(59,130,246,0.12)',
+                                        tension: 0.35,
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
+                                    },
+                                    {
+                                        label: 'Уникальные',
+                                        data: uniqueData,
+                                        borderColor: '#10b981',
+                                        backgroundColor: 'rgba(16,185,129,0.12)',
+                                        tension: 0.35,
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: '#d1d5db',
+                                            boxWidth: 12
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            color: '#9ca3af',
+                                            maxRotation: 0,
+                                            autoSkip: true,
+                                            maxTicksLimit: 6
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.05)'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#9ca3af',
+                                            precision: 0,
+                                            stepSize: 1
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.05)'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                list.innerHTML = `
+                    <div class="glass-box p-4 rounded-[24px] text-red-400 text-center">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
+        async function loadSmartLinks() {
+            const linkHistoryList = document.getElementById('linkHistoryList');
+            if (!linkHistoryList) return;
+
+            linkHistoryList.innerHTML = `
+                <div class="text-gray-500 text-sm">
+                    Загружаем ссылки...
+                </div>
+            `;
+
+            try {
+                const data = await fetchSmartLinksRequest(5);
+
+                if (!data.ok) {
+                    linkHistoryList.innerHTML = `
+                        <div class="text-red-400 text-sm">
+                            Ошибка загрузки ссылок
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderLinkHistory(data.links || []);
+            } catch (error) {
+                console.error(error);
+                linkHistoryList.innerHTML = `
+                    <div class="text-red-400 text-sm">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
+        async function copySmartLink(url) {
+            const ok = await copyText(url);
+            const copyStatus = document.getElementById('copyStatus');
+
+            if (ok) hapticSuccess();
+            else hapticError();
+
+            if (copyStatus) {
+                copyStatus.textContent = ok
+                    ? '✅ Ссылка скопирована'
+                    : 'Не удалось скопировать автоматически';
+            }
+        }
+
+        const videoInput = document.getElementById('videoInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const selectedFileName = document.getElementById('selectedFileName');
+        const statusMessage = document.getElementById('statusMessage');
+        const resultBox = document.getElementById('resultBox');
+        const resultLink = document.getElementById('resultLink');
+
+        const linkInput = document.getElementById('linkInput');
+        const generateLinkBtn = document.getElementById('generateLinkBtn');
+        const generatedLinkBox = document.getElementById('generatedLinkBox');
+        const generatedLink = document.getElementById('generatedLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const openLinkBtn = document.getElementById('openLinkBtn');
+        const copyStatus = document.getElementById('copyStatus');
+        const refreshLinksBtn = document.getElementById('refreshLinksBtn');
+        const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
+        const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
+        const refreshSmartStatsBtn = document.getElementById('refreshSmartStatsBtn');
+
+        let selectedFile = null;
+        let uploadProgressTimer = null;
+
+        function setVideoProgressUI(progress, label) {
+            const statusMessage = document.getElementById('statusMessage');
+            const existing = document.getElementById('videoProgressWrap');
+
+            if (!existing) {
+                const wrap = document.createElement('div');
+                wrap.id = 'videoProgressWrap';
+                wrap.className = 'mt-4 glass-box p-4 rounded-[24px] fade-up';
+                wrap.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div class="terminal-line" id="videoProgressLabel">Подготовка...</div>
+                        <div class="text-xs text-gray-400" id="videoProgressPercent">0%</div>
+                    </div>
+                    <div class="progress-shell">
+                        <div class="progress-bar" id="videoProgressBar"></div>
+                    </div>
+                `;
+                statusMessage.insertAdjacentElement('afterend', wrap);
+            }
+
+            const labelEl = document.getElementById('videoProgressLabel');
+            const percentEl = document.getElementById('videoProgressPercent');
+            const barEl = document.getElementById('videoProgressBar');
+
+            if (labelEl) labelEl.textContent = label;
+            if (percentEl) percentEl.textContent = `${progress}%`;
+            if (barEl) barEl.style.width = `${progress}%`;
+        }
+
+        function removeVideoProgressUI() {
+            const existing = document.getElementById('videoProgressWrap');
+            if (existing) existing.remove();
+        }
+
+        function startFakeVideoProgress() {
+            let progress = 0;
+            const stages = [
+                { limit: 20, label: 'Чистка метаданных...' },
+                { limit: 60, label: 'Наложение шумов и обновление сигнатуры...' },
+                { limit: 95, label: 'Финальный рендер в 60 FPS...' }
+            ];
+
+            removeVideoProgressUI();
+            setVideoProgressUI(0, stages[0].label);
+
+            if (uploadProgressTimer) clearInterval(uploadProgressTimer);
+
+            uploadProgressTimer = setInterval(() => {
+                if (progress < 20) {
+                    progress += 4;
+                    setVideoProgressUI(progress, stages[0].label);
+                } else if (progress < 60) {
+                    progress += 3;
+                    setVideoProgressUI(progress, stages[1].label);
+                } else if (progress < 95) {
+                    progress += 2;
+                    setVideoProgressUI(progress, stages[2].label);
+                }
+            }, 500);
+        }
+
+        function finishFakeVideoProgress() {
+            if (uploadProgressTimer) {
+                clearInterval(uploadProgressTimer);
+                uploadProgressTimer = null;
+            }
+            setVideoProgressUI(100, 'Готово. Видео успешно обработано.');
+        }
+
+        videoInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+
+            resultBox.classList.add('hidden');
+            resultLink.innerHTML = '';
+
+            if (!file) {
+                selectedFile = null;
+                selectedFileName.textContent = 'Видео не выбрано';
+                statusMessage.textContent = '';
+                return;
+            }
+
+            selectedFile = file;
+            selectedFileName.textContent = `Выбрано: ${file.name}`;
+            statusMessage.textContent = 'Видео выбрано. Нажми "Уникализировать".';
+        });
+
+        uploadBtn.addEventListener('click', async function () {
+            hapticLight();
+
+            if (!selectedFile) {
+                statusMessage.textContent = 'Сначала выбери видео.';
+                hapticError();
+                return;
+            }
+
+            const spend = await spendCredits('video_unique', 5);
+            if (!spend.ok) {
+                statusMessage.textContent = spend.message;
+                hapticError();
+                return;
+            }
+
+            startFakeVideoProgress();
+
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('btn-disabled');
+            uploadBtn.textContent = 'Загрузка...';
+            statusMessage.textContent = 'Загружаем видео...';
+            resultBox.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.secure_url) {
+                    statusMessage.textContent = 'Готово!';
+                    finishFakeVideoProgress();
+                    hapticSuccess();
+
+                    const watchUrl = data.secure_url;
+                    const downloadUrl = buildDownloadUrl(data.secure_url);
+
+                    resultLink.innerHTML = `
+                        <div class="flex flex-col gap-3 mt-2">
+                            <a href="${watchUrl}" target="_blank"
+                               class="primary-btn text-white p-3 rounded-2xl text-center font-semibold">
+                               👁️ Смотреть видео
+                            </a>
+
+                            <a href="${downloadUrl}" target="_blank" download
+                               class="green-btn text-white p-3 rounded-2xl text-center font-semibold">
+                               ⬇️ Скачать видео
+                            </a>
+                        </div>
+                    `;
+
+                    addVideoHistoryItem(selectedFile.name, 'success', watchUrl);
+                    resultBox.classList.remove('hidden');
+                    loadTransactions();
+                } else {
+                    statusMessage.textContent = 'Ошибка загрузки';
+                    removeVideoProgressUI();
+                    hapticError();
+                    addVideoHistoryItem(selectedFile ? selectedFile.name : 'Неизвестный файл', 'error');
+                    console.log(data);
+                }
+            } catch (error) {
+                statusMessage.textContent = 'Ошибка соединения';
+                removeVideoProgressUI();
+                hapticError();
+                addVideoHistoryItem(selectedFile ? selectedFile.name : 'Неизвестный файл', 'error');
+                console.error(error);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('btn-disabled');
+                uploadBtn.textContent = 'Уникализировать';
+
+                setTimeout(() => {
+                    removeVideoProgressUI();
+                }, 1200);
+            }
+        });
+
+        generateLinkBtn.addEventListener('click', async function () {
+            hapticLight();
+            const url = linkInput.value.trim();
+
+            if (!url) {
+                alert('Вставь ссылку');
+                hapticError();
+                return;
+            }
+
+            generatedLinkBox.classList.remove('hidden');
+            generatedLink.textContent = 'Сокращаем...';
+            generatedLink.removeAttribute('href');
+            copyStatus.textContent = '';
+            openLinkBtn.classList.add('hidden');
+            openLinkBtn.href = '#';
+
+            try {
+                const data = await createSmartLinkRequest(url);
+
+                if (data.ok && data.link) {
+                    generatedLink.href = data.link.short_url;
+                    generatedLink.textContent = data.link.short_url;
+                    openLinkBtn.href = data.link.short_url;
+                    openLinkBtn.classList.remove('hidden');
+                    linkInput.value = '';
+                    copyStatus.textContent = '✅ Ссылка создана';
+                    hapticSuccess();
+                    await registerTelegramUser();
+                    await loadTransactions();
+                    await loadSmartLinks();
+                } else {
+                    generatedLink.textContent = data.message || 'Ошибка создания ссылки';
+                    generatedLink.removeAttribute('href');
+                    openLinkBtn.classList.add('hidden');
+                    hapticError();
+                }
+            } catch (error) {
+                generatedLink.textContent = 'Ошибка соединения';
+                hapticError();
+                console.error(error);
+            }
+        });
+
+        copyLinkBtn.addEventListener('click', async function () {
+            const link = generatedLink.textContent.trim();
+
+            if (!link || link === 'Сокращаем...' || link === 'Ошибка создания ссылки' || link === 'Ошибка соединения') {
+                copyStatus.textContent = 'Сначала создай ссылку.';
+                hapticError();
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(link);
+                copyStatus.textContent = '✅ Ссылка скопирована';
+                hapticSuccess();
+            } catch (error) {
+                copyStatus.textContent = 'Не удалось скопировать автоматически. Скопируй вручную.';
+                hapticError();
+                console.error(error);
+            }
+        });
+
+        if (topupBtn) {
+            topupBtn.addEventListener('click', openTopupModal);
+        }
+
+        if (closeTopupModalBtn) {
+            closeTopupModalBtn.addEventListener('click', closeTopupModal);
+        }
+
+        if (topupModalBackdrop) {
+            topupModalBackdrop.addEventListener('click', closeTopupModal);
+        }
+
+        document.querySelectorAll('.topup-option').forEach((btn) => {
+            btn.addEventListener('click', function () {
+                const stars = Number(this.dataset.stars);
+                const credits = Number(this.dataset.credits);
+                createTopupInvoice(stars, credits);
+            });
+        });
+
+        if (refreshHistoryBtn) {
+            refreshHistoryBtn.addEventListener('click', loadTransactions);
+        }
+
+        if (refreshLinksBtn) {
+            refreshLinksBtn.addEventListener('click', loadSmartLinks);
+        }
+
+        if (openSmartStatsBtn) {
+            openSmartStatsBtn.addEventListener('click', openSmartStatsView);
+        }
+
+        if (backToSmartLinkBtn) {
+            backToSmartLinkBtn.addEventListener('click', closeSmartStatsView);
+        }
+
+        if (refreshSmartStatsBtn) {
+            refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
+        }
+
+        renderSpyTrends();
+        renderVideoHistory();
+        loadSmartLinks();
+        registerTelegramUser();
+        setupSupportLink();
+        showBottomPage('home');
+    </script>
 </body>
 </html>
