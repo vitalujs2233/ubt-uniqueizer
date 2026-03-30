@@ -1234,7 +1234,7 @@ body::after {
                 <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
 
                 <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
-                    Уникализировать
+                    Уникализировать видео • 5 кредитов
                 </button>
 
                 <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
@@ -1277,7 +1277,7 @@ body::after {
                     <button
                         id="generateLinkBtn"
                         class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Сгенерировать
+                        Сгенерировать смарт-линк • 2 кредита
                     </button>
 
                     <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
@@ -3099,17 +3099,22 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 return;
             }
 
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('btn-disabled');
+            uploadBtn.textContent = 'Списание 5 кредитов...';
+
             const spend = await spendCredits('video_unique', 5);
             if (!spend.ok) {
                 statusMessage.textContent = spend.message;
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('btn-disabled');
+                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
                 hapticError();
                 return;
             }
 
             startFakeVideoProgress();
 
-            uploadBtn.disabled = true;
-            uploadBtn.classList.add('btn-disabled');
             uploadBtn.textContent = 'Загрузка...';
             statusMessage.textContent = 'Загружаем видео...';
             resultBox.classList.add('hidden');
@@ -3167,7 +3172,7 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать';
+                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
 
                 setTimeout(() => {
                     removeVideoProgressUI();
@@ -3186,11 +3191,27 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             }
 
             generatedLinkBox.classList.remove('hidden');
-            generatedLink.textContent = 'Сокращаем...';
+            generatedLink.textContent = 'Списание 2 кредитов...';
             generatedLink.removeAttribute('href');
             copyStatus.textContent = '';
             openLinkBtn.classList.add('hidden');
             openLinkBtn.href = '#';
+            generateLinkBtn.disabled = true;
+            generateLinkBtn.classList.add('btn-disabled');
+            generateLinkBtn.textContent = 'Списание 2 кредитов...';
+
+            const spend = await spendCredits('smart_link_generate', 2);
+            if (!spend.ok) {
+                generatedLink.textContent = spend.message || 'Недостаточно кредитов';
+                generateLinkBtn.disabled = false;
+                generateLinkBtn.classList.remove('btn-disabled');
+                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
+                hapticError();
+                return;
+            }
+
+            generatedLink.textContent = 'Сокращаем...';
+            generateLinkBtn.textContent = 'Создаём ссылку...';
 
             try {
                 const data = await createSmartLinkRequest(url);
@@ -3206,6 +3227,7 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                     await registerTelegramUser();
                     await loadTransactions();
                     await loadSmartLinks();
+                    tg?.showAlert?.('Ссылка создана. Списано 2 кредита.');
                 } else {
                     generatedLink.textContent = data.message || 'Ошибка создания ссылки';
                     generatedLink.removeAttribute('href');
@@ -3216,6 +3238,10 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 generatedLink.textContent = 'Ошибка соединения';
                 hapticError();
                 console.error(error);
+            } finally {
+                generateLinkBtn.disabled = false;
+                generateLinkBtn.classList.remove('btn-disabled');
+                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
             }
         });
 
