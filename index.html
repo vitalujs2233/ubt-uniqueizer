@@ -945,121 +945,6 @@ body::after {
     50% { opacity: 1; transform: translateY(-2px); }
 }
 
-
-/* precise top header layout */
-.hero-topbar{
-    position: relative;
-    min-height: 96px;
-    margin-bottom: 10px;
-}
-
-.hero-topbar .brand-title{
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    text-align: center;
-    padding-top: 26px;
-}
-
-.hero-topbar #userBar{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 18px;
-    z-index: 2;
-    margin: 0 !important;
-}
-
-.hero-topbar #userBar > div{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.hero-topbar #userBar .flex.items-center.gap-3.min-w-0{
-    gap: 10px;
-    max-width: calc(50% - 56px);
-    min-width: 0;
-}
-
-.hero-topbar #userAvatarWrap{
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px;
-    min-height: 42px;
-}
-
-.hero-topbar #userName{
-    font-size: 14px !important;
-    line-height: 1.05 !important;
-}
-
-.hero-topbar #userBalance{
-    font-size: 12px !important;
-    margin-top: 2px !important;
-    line-height: 1.15 !important;
-}
-
-.hero-topbar #topupBtn{
-    margin-left: auto;
-    min-width: 140px;
-    padding: 10px 16px !important;
-    font-size: 14px !important;
-    border-radius: 18px !important;
-    background: linear-gradient(135deg, #22c55e, #34d399) !important;
-    box-shadow:
-        0 0 18px rgba(34,197,94,0.22),
-        0 10px 22px rgba(16,185,129,0.20) !important;
-}
-
-@media (max-width: 430px){
-    .hero-topbar{
-        min-height: 92px;
-    }
-
-    .hero-topbar .brand-title{
-        padding-top: 24px;
-    }
-
-    .hero-topbar #userBar{
-        top: 16px;
-    }
-
-    .hero-topbar #userBar .flex.items-center.gap-3.min-w-0{
-        max-width: calc(50% - 50px);
-    }
-
-    .hero-topbar #topupBtn{
-        min-width: 132px;
-        padding: 10px 14px !important;
-        font-size: 13px !important;
-    }
-}
-
-
-.hero-topbar #userBar{
-    top: 8px !important;
-}
-
-
-.hero-topbar #userBar{
-    top: 0px !important;
-    padding-top: env(safe-area-inset-top);
-}
-
-
-.hero-topbar .brand-title{
-    font-size: 20px !important;
-    padding-top: 12px !important;
-    margin-top: -4px !important;
-}
-
-
-.hero-topbar .brand-title{
-    font-size: 18px !important;
-}
-
 </style>
 </head>
 <body class="p-4">
@@ -1077,10 +962,9 @@ body::after {
 </div>
 
     <div class="page-wrap">
-        <div class="hero-topbar">
-            <h1 class="brand-title">UBT ToolKit</h1>
+        <h1 class="brand-title">UBT ToolKit</h1>
 
-            <div id="userBar" class="mb-4 hidden fade-up">
+        <div id="userBar" class="mb-4 hidden fade-up">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
                     <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -1099,8 +983,6 @@ body::after {
                     ⭐ Пополнить
                 </button>
             </div>
-        </div>
-
         </div>
 
         <div id="home-screen">
