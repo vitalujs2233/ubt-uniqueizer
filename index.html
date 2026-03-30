@@ -101,22 +101,6 @@
         .page-wrap {
             padding-bottom: 92px;
         }
-
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(4px);
-            z-index: 50;
-        }
-
-        .modal-card {
-            position: fixed;
-            left: 16px;
-            right: 16px;
-            bottom: 90px;
-            z-index: 60;
-        }
     </style>
 </head>
 <body class="p-4">
@@ -213,58 +197,112 @@
 
             <!-- ССЫЛКИ -->
             <div id="link-section" class="hidden">
-                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-                <h2 class="section-title text-xl mb-4 font-bold">Смарт-линк</h2>
+                <div id="smartLinkMainView">
+                    <div class="flex items-center justify-between mb-4 gap-3">
+                        <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
 
-                <input
-                    id="linkInput"
-                    type="text"
-                    placeholder="https://your-offer.com"
-                    class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
-                />
-
-                <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
-
-                <button
-                    id="generateLinkBtn"
-                    class="primary-btn w-full p-4 rounded-2xl font-bold">
-                    Сгенерировать
-                </button>
-
-                <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
-                    <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
-                    <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
-
-                    <div class="flex gap-3">
-                        <button
-                            id="copyLinkBtn"
-                            class="green-btn w-1/2 p-4 rounded-2xl font-bold">
-                            📋 Скопировать
-                        </button>
-
-                        <a
-                            id="openLinkBtn"
-                            href="#"
-                            target="_blank"
-                            class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
-                            🔗 Открыть ссылку
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-bold">Смарт-линк</h2>
+                            <button
+                                id="openSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Статистика
+                            </button>
+                        </div>
                     </div>
 
-                    <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+                    <input
+                        id="linkInput"
+                        type="text"
+                        placeholder="https://your-offer.com"
+                        class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
+                    />
+
+                    <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
+
+                    <button
+                        id="generateLinkBtn"
+                        class="primary-btn w-full p-4 rounded-2xl font-bold">
+                        Сгенерировать
+                    </button>
+
+                    <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                        <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
+                        <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
+
+                        <div class="flex gap-3">
+                            <button
+                                id="copyLinkBtn"
+                                class="green-btn w-1/2 p-4 rounded-2xl font-bold">
+                                📋 Скопировать
+                            </button>
+
+                            <a
+                                id="openLinkBtn"
+                                href="#"
+                                target="_blank"
+                                class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
+                                🔗 Открыть ссылку
+                            </a>
+                        </div>
+
+                        <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
+                    </div>
+
+                    <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
+                            <button
+                                id="refreshLinksBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
+
+                        <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                    </div>
                 </div>
 
-                <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
-                        <button
-                            id="refreshLinksBtn"
-                            class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Обновить
-                        </button>
+                <div id="smartLinkStatsView" class="hidden">
+                    <div class="flex items-center justify-between mb-4 gap-3">
+                        <button id="backToSmartLinkBtn" class="text-blue-400">← Назад</button>
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-bold">Статистика</h2>
+                            <button
+                                id="refreshSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
                     </div>
 
-                    <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                    <div id="smartStatsSummary" class="glass-box p-4 rounded-2xl mb-4">
+                        <p class="text-white font-semibold mb-3">📊 Общая статистика</p>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Всего ссылок</div>
+                                <div id="summaryTotalLinks" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Всего кликов</div>
+                                <div id="summaryTotalClicks" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Уникальные</div>
+                                <div id="summaryTotalUnique" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Топ ссылка</div>
+                                <div id="summaryTopLink" class="text-white text-xs font-bold break-all">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="allSmartLinksStatsList" class="space-y-4"></div>
                 </div>
             </div>
 
@@ -345,8 +383,8 @@
     </div>
 
     <!-- МОДАЛКА ПОПОЛНЕНИЯ -->
-    <div id="topupModalBackdrop" class="modal-backdrop hidden"></div>
-    <div id="topupModal" class="modal-card hidden">
+    <div id="topupModalBackdrop" class="fixed inset-0 bg-black/60 hidden z-50"></div>
+    <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden">
         <div class="glass-box rounded-3xl p-5">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -374,32 +412,10 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА СТАТИСТИКИ СМАРТ-ССЫЛКИ -->
-    <div id="statsModalBackdrop" class="modal-backdrop hidden"></div>
-    <div id="statsModal" class="modal-card hidden">
-        <div class="glass-box rounded-3xl p-5">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <div class="text-xl font-bold">📊 Статистика ссылки</div>
-                    <div class="text-sm text-gray-400">Клики, уникальные, страны, устройства</div>
-                </div>
-                <button id="closeStatsModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">Закрыть</button>
-            </div>
-
-            <div id="statsContent" class="space-y-3 text-sm text-gray-300">
-                Загрузка...
-            </div>
-        </div>
-    </div>
-
     <script>
         const CLOUD_NAME = 'de7pheovq';
         const UPLOAD_PRESET = 'ubt_preset';
         const API_BASE_URL = "https://ubt-uniqueizer.onrender.com";
-
-        // =========================
-        // ВСТАВЬ СЮДА USERNAME ПОДДЕРЖКИ БЕЗ @
-        // =========================
         const SUPPORT_USERNAME = "vilitolu";
 
         const spyTrends = [
@@ -453,13 +469,6 @@
         function setupSupportLink() {
             const supportBtn = document.getElementById('supportLinkBtn');
             if (!supportBtn) return;
-
-            if (!SUPPORT_USERNAME || SUPPORT_USERNAME === 'ВСТАВЬ_USERNAME_ПОДДЕРЖКИ') {
-                supportBtn.href = '#';
-                supportBtn.textContent = 'Укажи username поддержки';
-                return;
-            }
-
             supportBtn.href = `https://t.me/${SUPPORT_USERNAME}`;
         }
 
@@ -501,6 +510,17 @@
             }
         }
 
+        function showSection(section) {
+            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
+            sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
+            document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
+
+            if (section === 'link') {
+                closeSmartStatsView();
+                loadSmartLinks();
+            }
+        }
+
         function openTopupModal() {
             topupModal.classList.remove('hidden');
             topupModalBackdrop.classList.remove('hidden');
@@ -514,10 +534,7 @@
         }
 
         async function registerTelegramUser() {
-            if (!tg || !tg.initData) {
-                console.log('Telegram initData not found');
-                return;
-            }
+            if (!tg || !tg.initData) return;
 
             try {
                 const response = await fetch(`${API_BASE_URL}/register`, {
@@ -530,8 +547,6 @@
                 if (response.ok) {
                     appState.user = data.user;
                     updateUserBar();
-                } else {
-                    console.log('Register error:', data);
                 }
             } catch (error) {
                 console.error('Register request failed:', error);
@@ -606,12 +621,10 @@
                 const sign = isTopup ? '+' : '-';
                 const colorClass = isTopup ? 'text-green-400' : 'text-red-400';
                 const badgeClass = isTopup ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300';
-
                 const date = new Date(item.created_at).toLocaleString('ru-RU');
 
                 const card = document.createElement('div');
                 card.className = 'glass-box p-4 rounded-2xl';
-
                 card.innerHTML = `
                     <div class="flex items-start justify-between gap-3">
                         <div>
@@ -633,7 +646,6 @@
                         </div>
                     </div>
                 `;
-
                 historyList.appendChild(card);
             });
         }
@@ -755,12 +767,6 @@
                 console.error(error);
                 topupStatus.textContent = 'Ошибка соединения';
             }
-        }
-
-        function showSection(section) {
-            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
-            sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
-            document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
         }
 
         function buildDownloadUrl(url) {
@@ -1027,7 +1033,7 @@
                             📋 Скопировать
                         </button>
 
-                        <button class="text-yellow-400 text-xs underline inline-block" onclick="openStatsModal(${item.id})">
+                        <button class="text-yellow-400 text-xs underline inline-block" onclick="openSmartStatsView()">
                             📊 Статистика
                         </button>
                     </div>
@@ -1074,92 +1080,182 @@
             const ok = await copyText(url);
             const copyStatus = document.getElementById('copyStatus');
 
-            if (!copyStatus) return;
-
-            copyStatus.textContent = ok
-                ? '✅ Ссылка скопирована'
-                : 'Не удалось скопировать автоматически';
+            if (copyStatus) {
+                copyStatus.textContent = ok
+                    ? '✅ Ссылка скопирована'
+                    : 'Не удалось скопировать автоматически';
+            }
         }
 
-        function closeStatsModal() {
-            const statsModal = document.getElementById('statsModal');
-            const statsModalBackdrop = document.getElementById('statsModalBackdrop');
+        function openSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
 
-            statsModal.classList.add('hidden');
-            statsModalBackdrop.classList.add('hidden');
+            smartLinkMainView.classList.add('hidden');
+            smartLinkStatsView.classList.remove('hidden');
+            loadAllSmartLinksStats();
         }
 
-        async function openStatsModal(linkId) {
-            const statsModal = document.getElementById('statsModal');
-            const statsModalBackdrop = document.getElementById('statsModalBackdrop');
-            const statsContent = document.getElementById('statsContent');
+        function closeSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
 
-            statsModal.classList.remove('hidden');
-            statsModalBackdrop.classList.remove('hidden');
+            smartLinkStatsView.classList.add('hidden');
+            smartLinkMainView.classList.remove('hidden');
+        }
 
-            statsContent.innerHTML = 'Загрузка...';
+        function renderLinksSummary(links = []) {
+            const totalLinksEl = document.getElementById('summaryTotalLinks');
+            const totalClicksEl = document.getElementById('summaryTotalClicks');
+            const totalUniqueEl = document.getElementById('summaryTotalUnique');
+            const topLinkEl = document.getElementById('summaryTopLink');
+
+            if (!totalLinksEl || !totalClicksEl || !totalUniqueEl || !topLinkEl) return;
+
+            const totalLinks = links.length;
+            const totalClicks = links.reduce((sum, item) => sum + Number(item.clicks || 0), 0);
+            const totalUnique = links.reduce((sum, item) => sum + Number(item.unique_clicks || 0), 0);
+
+            let topLink = null;
+
+            if (links.length) {
+                topLink = [...links].sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0))[0];
+            }
+
+            totalLinksEl.textContent = totalLinks;
+            totalClicksEl.textContent = totalClicks;
+            totalUniqueEl.textContent = totalUnique;
+            topLinkEl.textContent = topLink ? topLink.short_url : '—';
+        }
+
+        async function loadAllSmartLinksStats() {
+            const list = document.getElementById('allSmartLinksStatsList');
+            if (!list) return;
+
+            list.innerHTML = `
+                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    Загружаем статистику...
+                </div>
+            `;
 
             try {
-                const data = await fetchSmartLinkStatsRequest(linkId);
+                const data = await fetchSmartLinksRequest(100);
 
-                if (!data.ok || !data.stats) {
-                    statsContent.innerHTML = `<div class="text-red-400">Не удалось загрузить статистику</div>`;
+                if (!data.ok || !data.links) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                            Ошибка загрузки статистики
+                        </div>
+                    `;
                     return;
                 }
 
-                const stats = data.stats;
+                const links = data.links || [];
+                renderLinksSummary(links);
 
-                const countriesHtml = Object.keys(stats.countries || {}).length
-                    ? Object.entries(stats.countries)
-                        .map(([country, count]) => `
-                            <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
-                                <span>${country}</span>
-                                <span class="text-white font-semibold">${count}</span>
-                            </div>
-                        `).join('')
-                    : `<div class="text-gray-500">Нет данных</div>`;
+                if (!links.length) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                            Пока нет ссылок
+                        </div>
+                    `;
+                    return;
+                }
 
-                const devicesHtml = Object.keys(stats.devices || {}).length
-                    ? Object.entries(stats.devices)
-                        .map(([device, count]) => `
-                            <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
-                                <span>${device}</span>
-                                <span class="text-white font-semibold">${count}</span>
-                            </div>
-                        `).join('')
-                    : `<div class="text-gray-500">Нет данных</div>`;
+                const statsResults = await Promise.all(
+                    links.map(async (link) => {
+                        try {
+                            const statsData = await fetchSmartLinkStatsRequest(link.id);
+                            if (statsData.ok && statsData.stats) {
+                                return statsData.stats;
+                            }
+                            return null;
+                        } catch (e) {
+                            return null;
+                        }
+                    })
+                );
 
-                statsContent.innerHTML = `
-                    <div class="bg-slate-900/60 rounded-xl p-3">
-                        <div class="text-xs text-gray-400 mb-1">Короткая ссылка</div>
-                        <div class="text-blue-400 break-all">${stats.short_url}</div>
-                    </div>
+                list.innerHTML = '';
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-900/60 rounded-xl p-3">
-                            <div class="text-xs text-gray-400 mb-1">Клики</div>
-                            <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                statsResults.forEach((stats, index) => {
+                    if (!stats) return;
+
+                    const countriesHtml = Object.keys(stats.countries || {}).length
+                        ? Object.entries(stats.countries)
+                            .map(([country, count]) => `
+                                <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                    <span>${country}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const devicesHtml = Object.keys(stats.devices || {}).length
+                        ? Object.entries(stats.devices)
+                            .map(([device, count]) => `
+                                <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                    <span>${device}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-box p-4 rounded-2xl';
+
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div class="font-semibold text-white">Ссылка #${index + 1}</div>
+                            <button
+                                class="text-green-400 text-xs underline"
+                                onclick="copySmartLink('${stats.short_url.replace(/'/g, "\\'")}')">
+                                📋 Скопировать
+                            </button>
                         </div>
 
-                        <div class="bg-slate-900/60 rounded-xl p-3">
-                            <div class="text-xs text-gray-400 mb-1">Уникальные</div>
-                            <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
+                            <div class="text-xs text-gray-400 mb-1">Короткая ссылка</div>
+                            <div class="text-blue-400 break-all">${stats.short_url}</div>
                         </div>
-                    </div>
 
-                    <div>
-                        <div class="text-white font-semibold mb-2">🌍 Страны</div>
-                        <div class="space-y-2">${countriesHtml}</div>
-                    </div>
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
+                            <div class="text-xs text-gray-400 mb-1">Оригинальная ссылка</div>
+                            <div class="text-white break-all">${stats.original_url}</div>
+                        </div>
 
-                    <div>
-                        <div class="text-white font-semibold mb-2">📱 Устройства</div>
-                        <div class="space-y-2">${devicesHtml}</div>
-                    </div>
-                `;
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400 mb-1">Клики</div>
+                                <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">🌍 Страны</div>
+                            <div class="space-y-2">${countriesHtml}</div>
+                        </div>
+
+                        <div>
+                            <div class="text-white font-semibold mb-2">📱 Устройства</div>
+                            <div class="space-y-2">${devicesHtml}</div>
+                        </div>
+                    `;
+
+                    list.appendChild(card);
+                });
             } catch (error) {
                 console.error(error);
-                statsContent.innerHTML = `<div class="text-red-400">Ошибка соединения</div>`;
+                list.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                        Ошибка соединения
+                    </div>
+                `;
             }
         }
 
@@ -1178,9 +1274,9 @@
         const openLinkBtn = document.getElementById('openLinkBtn');
         const copyStatus = document.getElementById('copyStatus');
         const refreshLinksBtn = document.getElementById('refreshLinksBtn');
-        const statsModal = document.getElementById('statsModal');
-        const statsModalBackdrop = document.getElementById('statsModalBackdrop');
-        const closeStatsModalBtn = document.getElementById('closeStatsModalBtn');
+        const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
+        const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
+        const refreshSmartStatsBtn = document.getElementById('refreshSmartStatsBtn');
 
         let selectedFile = null;
 
@@ -1355,12 +1451,16 @@
             refreshLinksBtn.addEventListener('click', loadSmartLinks);
         }
 
-        if (closeStatsModalBtn) {
-            closeStatsModalBtn.addEventListener('click', closeStatsModal);
+        if (openSmartStatsBtn) {
+            openSmartStatsBtn.addEventListener('click', openSmartStatsView);
         }
 
-        if (statsModalBackdrop) {
-            statsModalBackdrop.addEventListener('click', closeStatsModal);
+        if (backToSmartLinkBtn) {
+            backToSmartLinkBtn.addEventListener('click', closeSmartStatsView);
+        }
+
+        if (refreshSmartStatsBtn) {
+            refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
 
         renderSpyTrends();
