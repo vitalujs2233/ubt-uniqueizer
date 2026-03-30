@@ -1375,12 +1375,71 @@ body::after {
                         <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">MVP</div>
                     </div>
 
-                    <select id="prelandTemplate" class="neo-input mb-3">
-                        <option value="news">Новостной стиль</option>
-                        <option value="blog">Блог / отзыв</option>
-                        <option value="story">История успеха</option>
-                        <option value="quiz">Quiz / опрос</option>
-                    </select>
+                    <input id="prelandTemplate" type="hidden" value="news" />
+
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold">Выбери макет</div>
+                                <div class="text-sm text-gray-400 mt-1">Нажми на карточку и сразу увидишь, какой стиль тебе подходит</div>
+                            </div>
+                            <div id="selectedTemplateBadge" class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">NEWS</div>
+                        </div>
+
+                        <div id="prelandTemplatePicker" class="grid grid-cols-2 gap-3">
+                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="news">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="text-sm font-bold text-white">📰 Новостной</div>
+                                    <span class="text-[10px] text-blue-300 font-semibold">NEWS</span>
+                                </div>
+                                <div class="text-[11px] text-gray-400 mb-2">Статья, редакционный формат, срочная подача</div>
+                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
+                                    Крупный заголовок<br>
+                                    Фото сверху<br>
+                                    Блоки “что известно”
+                                </div>
+                            </button>
+
+                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="blog">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="text-sm font-bold text-white">✍️ Блог / отзыв</div>
+                                    <span class="text-[10px] text-violet-300 font-semibold">BLOG</span>
+                                </div>
+                                <div class="text-[11px] text-gray-400 mb-2">Личный опыт, мягкий прогрев, история от первого лица</div>
+                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
+                                    Автор и аватар<br>
+                                    Личный текст<br>
+                                    Мягкий CTA
+                                </div>
+                            </button>
+
+                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="story">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="text-sm font-bold text-white">🔥 История успеха</div>
+                                    <span class="text-[10px] text-emerald-300 font-semibold">STORY</span>
+                                </div>
+                                <div class="text-[11px] text-gray-400 mb-2">Яркий результат, цифры, эффект “до / после”</div>
+                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
+                                    Hero-блок<br>
+                                    Метрики и рост<br>
+                                    Сильная кнопка
+                                </div>
+                            </button>
+
+                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="quiz">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="text-sm font-bold text-white">❓ Quiz / опрос</div>
+                                    <span class="text-[10px] text-orange-300 font-semibold">QUIZ</span>
+                                </div>
+                                <div class="text-[11px] text-gray-400 mb-2">Пошаговый формат, вопросники, вовлечение перед кликом</div>
+                                <div class="inner-panel text-[11px] leading-5 text-gray-300 min-h-[92px]">
+                                    Вопрос + прогресс<br>
+                                    Варианты ответа<br>
+                                    Кнопка продолжения
+                                </div>
+                            </button>
+                        </div>
+                    </div>
 
                     <input id="prelandTitle" type="text" class="neo-input mb-3" placeholder="Заголовок" />
                     <input id="prelandSubtitle" type="text" class="neo-input mb-3" placeholder="Подзаголовок" />
@@ -2744,6 +2803,8 @@ body::after {
         const openPrelandPreviewBtn = document.getElementById('openPrelandPreviewBtn');
         const prelandHistoryList = document.getElementById('prelandHistoryList');
         const clearPrelandHistoryBtn = document.getElementById('clearPrelandHistoryBtn');
+        const prelandTemplatePicker = document.getElementById('prelandTemplatePicker');
+        const selectedTemplateBadge = document.getElementById('selectedTemplateBadge');
 
         let selectedFile = null;
         let uploadProgressTimer = null;
@@ -2892,7 +2953,7 @@ body::after {
             const item = items[index];
             if (!item) return;
 
-            if (prelandTemplate) prelandTemplate.value = item.template || 'news';
+            applyPrelandTemplateSelection(item.template || 'news');
             if (prelandTitle) prelandTitle.value = item.title || '';
             if (prelandSubtitle) prelandSubtitle.value = item.subtitle || '';
             if (prelandImage) prelandImage.value = item.image || '';
@@ -2916,6 +2977,41 @@ body::after {
                 hapticError();
             }
         };
+
+        function applyPrelandTemplateSelection(template) {
+            if (!prelandTemplate) return;
+
+            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
+            prelandTemplate.value = normalized;
+
+            const meta = getTemplateMeta(normalized);
+            if (selectedTemplateBadge) selectedTemplateBadge.textContent = meta.badge;
+
+            document.querySelectorAll('.preland-template-card').forEach((card) => {
+                const isActive = card.dataset.template === normalized;
+                card.classList.toggle('ring-2', isActive);
+                card.classList.toggle('ring-offset-2', isActive);
+                card.classList.toggle('ring-offset-transparent', isActive);
+                card.classList.toggle('scale-[1.02]', isActive);
+                card.classList.toggle('shadow-[0_0_24px_rgba(103,232,249,0.16)]', isActive);
+                card.classList.toggle('border-cyan-300/50', isActive);
+                card.classList.toggle('bg-white/10', isActive);
+                card.classList.toggle('border-white/10', !isActive);
+                card.classList.toggle('bg-white/5', !isActive);
+            });
+
+            renderPrelandPreview(collectPrelandPayload());
+        }
+
+        function bindPrelandTemplatePicker() {
+            if (!prelandTemplatePicker) return;
+            prelandTemplatePicker.querySelectorAll('.preland-template-card').forEach((card) => {
+                card.addEventListener('click', () => {
+                    applyPrelandTemplateSelection(card.dataset.template || 'news');
+                    hapticSelection();
+                });
+            });
+        }
 
         function getTemplateMeta(template) {
             const map = {
@@ -3648,6 +3744,8 @@ ${paragraphs}
 
         renderSpyTrends();
         renderVideoHistory();
+        bindPrelandTemplatePicker();
+        applyPrelandTemplateSelection(prelandTemplate?.value || 'news');
         renderPrelandHistory();
         loadSmartLinks();
         registerTelegramUser();
