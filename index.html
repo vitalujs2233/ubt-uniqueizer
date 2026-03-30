@@ -1471,7 +1471,7 @@ body::after {
             <div class="flex items-center justify-between mb-4 gap-3">
                 <div>
                     <div class="text-[22px] font-extrabold">Новый пост</div>
-                    <div class="text-sm text-gray-400 mt-1">Каркас формы для будущего Движа</div>
+                    <div class="text-sm text-gray-400 mt-1">Создай пост для общей ленты</div>
                 </div>
                 <button id="closeDvizhModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
             </div>
@@ -1484,7 +1484,7 @@ body::after {
                 <div class="text-xs text-gray-500 mt-2">Можно будет прикреплять до 2 фото, до 5 МБ каждое.</div>
             </div>
 
-            <div class="text-xs text-gray-500 mb-3">Публикация будет стоить 5 кредитов после подключения backend-логики.</div>
+            <div class="text-xs text-gray-500 mb-3">После отправки пост уйдёт на модерацию. Стоимость публикации — 5 кредитов.</div>
 
             <button id="submitDvizhPostBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
                 Опубликовать • 5 кредитов
@@ -1629,46 +1629,105 @@ body::after {
         }
 
 
-        function renderDvizhFeed() {
+        const DVIZH_DEMO_POSTS = [
+            {
+                id: 1,
+                author_name: 'UBT Insider',
+                username: 'ubt_feed',
+                created_at: new Date().toISOString(),
+                text: 'Первый каркас Движа уже внутри приложения. Теперь сюда можно подключать реальные посты, модерацию и публикацию за кредиты.',
+                image_urls: [
+                    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80'
+                ],
+                likes_count: 12,
+                comments_count: 3,
+                views_count: 183,
+                status: 'approved'
+            },
+            {
+                id: 2,
+                author_name: 'Media Hunter',
+                username: 'media_hunter',
+                created_at: new Date(Date.now() - 3600 * 1000).toISOString(),
+                text: 'В Движе можно публиковать креативы, апдейты по рынку и быстрые заметки по заливу прямо внутри UBT ToolKit.',
+                image_urls: [
+                    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
+                ],
+                likes_count: 8,
+                comments_count: 1,
+                views_count: 96,
+                status: 'approved'
+            }
+        ];
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function sanitizeDvizhText(value) {
+            return String(value || '')
+                .replace(/https?:\/\/\S+/gi, '[ссылка удалена]')
+                .replace(/@[a-zA-Z0-9_]{3,}/g, '[ссылка удалена]')
+                .trim();
+        }
+
+        function formatDvizhDate(dateString) {
+            if (!dateString) return 'сейчас';
+            const date = new Date(dateString);
+            if (Number.isNaN(date.getTime())) return 'сейчас';
+            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getCurrentUserLabel() {
+            return appState?.user?.first_name || appState?.user?.username || tg?.initDataUnsafe?.user?.first_name || 'Пользователь';
+        }
+
+        function renderDvizhFeed(posts = DVIZH_DEMO_POSTS) {
             const dvizhFeed = document.getElementById('dvizhFeed');
             if (!dvizhFeed) return;
 
-            const demoPosts = [
-                {
-                    id: 1,
-                    author: 'UBT Insider',
-                    handle: '@ubt_feed',
-                    date: 'сегодня',
-                    text: 'Первый каркас Движа уже внутри приложения. Дальше сюда можно подключить реальные посты, модерацию, лайки и донаты.',
-                    images: [
-                        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80'
-                    ],
-                    likes: 12,
-                    comments: 3,
-                    views: 183
-                },
-                {
-                    id: 2,
-                    author: 'Media Hunter',
-                    handle: '@media_hunter',
-                    date: 'сейчас',
-                    text: 'Здесь можно будет публиковать креативы, результаты тестов и быстрые апдейты по рынку прямо внутри UBT ToolKit.',
-                    images: [
-                        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
-                        'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
-                    ],
-                    likes: 8,
-                    comments: 1,
-                    views: 96
-                }
-            ];
+            const normalizedPosts = Array.isArray(posts) && posts.length ? posts : [];
 
-            dvizhFeed.innerHTML = demoPosts.map((post) => {
-                const imagesHtml = (post.images || []).slice(0, 2).map((img, index, arr) => `
+            const postsCount = document.getElementById('dvizhPostsCount');
+            const likesCount = document.getElementById('dvizhLikesCount');
+            const viewsCount = document.getElementById('dvizhViewsCount');
+
+            if (postsCount) postsCount.textContent = String(normalizedPosts.length);
+            if (likesCount) likesCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.likes_count || post.likes || 0), 0));
+            if (viewsCount) viewsCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.views_count || post.views || 0), 0));
+
+            if (!normalizedPosts.length) {
+                dvizhFeed.innerHTML = `
+                    <div class="glass-box p-5 rounded-[24px] text-center">
+                        <div class="text-3xl mb-2">🔥</div>
+                        <div class="font-bold text-lg mb-1">Пока нет постов</div>
+                        <div class="text-sm text-gray-400">Стань первым, кто опубликует пост в Движе.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            dvizhFeed.innerHTML = normalizedPosts.map((post) => {
+                const images = Array.isArray(post.image_urls) ? post.image_urls : (Array.isArray(post.images) ? post.images : []);
+                const safeText = escapeHtml(post.text || '').replace(/
+/g, '<br>');
+                const imagesHtml = images.slice(0, 2).map((img, index, arr) => `
                     <div class="${arr.length === 1 ? 'col-span-2' : ''} overflow-hidden rounded-[20px] border border-white/10 bg-white/5">
-                        <img src="${img}" alt="post-image-${post.id}-${index}" class="w-full ${arr.length === 1 ? 'h-56' : 'h-40'} object-cover" />
+                        <img src="${escapeHtml(img)}" alt="post-image-${escapeHtml(post.id)}-${index}" class="w-full ${arr.length === 1 ? 'h-56' : 'h-40'} object-cover" />
                     </div>
                 `).join('');
+
+                const author = escapeHtml(post.author_name || post.author || 'Автор');
+                const handle = escapeHtml(post.username ? `@${post.username}` : post.handle || '@user');
+                const likes = Number(post.likes_count || post.likes || 0);
+                const comments = Number(post.comments_count || post.comments || 0);
+                const views = Number(post.views_count || post.views || 0);
 
                 return `
                     <div class="glass-box p-4 rounded-[24px]">
@@ -1676,25 +1735,64 @@ body::after {
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="h-12 w-12 rounded-[18px] bg-gradient-to-br from-orange-400/20 to-pink-500/20 flex items-center justify-center text-xl shrink-0">🔥</div>
                                 <div class="min-w-0">
-                                    <div class="font-bold truncate">${post.author}</div>
-                                    <div class="text-xs text-gray-400 truncate">${post.handle} • ${post.date}</div>
+                                    <div class="font-bold truncate">${author}</div>
+                                    <div class="text-xs text-gray-400 truncate">${handle} • ${formatDvizhDate(post.created_at || post.date)}</div>
                                 </div>
                             </div>
                             <div class="premium-pill">Движ</div>
                         </div>
 
-                        <div class="text-sm text-gray-200 leading-relaxed mb-3">${post.text}</div>
+                        <div class="text-sm text-gray-200 leading-relaxed mb-3">${safeText}</div>
 
                         ${imagesHtml ? `<div class="grid grid-cols-2 gap-3 mb-3">${imagesHtml}</div>` : ''}
 
                         <div class="grid grid-cols-3 gap-3">
-                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">❤️ ${post.likes}</button>
-                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">💬 ${post.comments}</button>
-                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">👁 ${post.views}</button>
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">❤️ ${likes}</button>
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">💬 ${comments}</button>
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">👁 ${views}</button>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        async function loadDvizhFeed() {
+            const dvizhFeed = document.getElementById('dvizhFeed');
+            if (!dvizhFeed) return;
+
+            dvizhFeed.innerHTML = `
+                <div class="glass-box p-5 rounded-[24px] text-center text-sm text-gray-400">Загружаем ленту...</div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/feed`);
+                if (!response.ok) throw new Error('feed not ready');
+                const data = await response.json();
+                const posts = Array.isArray(data.posts) ? data.posts : [];
+                renderDvizhFeed(posts.length ? posts : DVIZH_DEMO_POSTS);
+            } catch (error) {
+                console.warn('Dvizh feed fallback:', error);
+                renderDvizhFeed(DVIZH_DEMO_POSTS);
+            }
+        }
+
+        async function uploadDvizhImages(files) {
+            const uploads = [];
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (!response.ok || !data.secure_url) {
+                    throw new Error(data.error?.message || 'Не удалось загрузить изображение');
+                }
+                uploads.push(data.secure_url);
+            }
+            return uploads;
         }
 
         function openDvizhModal() {
@@ -3107,29 +3205,87 @@ body::after {
         }
 
         if (dvizhRefreshBtn) {
-            dvizhRefreshBtn.addEventListener('click', renderDvizhFeed);
+            dvizhRefreshBtn.addEventListener('click', loadDvizhFeed);
         }
 
         if (submitDvizhPostBtn) {
-            submitDvizhPostBtn.addEventListener('click', () => {
-                const textValue = (document.getElementById('dvizhPostText')?.value || '').trim();
+            submitDvizhPostBtn.addEventListener('click', async () => {
+                const textField = document.getElementById('dvizhPostText');
+                const imageInput = document.getElementById('dvizhPostImages');
+                const rawTextValue = (textField?.value || '').trim();
+                const textValue = sanitizeDvizhText(rawTextValue);
+                const files = Array.from(imageInput?.files || []);
 
-                if (!textValue) {
-                    if (tg && tg.showAlert) {
-                        tg.showAlert('Напиши текст для поста');
-                    } else {
-                        alert('Напиши текст для поста');
-                    }
+                if (!textValue || textValue.length < 8) {
+                    (tg && tg.showAlert ? tg.showAlert : alert)('Напиши осмысленный текст минимум из 8 символов');
                     return;
                 }
 
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Каркас готов. Следующий шаг — подключить backend и списание 5 кредитов.');
-                } else {
-                    alert('Каркас готов. Следующий шаг — подключить backend и списание 5 кредитов.');
+                if (files.length > 2) {
+                    (tg && tg.showAlert ? tg.showAlert : alert)('Можно прикрепить максимум 2 фото');
+                    return;
                 }
 
-                closeDvizhModal();
+                for (const file of files) {
+                    const isAllowed = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
+                    if (!isAllowed) {
+                        (tg && tg.showAlert ? tg.showAlert : alert)('Разрешены только JPG, PNG и WEBP');
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        (tg && tg.showAlert ? tg.showAlert : alert)('Каждое фото должно быть не больше 5 МБ');
+                        return;
+                    }
+                }
+
+                const originalBtnText = submitDvizhPostBtn.textContent;
+                submitDvizhPostBtn.disabled = true;
+                submitDvizhPostBtn.classList.add('btn-disabled');
+                submitDvizhPostBtn.textContent = 'Публикуем...';
+
+                try {
+                    const imageUrls = files.length ? await uploadDvizhImages(files) : [];
+
+                    const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            initData: tg?.initData || '',
+                            text: textValue,
+                            image_urls: imageUrls,
+                            amount: 5,
+                            action: 'dvizh_post'
+                        })
+                    });
+
+                    const data = await response.json().catch(() => ({}));
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Не удалось отправить пост');
+                    }
+
+                    if (data.user) {
+                        appState.user = data.user;
+                        updateUserBar();
+                    } else {
+                        await registerTelegramUser();
+                    }
+
+                    await loadTransactions();
+                    await loadDvizhFeed();
+
+                    if (textField) textField.value = '';
+                    if (imageInput) imageInput.value = '';
+                    closeDvizhModal();
+                    (tg && tg.showAlert ? tg.showAlert : alert)('Пост отправлен на модерацию. Списано 5 кредитов.');
+                } catch (error) {
+                    console.error(error);
+                    (tg && tg.showAlert ? tg.showAlert : alert)(error.message || 'Ошибка при отправке поста');
+                } finally {
+                    submitDvizhPostBtn.disabled = false;
+                    submitDvizhPostBtn.classList.remove('btn-disabled');
+                    submitDvizhPostBtn.textContent = originalBtnText;
+                }
             });
         }
 
@@ -3138,6 +3294,7 @@ body::after {
         loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
+        loadDvizhFeed();
         showBottomPage('home');
     </script>
 
