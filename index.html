@@ -9,11 +9,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-0: #050505;
-            --bg-1: #070b14;
-            --bg-2: #0b1120;
+            --bg-0: #030303;
+            --bg-1: #060914;
+            --bg-2: #09101d;
             --panel: rgba(15, 23, 42, 0.62);
-            --panel-strong: rgba(17, 24, 39, 0.82);
+            --panel-strong: rgba(17, 24, 39, 0.84);
             --panel-soft: rgba(255,255,255,0.04);
             --stroke: rgba(255,255,255,0.08);
             --stroke-strong: rgba(255,255,255,0.14);
@@ -25,11 +25,13 @@
             --violet: #8b5cf6;
             --violet-2: #a855f7;
             --green: #10b981;
+            --green-2: #34d399;
             --gold: #d4af37;
             --danger: #ef4444;
-            --shadow-dark: 0 18px 50px rgba(0,0,0,0.38);
-            --shadow-blue: 0 12px 34px rgba(59,130,246,0.22);
-            --shadow-violet: 0 12px 34px rgba(139,92,246,0.22);
+            --shadow-dark: 0 18px 50px rgba(0,0,0,0.42);
+            --shadow-blue: 0 12px 34px rgba(59,130,246,0.24);
+            --shadow-violet: 0 12px 34px rgba(139,92,246,0.24);
+            --shadow-green: 0 12px 30px rgba(16,185,129,0.26);
             --shadow-gold: 0 12px 34px rgba(212,175,55,0.18);
             --radius-xl: 24px;
             --radius-lg: 20px;
@@ -43,10 +45,10 @@
 
         body {
             background:
-                radial-gradient(circle at top left, rgba(139,92,246,0.18), transparent 28%),
-                radial-gradient(circle at top right, rgba(59,130,246,0.14), transparent 30%),
-                radial-gradient(circle at bottom center, rgba(168,85,247,0.10), transparent 32%),
-                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+                radial-gradient(circle at top left, rgba(139,92,246,0.20), transparent 26%),
+                radial-gradient(circle at top right, rgba(59,130,246,0.16), transparent 28%),
+                radial-gradient(circle at bottom center, rgba(34,197,94,0.08), transparent 30%),
+                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 42%, var(--bg-2) 100%);
             color: var(--text);
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             -webkit-user-select: none;
@@ -60,8 +62,8 @@
             inset: 0;
             pointer-events: none;
             background:
-                linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0)),
-                radial-gradient(circle at 20% 10%, rgba(255,255,255,0.04), transparent 22%);
+                linear-gradient(rgba(255,255,255,0.015), rgba(255,255,255,0)),
+                radial-gradient(circle at 20% 10%, rgba(255,255,255,0.035), transparent 22%);
             mix-blend-mode: screen;
             opacity: 0.35;
         }
@@ -78,15 +80,16 @@
         }
 
         .brand-title {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+            font-size: 23px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
             text-align: center;
-            margin-bottom: 6px;
-            margin-top: -4px;
-            background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 38%, #60a5fa 100%);
+            margin-bottom: 10px;
+            margin-top: -2px;
+            background: linear-gradient(90deg, #ddd6fe 0%, #93c5fd 48%, #86efac 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 24px rgba(139,92,246,0.10);
         }
 
         .section-title {
@@ -101,7 +104,7 @@
             position: relative;
             overflow: hidden;
             border: 1px solid var(--stroke);
-            background: linear-gradient(180deg, rgba(17,24,39,0.78), rgba(7,11,20,0.82));
+            background: linear-gradient(180deg, rgba(12,18,31,0.84), rgba(6,10,20,0.90));
             backdrop-filter: blur(18px);
             box-shadow: var(--shadow-dark);
         }
@@ -137,19 +140,22 @@
 
         .card:hover,
         .bento-card:hover {
-            border-color: rgba(139,92,246,0.28);
-            box-shadow: var(--shadow-dark), 0 0 0 1px rgba(139,92,246,0.12), var(--shadow-violet);
+            border-color: rgba(139,92,246,0.30);
+            box-shadow:
+                var(--shadow-dark),
+                0 0 0 1px rgba(139,92,246,0.12),
+                0 0 28px rgba(59,130,246,0.08);
         }
 
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-top: -4px;
+            margin-top: 0;
         }
 
         .bento-card {
-            border-radius: 26px;
+            border-radius: 28px;
             padding: 16px;
             min-height: 148px;
             transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
@@ -157,18 +163,25 @@
 
         .bento-large {
             grid-column: span 2;
-            min-height: 170px;
+            min-height: 178px;
+            background:
+                radial-gradient(circle at top left, rgba(139,92,246,0.16), transparent 30%),
+                radial-gradient(circle at right center, rgba(59,130,246,0.14), transparent 28%),
+                linear-gradient(180deg, rgba(10,16,28,0.92), rgba(4,8,18,0.96));
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 22px 60px rgba(0,0,0,0.48);
         }
 
         .bento-tall {
-            min-height: 210px;
+            min-height: 220px;
         }
 
         .neon-ring {
             box-shadow:
-                0 0 0 2px rgba(255,255,255,0.06),
+                0 0 0 2px rgba(255,255,255,0.05),
                 0 0 0 6px rgba(16,185,129,0.10),
-                0 0 20px rgba(16,185,129,0.28);
+                0 0 20px rgba(16,185,129,0.26);
         }
 
         .premium-pill {
@@ -212,13 +225,17 @@
         }
 
         .primary-btn {
-            background: linear-gradient(135deg, #6d28d9, #2563eb 55%, #3b82f6);
-            box-shadow: 0 10px 26px rgba(59,130,246,0.26), 0 8px 26px rgba(139,92,246,0.24);
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            box-shadow:
+                0 0 24px rgba(139,92,246,0.22),
+                0 12px 28px rgba(59,130,246,0.22);
         }
 
         .green-btn {
-            background: linear-gradient(135deg, #059669, #34d399);
-            box-shadow: 0 8px 20px rgba(16,185,129,0.24);
+            background: linear-gradient(135deg, #22c55e, #34d399);
+            box-shadow:
+                0 0 22px rgba(34,197,94,0.24),
+                0 10px 24px rgba(16,185,129,0.24);
         }
 
         .secondary-btn {
@@ -282,18 +299,20 @@
         }
 
         .inner-panel {
-            background: linear-gradient(180deg, rgba(2,6,23,0.72), rgba(15,23,42,0.72));
+            background: linear-gradient(180deg, rgba(3,9,25,0.84), rgba(10,18,40,0.70));
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 18px;
             padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
         }
 
         .trend-preview {
             position: relative;
             overflow: hidden;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
             background: #0f172a;
+            box-shadow: inset 0 0 18px rgba(255,255,255,0.02);
         }
 
         .trend-preview::after {
@@ -324,9 +343,9 @@
         }
 
         .bottom-nav-btn.active .nav-icon-wrap {
-            background: linear-gradient(135deg, rgba(139,92,246,0.24), rgba(59,130,246,0.20));
+            background: linear-gradient(135deg, rgba(139,92,246,0.28), rgba(59,130,246,0.22));
             border: 1px solid rgba(139,92,246,0.24);
-            box-shadow: 0 0 22px rgba(139,92,246,0.12);
+            box-shadow: 0 0 18px rgba(139,92,246,0.16);
         }
 
         .topup-modal-box {
@@ -369,6 +388,11 @@
             animation: softPulse 3s ease-in-out infinite;
         }
 
+        .hero-accent {
+            color: #c4b5fd;
+            text-shadow: 0 0 22px rgba(139,92,246,0.10);
+        }
+
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -382,10 +406,14 @@
 
         @keyframes softPulse {
             0%, 100% {
-                box-shadow: 0 10px 26px rgba(59,130,246,0.18), 0 8px 26px rgba(139,92,246,0.18);
+                box-shadow:
+                    0 0 16px rgba(59,130,246,0.12),
+                    0 0 18px rgba(139,92,246,0.12);
             }
             50% {
-                box-shadow: 0 12px 34px rgba(59,130,246,0.26), 0 10px 34px rgba(139,92,246,0.24);
+                box-shadow:
+                    0 0 28px rgba(59,130,246,0.20),
+                    0 0 26px rgba(139,92,246,0.18);
             }
         }
 
@@ -401,15 +429,15 @@
             }
 
             .bento-large {
-                min-height: 162px;
+                min-height: 168px;
             }
 
             .bento-tall {
-                min-height: 198px;
+                min-height: 204px;
             }
 
             .brand-title {
-                font-size: 24px;
+                font-size: 23px;
             }
         }
     </style>
@@ -418,8 +446,8 @@
     <div class="page-wrap">
         <h1 class="brand-title">UBT ToolKit</h1>
 
-        <div id="userBar" class="mb-3 hidden fade-up">
-            <div class="flex items-start justify-between gap-3">
+        <div id="userBar" class="mb-4 hidden fade-up">
+            <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
                     <div id="userAvatarWrap" class="neon-ring h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                         <img id="userAvatar" class="h-full w-full object-cover hidden" alt="avatar" />
@@ -427,13 +455,13 @@
                     </div>
 
                     <div class="min-w-0">
-                        <div id="userName" class="font-semibold text-white text-[15px] leading-tight truncate">Пользователь</div>
-                        <div id="userBalance" class="text-sm text-gray-300 mt-1">Баланс: 0 кредитов</div>
+                        <div id="userName" class="font-bold text-white text-[16px] leading-tight truncate">Пользователь</div>
+                        <div id="userBalance" class="text-[14px] text-gray-300 mt-1">Баланс: 0 кредитов</div>
                         <span id="userPlan" class="hidden">Тариф: free</span>
                     </div>
                 </div>
 
-                <button id="topupBtn" class="green-btn px-4 py-2.5 rounded-2xl font-bold whitespace-nowrap text-sm">
+                <button id="topupBtn" class="green-btn px-5 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px]">
                     ⭐ Пополнить
                 </button>
             </div>
@@ -446,20 +474,20 @@
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
-                                    <div class="text-xs uppercase tracking-[0.18em] text-violet-300/80 mb-2">Core Tool</div>
-                                    <h2 class="text-2xl font-bold leading-tight">Уникализатор видео</h2>
-                                    <p class="text-sm text-gray-400 mt-2 max-w-xs">
+                                    <div class="text-xs uppercase tracking-[0.22em] hero-accent mb-2">Core Tool</div>
+                                    <h2 class="text-[22px] font-extrabold leading-tight">Уникализатор видео</h2>
+                                    <p class="text-[15px] text-gray-400 mt-3 max-w-xs leading-relaxed">
                                         Очистка метаданных, подготовка к заливу и быстрый результат.
                                     </p>
                                 </div>
-                                <div class="h-14 w-14 rounded-3xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl soft-pulse">
+                                <div class="h-16 w-16 rounded-[22px] bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-3xl soft-pulse shrink-0">
                                     🎥
                                 </div>
                             </div>
 
-                            <div class="flex items-end justify-between mt-6">
-                                <div class="text-xs text-gray-500">FAST • PREMIUM • CLEAN</div>
-                                <div class="primary-btn px-4 py-3 rounded-2xl font-semibold text-sm">
+                            <div class="flex items-end justify-between mt-6 gap-3">
+                                <div class="text-xs text-gray-500 tracking-wide">FAST • PREMIUM • CLEAN</div>
+                                <div class="primary-btn px-5 py-3 rounded-2xl font-semibold text-sm">
                                     Открыть
                                 </div>
                             </div>
@@ -469,16 +497,16 @@
                     <div class="bento-card cursor-pointer" onclick="showSection('link')">
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
-                                <div class="text-sm font-semibold">Смарт-линк</div>
-                                <div class="h-11 w-11 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🔗</div>
+                                <div class="text-[15px] font-bold">Смарт-линк</div>
+                                <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
                             </div>
 
                             <div class="mt-3 inner-panel">
                                 <div class="text-xs text-gray-400 mb-1">Трекинг и маскировка</div>
-                                <div class="text-sm text-white">Сокращай, отслеживай, анализируй</div>
+                                <div class="text-[15px] text-white leading-relaxed">Сокращай, отслеживай, анализируй</div>
                             </div>
 
-                            <div class="text-xs text-violet-300 mt-3">Mini Tracker Dashboard</div>
+                            <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
                         </div>
                     </div>
 
@@ -486,20 +514,20 @@
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
                                 <div>
-                                    <div class="text-sm font-semibold">Тренды</div>
+                                    <div class="text-[15px] font-bold">Тренды</div>
                                     <div class="text-xs text-gray-400 mt-1">ТОП креативы дня</div>
                                 </div>
-                                <div class="h-11 w-11 rounded-2xl bg-violet-500/15 flex items-center justify-center text-2xl">🔥</div>
+                                <div class="h-12 w-12 rounded-[18px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
                             </div>
 
                             <div class="trend-preview mt-4">
-                                <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" alt="trend" class="w-full h-36 object-cover opacity-70" />
+                                <img src="https://res.cloudinary.com/de7pheovq/image/upload/v1774706380/Screenshot_1_fygecs.png" alt="trend" class="w-full h-36 object-cover opacity-75" />
                                 <div class="absolute left-3 bottom-3 z-10">
                                     <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">ТОП КРЕО ДНЯ</span>
                                 </div>
                             </div>
 
-                            <div class="text-xs text-gray-400 mt-4">Смотри, что сейчас заходит в ленте</div>
+                            <div class="text-xs text-gray-400 mt-4 leading-relaxed">Смотри, что сейчас заходит в ленте</div>
                         </div>
                     </div>
                 </div>
@@ -604,10 +632,10 @@
                 </div>
 
                 <div id="smartLinkStatsView" class="hidden">
-                                        <div class="flex items-center justify-between mb-4 gap-3">
-                        <button id="backToSmartLinkBtn" class="text-blue-400">← Назад</button>
+                                         <div class="flex items-center justify-between mb-4 gap-3">
+                        <button id="backToSmartLinkBtn" class="text-blue-400 font-medium">← Назад</button>
                         <div class="flex items-center gap-2">
-                            <h2 class="section-title text-xl font-bold">Статистика</h2>
+                            <h2 class="section-title text-xl font-extrabold">Статистика</h2>
                             <button
                                 id="refreshSmartStatsBtn"
                                 class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
@@ -616,28 +644,28 @@
                         </div>
                     </div>
 
-                    <div id="smartStatsSummary" class="glass-box p-4 rounded-2xl mb-4">
-                        <p class="text-white font-semibold mb-3">📊 Общая статистика</p>
+                    <div id="smartStatsSummary" class="glass-box p-4 rounded-[24px] mb-4">
+                        <p class="text-white font-semibold mb-3 tracking-wide">📊 Общая статистика</p>
 
                         <div class="grid grid-cols-2 gap-3">
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400">Всего ссылок</div>
-                                <div id="summaryTotalLinks" class="text-white text-xl font-bold">0</div>
+                                <div class="text-xs text-gray-400 mb-1">Всего ссылок</div>
+                                <div id="summaryTotalLinks" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
 
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400">Всего кликов</div>
-                                <div id="summaryTotalClicks" class="text-white text-xl font-bold">0</div>
+                                <div class="text-xs text-gray-400 mb-1">Всего кликов</div>
+                                <div id="summaryTotalClicks" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
 
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400">Уникальные</div>
-                                <div id="summaryTotalUnique" class="text-white text-xl font-bold">0</div>
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div id="summaryTotalUnique" class="text-white text-[22px] font-extrabold">0</div>
                             </div>
 
                             <div class="metric-tile metric-tile-strong">
-                                <div class="text-xs text-gray-400">Топ ссылка</div>
-                                <div id="summaryTopLink" class="text-white text-xs font-bold break-all">—</div>
+                                <div class="text-xs text-gray-400 mb-1">Топ ссылка</div>
+                                <div id="summaryTopLink" class="text-white text-xs font-bold break-all leading-relaxed">—</div>
                             </div>
                         </div>
                     </div>
@@ -647,15 +675,15 @@
             </div>
 
             <div id="spy-section" class="hidden">
-                <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
-                <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
+                <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
+                <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Тренды УБТ</h2>
 
                 <div class="flex gap-2 overflow-x-auto mb-4 pb-2">
-                    <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Все</button>
-                    <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Дейтинг</button>
-                    <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Крипта</button>
-                    <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Гемблинг</button>
-                    <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap">Нутра</button>
+                    <button onclick="filterSpy('all', this)" class="spy-filter bg-blue-600 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Все</button>
+                    <button onclick="filterSpy('dating', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Дейтинг</button>
+                    <button onclick="filterSpy('crypto', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Крипта</button>
+                    <button onclick="filterSpy('gambling', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Гемблинг</button>
+                    <button onclick="filterSpy('nutra', this)" class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm whitespace-nowrap font-semibold">Нутра</button>
                 </div>
 
                 <div id="spyList" class="flex flex-col gap-4"></div>
@@ -663,9 +691,9 @@
         </div>
 
         <div id="history-screen" class="hidden">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="section-title text-xl font-bold">📜 История операций</h2>
-                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
+                <button id="refreshHistoryBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     Обновить
                 </button>
             </div>
@@ -674,18 +702,18 @@
         </div>
 
         <div id="support-screen" class="hidden">
-            <h2 class="section-title text-xl mb-4 font-bold">💬 Поддержка</h2>
+            <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
 
-            <div class="glass-box p-5 rounded-2xl mb-4">
+            <div class="glass-box p-5 rounded-[24px] mb-4">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="h-12 w-12 rounded-2xl bg-blue-500/15 flex items-center justify-center text-2xl">🛟</div>
+                    <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🛟</div>
                     <div>
-                        <div class="font-semibold">Служба поддержки</div>
+                        <div class="font-bold">Служба поддержки</div>
                         <div class="text-sm text-gray-400">Если есть вопросы или проблемы</div>
                     </div>
                 </div>
 
-                <p class="text-sm text-gray-300 mb-4">
+                <p class="text-sm text-gray-300 mb-4 leading-relaxed">
                     Напиши нам в Telegram, и мы поможем с доступом, балансом, оплатой, видео или смарт-ссылками.
                 </p>
 
@@ -701,32 +729,32 @@
 
     <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
         <div class="max-w-xl mx-auto flex items-center justify-around">
-            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1 text-sm text-white" onclick="showBottomPage('home')">
+            <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1.5 text-sm text-white" onclick="showBottomPage('home')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🏠</div>
-                <span>Домой</span>
+                <span class="font-medium">Домой</span>
             </button>
 
-            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1 text-sm text-white/70" onclick="showBottomPage('history')">
+            <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('history')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">📜</div>
-                <span>История</span>
+                <span class="font-medium">История</span>
             </button>
 
-            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1 text-sm text-white/70" onclick="showBottomPage('support')">
+            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
-                <span>Поддержка</span>
+                <span class="font-medium">Поддержка</span>
             </button>
         </div>
     </div>
 
-    <div id="topupModalBackdrop" class="fixed inset-0 bg-black/60 hidden z-50"></div>
+    <div id="topupModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
     <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
-        <div class="glass-box topup-modal-box rounded-3xl p-5">
-            <div class="flex items-center justify-between mb-4">
+        <div class="glass-box topup-modal-box rounded-[28px] p-5">
+            <div class="flex items-center justify-between mb-4 gap-3">
                 <div>
-                    <div class="text-xl font-bold">⭐ Пополнить баланс</div>
-                    <div class="text-sm text-gray-400">Выбери пакет кредитов</div>
+                    <div class="text-[22px] font-extrabold">⭐ Пополнить баланс</div>
+                    <div class="text-sm text-gray-400 mt-1">Выбери пакет кредитов</div>
                 </div>
-                <button id="closeTopupModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold">Закрыть</button>
+                <button id="closeTopupModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
             </div>
 
             <div class="space-y-3">
@@ -1013,7 +1041,7 @@
                 const date = new Date(item.created_at).toLocaleString('ru-RU');
 
                 const card = document.createElement('div');
-                card.className = 'glass-box p-4 rounded-2xl';
+                card.className = 'glass-box p-4 rounded-[24px]';
                 card.innerHTML = `
                     <div class="flex items-start justify-between gap-3">
                         <div>
@@ -1112,8 +1140,7 @@
                 };
             }
         }
-
-        async function createTopupInvoice(stars, credits) {
+              async function createTopupInvoice(stars, credits) {
             if (!tg || !tg.initData) {
                 topupStatus.textContent = 'Открой Mini App через Telegram';
                 return;
@@ -1164,7 +1191,8 @@
         }
 
         let currentFilter = 'all';
-                function filterSpy(niche, button) {
+
+        function filterSpy(niche, button) {
             currentFilter = niche;
             renderSpyTrends();
 
@@ -1191,21 +1219,21 @@
 
             filtered.forEach((item) => {
                 const card = document.createElement('div');
-                card.className = 'glass-box p-4 rounded-2xl';
+                card.className = 'glass-box p-4 rounded-[24px] fade-up';
 
                 card.innerHTML = `
-                    <div class="overflow-hidden rounded-xl mb-4 border border-gray-700">
+                    <div class="overflow-hidden rounded-[20px] mb-4 border border-white/10">
                         <img src="${item.image}" alt="${item.title}" class="w-full h-auto block" />
                     </div>
 
                     <div class="flex items-center justify-between mb-2 gap-2">
-                        <h3 class="text-lg font-semibold">${item.title}</h3>
-                        <span class="danger-badge text-xs px-2 py-1 rounded-full whitespace-nowrap">${item.week}</span>
+                        <h3 class="text-lg font-bold leading-tight">${item.title}</h3>
+                        <span class="danger-badge text-xs px-3 py-1 rounded-full whitespace-nowrap font-semibold">${item.week}</span>
                     </div>
 
                     <div class="flex gap-2 flex-wrap mb-4">
-                        <span class="text-xs bg-gray-700 px-3 py-1 rounded-full">Платформа: ${item.platform}</span>
-                        <span class="text-xs bg-blue-700 px-3 py-1 rounded-full">${item.niche.toUpperCase()}</span>
+                        <span class="text-xs bg-slate-800/90 px-3 py-1.5 rounded-full border border-white/5">Платформа: ${item.platform}</span>
+                        <span class="text-xs bg-blue-700/90 px-3 py-1.5 rounded-full">${item.niche.toUpperCase()}</span>
                     </div>
 
                     <div class="flex gap-3">
@@ -1226,7 +1254,7 @@
 
             if (filtered.length === 0) {
                 spyList.innerHTML = `
-                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
                         Пока нет креативов в этой нише
                     </div>
                 `;
@@ -1296,16 +1324,16 @@
                 row.innerHTML = `
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
-                            <div class="font-medium text-white truncate">${item.fileName}</div>
+                            <div class="font-semibold text-white truncate">${item.fileName}</div>
                             <div class="text-xs text-gray-500 mt-1">${item.createdAt}</div>
                         </div>
-                        <div class="shrink-0 text-xs ${statusColor}">${statusText}</div>
+                        <div class="shrink-0 text-xs font-medium ${statusColor}">${statusText}</div>
                     </div>
 
                     ${
                         item.url
                             ? `
-                                <div class="flex gap-2 mt-2">
+                                <div class="flex gap-3 mt-3 flex-wrap">
                                     <a href="${item.url}" target="_blank" class="text-blue-400 text-xs underline inline-block">
                                         Открыть
                                     </a>
@@ -1390,14 +1418,14 @@
 
             links.forEach((item) => {
                 const row = document.createElement('div');
-                row.className = 'glass-box rounded-2xl p-4 fade-up';
+                row.className = 'glass-box rounded-[24px] p-4 fade-up';
 
                 const inlineStatsId = `inline-stats-${item.id}`;
                 const inlineChartId = `inline-chart-${item.id}`;
 
                 row.innerHTML = `
                     <div class="min-w-0">
-                        <div class="font-medium text-white break-all">${item.short_url}</div>
+                        <div class="font-semibold text-white break-all">${item.short_url}</div>
                         <div class="text-xs text-gray-500 mt-1">
                             ${new Date(item.created_at).toLocaleString('ru-RU')}
                         </div>
@@ -1405,13 +1433,13 @@
 
                     <div class="grid grid-cols-2 gap-2 mt-3">
                         <div class="metric-tile">
-                            <div class="text-[11px] text-gray-400">Клики</div>
-                            <div class="text-white text-lg font-bold">${item.clicks || 0}</div>
+                            <div class="text-[11px] text-gray-400 mb-1">Клики</div>
+                            <div class="text-white text-lg font-extrabold">${item.clicks || 0}</div>
                         </div>
 
                         <div class="metric-tile">
-                            <div class="text-[11px] text-gray-400">Уникальные</div>
-                            <div class="text-white text-lg font-bold">${item.unique_clicks || 0}</div>
+                            <div class="text-[11px] text-gray-400 mb-1">Уникальные</div>
+                            <div class="text-white text-lg font-extrabold">${item.unique_clicks || 0}</div>
                         </div>
                     </div>
 
@@ -1462,7 +1490,7 @@
 
             container.classList.remove('hidden');
             container.innerHTML = `
-                <div class="glass-box rounded-2xl p-4 text-gray-300">
+                <div class="glass-box rounded-[22px] p-4 text-gray-300">
                     Загружаем статистику...
                 </div>
             `;
@@ -1472,7 +1500,7 @@
 
                 if (!data.ok || !data.stats) {
                     container.innerHTML = `
-                        <div class="glass-box rounded-2xl p-4 text-red-400">
+                        <div class="glass-box rounded-[22px] p-4 text-red-400">
                             Не удалось загрузить статистику
                         </div>
                     `;
@@ -1506,12 +1534,12 @@
                         <div class="grid grid-cols-2 gap-3 mb-3">
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Клики</div>
-                                <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                                <div class="text-white text-xl font-extrabold">${stats.clicks || 0}</div>
                             </div>
 
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Уникальные</div>
-                                <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                                <div class="text-white text-xl font-extrabold">${stats.unique_clicks || 0}</div>
                             </div>
                         </div>
 
@@ -1612,7 +1640,7 @@
             } catch (error) {
                 console.error(error);
                 container.innerHTML = `
-                    <div class="glass-box rounded-2xl p-4 text-red-400">
+                    <div class="glass-box rounded-[22px] p-4 text-red-400">
                         Ошибка соединения
                     </div>
                 `;
@@ -1669,7 +1697,7 @@
             destroyAllStatsCharts();
 
             list.innerHTML = `
-                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
                     Загружаем статистику...
                 </div>
             `;
@@ -1679,7 +1707,7 @@
 
                 if (!data.ok || !data.links) {
                     list.innerHTML = `
-                        <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                        <div class="glass-box p-4 rounded-[24px] text-red-400 text-center">
                             Ошибка загрузки статистики
                         </div>
                     `;
@@ -1691,7 +1719,7 @@
 
                 if (!links.length) {
                     list.innerHTML = `
-                        <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        <div class="glass-box p-4 rounded-[24px] text-gray-400 text-center">
                             Пока нет ссылок
                         </div>
                     `;
@@ -1760,12 +1788,12 @@
                         <div class="grid grid-cols-2 gap-3 mb-3">
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Клики</div>
-                                <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                                <div class="text-white text-xl font-extrabold">${stats.clicks || 0}</div>
                             </div>
 
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Уникальные</div>
-                                <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                                <div class="text-white text-xl font-extrabold">${stats.unique_clicks || 0}</div>
                             </div>
                         </div>
 
@@ -1866,7 +1894,7 @@
             } catch (error) {
                 console.error(error);
                 list.innerHTML = `
-                    <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                    <div class="glass-box p-4 rounded-[24px] text-red-400 text-center">
                         Ошибка соединения
                     </div>
                 `;
@@ -1949,7 +1977,7 @@
             if (!existing) {
                 const wrap = document.createElement('div');
                 wrap.id = 'videoProgressWrap';
-                wrap.className = 'mt-4 glass-box p-4 rounded-2xl fade-up';
+                wrap.className = 'mt-4 glass-box p-4 rounded-[24px] fade-up';
                 wrap.innerHTML = `
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div class="terminal-line" id="videoProgressLabel">Подготовка...</div>
