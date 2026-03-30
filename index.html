@@ -1061,27 +1061,52 @@ body::after {
 }
 
 
-/* tweak topup button only */
-#topupBtn{
-    margin-left: auto !important;
-    transform: translateX(6px) !important;
-    padding: 8px 14px !important;
+.hero-topbar .brand-title{
+    font-size: 16px !important;
+    letter-spacing: -0.02em !important;
+}
+
+
+.hero-topbar .brand-title{
     font-size: 13px !important;
-    border-radius: 16px !important;
+    letter-spacing: -0.01em !important;
 }
 
 
-/* fine tune button position */
-#topupBtn{
-    transform: translate(10px, -3px) !important;
+/* FIX: align everything top */
+.hero-topbar{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    z-index: 100;
+    background: transparent;
 }
 
+/* center title */
+.hero-topbar .brand-title{
+    position: absolute !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px !important;
+}
 
-/* make only the video block itself slightly narrower, without touching text */
-.bento-card.bento-large{
-    width: calc(100% - 12px) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+/* left block */
+#userBar{
+    position: relative !important;
+    top: 0 !important;
+    margin: 0 !important;
+}
+
+/* fix spacing below */
+.page-wrap{
+    padding-top: 70px !important;
 }
 
 </style>
