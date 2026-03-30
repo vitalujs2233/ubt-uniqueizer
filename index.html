@@ -1091,107 +1091,6 @@ body::after {
     font-size: 14px !important;
 }
 
-
-/* compact blocks */
-.bento-grid{
-    gap: 8px !important;
-}
-
-.bento-card{
-    padding: 12px !important;
-    min-height: 126px !important;
-    border-radius: 22px !important;
-}
-
-.bento-large{
-    min-height: 150px !important;
-}
-
-.bento-tall{
-    min-height: 182px !important;
-}
-
-.card{
-    padding: 16px !important;
-    margin-bottom: 12px !important;
-    border-radius: 20px !important;
-}
-
-.glass-box{
-    padding: 14px !important;
-    border-radius: 20px !important;
-}
-
-.metric-tile{
-    padding: 11px !important;
-    border-radius: 15px !important;
-}
-
-.inner-panel{
-    padding: 11px !important;
-    border-radius: 15px !important;
-}
-
-.trend-preview{
-    border-radius: 16px !important;
-}
-
-.trend-preview img{
-    height: 124px !important;
-}
-
-.primary-btn,
-.green-btn,
-.secondary-btn,
-.gold-btn{
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-}
-
-.neo-input{
-    padding: 13px 15px !important;
-    border-radius: 16px !important;
-}
-
-#video-section .glass-box,
-#generatedLinkBox,
-#linkHistoryBox,
-#videoHistoryBox,
-#smartStatsSummary{
-    padding: 14px !important;
-    border-radius: 20px !important;
-}
-
-#video-section .primary-btn,
-#link-section .primary-btn,
-#link-section .green-btn{
-    padding-top: 13px !important;
-    padding-bottom: 13px !important;
-}
-
-@media (max-width: 640px){
-    .bento-grid{
-        gap: 8px !important;
-    }
-
-    .bento-card{
-        padding: 11px !important;
-        min-height: 118px !important;
-    }
-
-    .bento-large{
-        min-height: 142px !important;
-    }
-
-    .bento-tall{
-        min-height: 170px !important;
-    }
-
-    .trend-preview img{
-        height: 112px !important;
-    }
-}
-
 </style>
 </head>
 <body class="p-4">
@@ -1275,6 +1174,25 @@ body::after {
                             </div>
 
                             <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card cursor-pointer" onclick="showSection('preland')">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <div class="text-[15px] font-bold">Преленд</div>
+                                    <div class="text-xs text-gray-400 mt-1">Собери страницу быстро</div>
+                                </div>
+                                <div class="h-12 w-12 rounded-[18px] bg-emerald-500/15 flex items-center justify-center text-2xl shrink-0">🌐</div>
+                            </div>
+
+                            <div class="mt-3 inner-panel">
+                                <div class="text-xs text-gray-400 mb-1">Preland Builder</div>
+                                <div class="text-[15px] text-white leading-relaxed">Шаблон, текст, кнопка и готовый HTML</div>
+                            </div>
+
+                            <div class="text-xs text-emerald-300 mt-3 tracking-wide">NEWS • BLOG • STORY • QUIZ</div>
                         </div>
                     </div>
 
@@ -1439,6 +1357,82 @@ body::after {
                     </div>
 
                     <div id="allSmartLinksStatsList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <div id="preland-section" class="hidden">
+                <div class="flex items-center justify-between mb-4 gap-3">
+                    <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
+                    <h2 class="section-title text-xl font-extrabold">🌐 Преленд</h2>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Preland Builder</div>
+                            <div class="text-sm text-gray-400 mt-1">Собери преленд так же быстро, как создаёшь smart-link</div>
+                        </div>
+                        <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">MVP</div>
+                    </div>
+
+                    <select id="prelandTemplate" class="neo-input mb-3">
+                        <option value="news">Новостной стиль</option>
+                        <option value="blog">Блог / отзыв</option>
+                        <option value="story">История успеха</option>
+                        <option value="quiz">Quiz / опрос</option>
+                    </select>
+
+                    <input id="prelandTitle" type="text" class="neo-input mb-3" placeholder="Заголовок" />
+                    <input id="prelandSubtitle" type="text" class="neo-input mb-3" placeholder="Подзаголовок" />
+                    <input id="prelandImage" type="text" class="neo-input mb-3" placeholder="Ссылка на изображение" />
+                    <input id="prelandButtonText" type="text" class="neo-input mb-3" placeholder="Текст кнопки" value="Перейти" />
+                    <input id="prelandTargetUrl" type="text" class="neo-input mb-3" placeholder="Ссылка перехода (smart-link / offer)" />
+                    <textarea id="prelandContent" class="neo-input mb-3 min-h-[160px]" placeholder="Основной текст преленда"></textarea>
+
+                    <button id="generatePrelandBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
+                        Сгенерировать преленд
+                    </button>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold">👁️ Превью</div>
+                            <div class="text-sm text-gray-400">Быстрый просмотр прямо в Mini App</div>
+                        </div>
+                        <button id="openPrelandPreviewBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            Открыть
+                        </button>
+                    </div>
+
+                    <div id="prelandPreview" class="inner-panel text-sm text-gray-300 min-h-[220px] flex items-center justify-center text-center">
+                        Здесь появится превью преленда
+                    </div>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold">🧩 HTML</div>
+                            <div class="text-sm text-gray-400">Готовый код для копирования</div>
+                        </div>
+                        <button id="copyPrelandHtmlBtn" class="green-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            Скопировать
+                        </button>
+                    </div>
+
+                    <textarea id="prelandHtmlOutput" class="neo-input min-h-[260px]" placeholder="После генерации тут появится HTML"></textarea>
+                </div>
+
+                <div id="prelandHistoryBox" class="glass-box p-4 rounded-[24px]">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <p class="text-white font-semibold">📦 Последние преленды</p>
+                        <button id="clearPrelandHistoryBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <div id="prelandHistoryList" class="space-y-3 text-sm text-gray-300"></div>
                 </div>
             </div>
 
@@ -1695,7 +1689,7 @@ body::after {
         }
 
         function showSection(section) {
-            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
+            const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section'];
             sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
             document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
 
@@ -2734,6 +2728,20 @@ body::after {
         const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
         const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
         const refreshSmartStatsBtn = document.getElementById('refreshSmartStatsBtn');
+        const prelandTemplate = document.getElementById('prelandTemplate');
+        const prelandTitle = document.getElementById('prelandTitle');
+        const prelandSubtitle = document.getElementById('prelandSubtitle');
+        const prelandImage = document.getElementById('prelandImage');
+        const prelandButtonText = document.getElementById('prelandButtonText');
+        const prelandTargetUrl = document.getElementById('prelandTargetUrl');
+        const prelandContent = document.getElementById('prelandContent');
+        const generatePrelandBtn = document.getElementById('generatePrelandBtn');
+        const prelandPreview = document.getElementById('prelandPreview');
+        const prelandHtmlOutput = document.getElementById('prelandHtmlOutput');
+        const copyPrelandHtmlBtn = document.getElementById('copyPrelandHtmlBtn');
+        const openPrelandPreviewBtn = document.getElementById('openPrelandPreviewBtn');
+        const prelandHistoryList = document.getElementById('prelandHistoryList');
+        const clearPrelandHistoryBtn = document.getElementById('clearPrelandHistoryBtn');
 
         let selectedFile = null;
         let uploadProgressTimer = null;
@@ -2806,6 +2814,233 @@ body::after {
             }
             setVideoProgressUI(100, 'Готово. Видео успешно обработано.');
         }
+
+        const PRELAND_STORAGE_KEY = 'ubt_preland_history_v1';
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeAttribute(value) {
+            return escapeHtml(value).replace(/`/g, '&#96;');
+        }
+
+        function getPrelandHistory() {
+            try {
+                const raw = localStorage.getItem(PRELAND_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                console.error('Preland history parse error:', error);
+                return [];
+            }
+        }
+
+        function savePrelandHistoryItem(item) {
+            const current = getPrelandHistory();
+            current.unshift(item);
+            localStorage.setItem(PRELAND_STORAGE_KEY, JSON.stringify(current.slice(0, 5)));
+            renderPrelandHistory();
+        }
+
+        function renderPrelandHistory() {
+            if (!prelandHistoryList) return;
+
+            const items = getPrelandHistory();
+            if (!items.length) {
+                prelandHistoryList.innerHTML = `
+                    <div class="inner-panel text-center text-gray-400">
+                        История прелендов пока пустая
+                    </div>
+                `;
+                return;
+            }
+
+            prelandHistoryList.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'inner-panel';
+                wrap.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="min-w-0">
+                            <div class="text-white font-semibold truncate">${escapeHtml(item.title || 'Без названия')}</div>
+                            <div class="text-xs text-gray-400 mt-1">${escapeHtml(item.templateLabel || 'Шаблон')}</div>
+                            <div class="text-xs text-gray-500 mt-2">${escapeHtml(item.createdAt || '')}</div>
+                        </div>
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">${index + 1}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="secondary-btn py-3 rounded-2xl font-semibold" onclick="loadPrelandHistoryItem(${index})">Загрузить</button>
+                        <button class="green-btn py-3 rounded-2xl font-semibold" onclick="copyPrelandHistoryHtml(${index})">HTML</button>
+                    </div>
+                `;
+                prelandHistoryList.appendChild(wrap);
+            });
+        }
+
+        window.loadPrelandHistoryItem = function (index) {
+            const items = getPrelandHistory();
+            const item = items[index];
+            if (!item) return;
+
+            if (prelandTemplate) prelandTemplate.value = item.template || 'news';
+            if (prelandTitle) prelandTitle.value = item.title || '';
+            if (prelandSubtitle) prelandSubtitle.value = item.subtitle || '';
+            if (prelandImage) prelandImage.value = item.image || '';
+            if (prelandButtonText) prelandButtonText.value = item.buttonText || 'Перейти';
+            if (prelandTargetUrl) prelandTargetUrl.value = item.targetUrl || '';
+            if (prelandContent) prelandContent.value = item.content || '';
+            if (prelandHtmlOutput) prelandHtmlOutput.value = item.html || '';
+            renderPrelandPreview(item);
+            hapticSuccess();
+        };
+
+        window.copyPrelandHistoryHtml = async function (index) {
+            const items = getPrelandHistory();
+            const item = items[index];
+            if (!item || !item.html) return;
+            const ok = await copyText(item.html);
+            if (ok) {
+                hapticSuccess();
+                tg?.showAlert?.('HTML скопирован');
+            } else {
+                hapticError();
+            }
+        };
+
+        function getTemplateMeta(template) {
+            const map = {
+                news: { label: 'Новостной стиль', badge: 'NEWS', buttonClass: '#2563eb' },
+                blog: { label: 'Блог / отзыв', badge: 'BLOG', buttonClass: '#7c3aed' },
+                story: { label: 'История успеха', badge: 'STORY', buttonClass: '#059669' },
+                quiz: { label: 'Quiz / опрос', badge: 'QUIZ', buttonClass: '#ea580c' }
+            };
+            return map[template] || map.news;
+        }
+
+        function buildPrelandHtml(payload) {
+            const meta = getTemplateMeta(payload.template);
+            const title = escapeHtml(payload.title || 'Без заголовка');
+            const subtitle = escapeHtml(payload.subtitle || '');
+            const image = escapeAttribute(payload.image || '');
+            const buttonText = escapeHtml(payload.buttonText || 'Перейти');
+            const targetUrl = escapeAttribute(payload.targetUrl || '#');
+            const paragraphs = (payload.content || '')
+                .split(/\n+/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => `<p>${escapeHtml(line)}</p>`)
+                .join('\n');
+
+            return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+body{margin:0;background:#eef2f7;font-family:Arial,sans-serif;color:#111827}
+.wrap{max-width:760px;margin:0 auto;background:#ffffff;min-height:100vh}
+.badge{display:inline-block;background:${meta.buttonClass};color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin:20px 20px 0}
+.hero img{width:100%;display:block;max-height:380px;object-fit:cover}
+.content{padding:22px}
+h1{font-size:30px;line-height:1.15;margin:0 0 12px;font-weight:800}
+h2{font-size:18px;line-height:1.5;margin:0 0 18px;color:#4b5563;font-weight:500}
+p{font-size:17px;line-height:1.75;margin:0 0 16px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:${meta.buttonClass};color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
+.note{font-size:13px;color:#6b7280;margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="badge">${meta.label}</div>
+${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
+<div class="content">
+<h1>${title}</h1>
+${subtitle ? `<h2>${subtitle}</h2>` : ''}
+${paragraphs || '<p>Добавь основной текст преленда.</p>'}
+<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
+<div class="note">Материал подготовлен в UBT ToolKit</div>
+</div>
+</div>
+</body>
+</html>`;
+        }
+
+        function renderPrelandPreview(payload) {
+            if (!prelandPreview) return;
+
+            const meta = getTemplateMeta(payload.template);
+            const safeTitle = escapeHtml(payload.title || 'Без заголовка');
+            const safeSubtitle = escapeHtml(payload.subtitle || '');
+            const safeImage = escapeAttribute(payload.image || '');
+            const safeButtonText = escapeHtml(payload.buttonText || 'Перейти');
+            const safeContent = escapeHtml(payload.content || 'Без текста').replace(/\n/g, '<br>');
+            const safeTargetUrl = escapeAttribute(payload.targetUrl || '#');
+
+            prelandPreview.innerHTML = `
+                <div class="w-full text-left">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
+                        <span class="text-xs text-gray-500">${meta.label}</span>
+                    </div>
+                    ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                    <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                    ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
+                    <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                    <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+                </div>
+            `;
+        }
+
+        function collectPrelandPayload() {
+            return {
+                template: prelandTemplate?.value || 'news',
+                title: prelandTitle?.value.trim() || '',
+                subtitle: prelandSubtitle?.value.trim() || '',
+                image: prelandImage?.value.trim() || '',
+                buttonText: prelandButtonText?.value.trim() || 'Перейти',
+                targetUrl: prelandTargetUrl?.value.trim() || '#',
+                content: prelandContent?.value.trim() || ''
+            };
+        }
+
+        function generatePreland() {
+            const payload = collectPrelandPayload();
+
+            if (!payload.title) {
+                tg?.showAlert?.('Добавь заголовок преленда');
+                hapticError();
+                return;
+            }
+
+            if (!payload.targetUrl || payload.targetUrl === '#') {
+                tg?.showAlert?.('Добавь ссылку перехода');
+                hapticError();
+                return;
+            }
+
+            const html = buildPrelandHtml(payload);
+            const meta = getTemplateMeta(payload.template);
+            const item = {
+                ...payload,
+                html,
+                templateLabel: meta.label,
+                createdAt: new Date().toLocaleString('ru-RU')
+            };
+
+            if (prelandHtmlOutput) prelandHtmlOutput.value = html;
+            renderPrelandPreview(item);
+            savePrelandHistoryItem(item);
+            hapticSuccess();
+        }
+
 
         videoInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
@@ -3014,8 +3249,60 @@ body::after {
             refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
 
+        if (generatePrelandBtn) {
+            generatePrelandBtn.addEventListener('click', generatePreland);
+        }
+
+        if (copyPrelandHtmlBtn) {
+            copyPrelandHtmlBtn.addEventListener('click', async function () {
+                const html = prelandHtmlOutput?.value?.trim();
+                if (!html) {
+                    tg?.showAlert?.('Сначала сгенерируй преленд');
+                    hapticError();
+                    return;
+                }
+                const ok = await copyText(html);
+                if (ok) {
+                    tg?.showAlert?.('HTML скопирован');
+                    hapticSuccess();
+                } else {
+                    hapticError();
+                }
+            });
+        }
+
+        if (openPrelandPreviewBtn) {
+            openPrelandPreviewBtn.addEventListener('click', function () {
+                const html = prelandHtmlOutput?.value?.trim();
+                if (!html) {
+                    tg?.showAlert?.('Сначала сгенерируй преленд');
+                    hapticError();
+                    return;
+                }
+                const previewWindow = window.open('', '_blank');
+                if (!previewWindow) {
+                    tg?.showAlert?.('Не удалось открыть превью');
+                    hapticError();
+                    return;
+                }
+                previewWindow.document.open();
+                previewWindow.document.write(html);
+                previewWindow.document.close();
+                hapticSuccess();
+            });
+        }
+
+        if (clearPrelandHistoryBtn) {
+            clearPrelandHistoryBtn.addEventListener('click', function () {
+                localStorage.removeItem(PRELAND_STORAGE_KEY);
+                renderPrelandHistory();
+                hapticLight();
+            });
+        }
+
         renderSpyTrends();
         renderVideoHistory();
+        renderPrelandHistory();
         loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
