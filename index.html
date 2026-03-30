@@ -2919,12 +2919,45 @@ body::after {
 
         function getTemplateMeta(template) {
             const map = {
-                news: { label: 'Новостной стиль', badge: 'NEWS', buttonClass: '#2563eb' },
-                blog: { label: 'Блог / отзыв', badge: 'BLOG', buttonClass: '#7c3aed' },
-                story: { label: 'История успеха', badge: 'STORY', buttonClass: '#059669' },
-                quiz: { label: 'Quiz / опрос', badge: 'QUIZ', buttonClass: '#ea580c' }
+                news: {
+                    label: 'Новостной стиль',
+                    badge: 'NEWS',
+                    accent: '#2563eb',
+                    previewClass: 'from-blue-500/25 to-cyan-400/10'
+                },
+                blog: {
+                    label: 'Блог / отзыв',
+                    badge: 'BLOG',
+                    accent: '#7c3aed',
+                    previewClass: 'from-violet-500/25 to-fuchsia-400/10'
+                },
+                story: {
+                    label: 'История успеха',
+                    badge: 'STORY',
+                    accent: '#059669',
+                    previewClass: 'from-emerald-500/25 to-teal-400/10'
+                },
+                quiz: {
+                    label: 'Quiz / опрос',
+                    badge: 'QUIZ',
+                    accent: '#ea580c',
+                    previewClass: 'from-orange-500/25 to-amber-400/10'
+                }
             };
             return map[template] || map.news;
+        }
+
+        function splitPrelandParagraphs(content) {
+            return (content || '')
+                .split(/\n+/)
+                .map((line) => line.trim())
+                .filter(Boolean);
+        }
+
+        function buildParagraphsHtml(lines) {
+            return lines.length
+                ? lines.map((line) => `<p>${escapeHtml(line)}</p>`).join('\n')
+                : '<p>Добавь основной текст преленда.</p>';
         }
 
         function buildPrelandHtml(payload) {
@@ -2934,12 +2967,184 @@ body::after {
             const image = escapeAttribute(payload.image || '');
             const buttonText = escapeHtml(payload.buttonText || 'Перейти');
             const targetUrl = escapeAttribute(payload.targetUrl || '#');
-            const paragraphs = (payload.content || '')
-                .split(/\n+/)
-                .map((line) => line.trim())
-                .filter(Boolean)
-                .map((line) => `<p>${escapeHtml(line)}</p>`)
-                .join('\n');
+            const lines = splitPrelandParagraphs(payload.content);
+            const paragraphs = buildParagraphsHtml(lines);
+            const firstLine = escapeHtml(lines[0] || 'Редакция отмечает резкий рост интереса к этому решению.');
+            const secondLine = escapeHtml(lines[1] || 'Пользователи делятся результатами и продолжают обсуждать тему.');
+            const quoteLine = escapeHtml(lines[2] || lines[0] || 'Я не ожидал такого эффекта, но решил проверить лично.');
+            const storyStat = escapeHtml(lines[3] || 'Результат заметен уже после первых шагов.');
+            const quizQuestion = escapeHtml(payload.subtitle || 'Ответь на несколько коротких вопросов и открой следующий шаг.');
+            const quizOptions = [
+                'Да, хочу попробовать',
+                'Сначала хочу узнать детали',
+                'Интересно посмотреть отзывы'
+            ].map((item) => `<div class="quiz-option">${escapeHtml(item)}</div>`).join('');
+
+            if (payload.template === 'blog') {
+                return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+body{margin:0;background:#f5f3ff;font-family:Arial,sans-serif;color:#1f2937}
+.wrap{max-width:820px;margin:0 auto;background:#fff;min-height:100vh}
+.top{padding:28px 22px 0}
+.author{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.avatar{width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,#c4b5fd,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+.author-meta small{display:block;color:#6b7280;font-size:12px}
+.tag{display:inline-block;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
+.hero img{width:100%;display:block;max-height:420px;object-fit:cover}
+.content{padding:24px 22px 28px}
+h1{font-size:32px;line-height:1.15;margin:0 0 12px;font-weight:800}
+.lead{font-size:18px;line-height:1.65;color:#4b5563;margin:0 0 20px}
+.story-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:18px;padding:18px;margin:18px 0 22px}
+.story-box-title{font-size:13px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+p{font-size:17px;line-height:1.78;margin:0 0 16px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#7c3aed;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:26px}
+.footer{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">
+<div class="tag">Личный отзыв</div>
+<div class="author">
+<div class="avatar">A</div>
+<div class="author-meta">
+<strong>Автор блога</strong>
+<small>Обновлено сегодня</small>
+</div>
+</div>
+</div>
+${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
+<div class="content">
+<h1>${title}</h1>
+${subtitle ? `<div class="lead">${subtitle}</div>` : ''}
+<div class="story-box">
+<div class="story-box-title">Почему я решил проверить это сам</div>
+<p>${quoteLine}</p>
+</div>
+${paragraphs}
+<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
+<div class="footer">Материал подготовлен в UBT ToolKit</div>
+</div>
+</div>
+</body>
+</html>`;
+            }
+
+            if (payload.template === 'story') {
+                return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+body{margin:0;background:#ecfdf5;font-family:Arial,sans-serif;color:#0f172a}
+.wrap{max-width:860px;margin:0 auto;background:#fff;min-height:100vh}
+.hero{padding:24px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
+.hero h1{font-size:36px;line-height:1.1;margin:0 0 14px;font-weight:900}
+.hero p{font-size:18px;line-height:1.65;margin:0;color:rgba(255,255,255,0.88)}
+.hero-media img{width:100%;border-radius:24px;display:block;max-height:360px;object-fit:cover;box-shadow:0 18px 40px rgba(0,0,0,.2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 24px;margin-top:-28px}
+.stat{background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 30px rgba(15,23,42,.08);border:1px solid #d1fae5}
+.stat strong{display:block;font-size:28px;color:#059669;margin-bottom:6px}
+.content{padding:28px 24px 30px}
+.section-label{display:inline-block;background:#d1fae5;color:#047857;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;margin-bottom:16px}
+p{font-size:17px;line-height:1.78;margin:0 0 16px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#059669;color:#fff;padding:17px 18px;border-radius:15px;font-weight:800;font-size:16px;margin-top:26px}
+.note{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
+@media (max-width:700px){
+.hero-grid{grid-template-columns:1fr}
+.stats{grid-template-columns:1fr}
+.hero h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<div class="hero-grid">
+<div>
+<div class="section-label" style="background:rgba(255,255,255,.16);color:#fff">История успеха</div>
+<h1>${title}</h1>
+<p>${subtitle || firstLine}</p>
+</div>
+<div class="hero-media">
+${image ? `<img src="${image}" alt="preview">` : `<div style="height:260px;border-radius:24px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700">Добавь изображение</div>`}
+</div>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><strong>+127%</strong><span>рост интереса</span></div>
+<div class="stat"><strong>24 ч</strong><span>первые результаты</span></div>
+<div class="stat"><strong>TOP</strong><span>${storyStat}</span></div>
+</div>
+<div class="content">
+<div class="section-label">Почему это сработало</div>
+${paragraphs}
+<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
+<div class="note">Материал подготовлен в UBT ToolKit</div>
+</div>
+</div>
+</body>
+</html>`;
+            }
+
+            if (payload.template === 'quiz') {
+                return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+body{margin:0;background:#fff7ed;font-family:Arial,sans-serif;color:#111827}
+.wrap{max-width:760px;margin:0 auto;background:#fff;min-height:100vh}
+.head{padding:24px 22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff}
+.badge{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
+h1{font-size:32px;line-height:1.15;margin:0 0 10px;font-weight:900}
+.sub{font-size:17px;line-height:1.6;color:rgba(255,255,255,.92)}
+.content{padding:24px 22px 30px}
+.progress{height:10px;border-radius:999px;background:#fed7aa;overflow:hidden;margin:0 0 20px}
+.progress span{display:block;height:100%;width:66%;background:#ea580c;border-radius:inherit}
+.card{background:#fff7ed;border:1px solid #fdba74;border-radius:20px;padding:18px;margin-bottom:18px}
+.card-title{font-size:20px;font-weight:800;margin-bottom:10px}
+.quiz-option{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid #fdba74;margin-bottom:10px;font-weight:600}
+.hero img{width:100%;display:block;max-height:360px;object-fit:cover;border-radius:20px;margin-bottom:18px}
+p{font-size:16px;line-height:1.75;margin:0 0 14px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#ea580c;color:#fff;padding:16px 18px;border-radius:14px;font-weight:800;font-size:16px;margin-top:24px}
+.note{font-size:13px;color:#6b7280;margin-top:15px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="head">
+<div class="badge">Интерактивный quiz</div>
+<h1>${title}</h1>
+<div class="sub">${quizQuestion}</div>
+</div>
+<div class="content">
+<div class="progress"><span></span></div>
+${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
+<div class="card">
+<div class="card-title">Шаг 1 из 3</div>
+<div class="quiz-option">Да, мне подходит такой формат</div>
+<div class="quiz-option">Хочу посмотреть детали и примеры</div>
+<div class="quiz-option">Интересно узнать больше отзывов</div>
+</div>
+${paragraphs}
+<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
+<div class="note">Материал подготовлен в UBT ToolKit</div>
+</div>
+</div>
+</body>
+</html>`;
+            }
 
             return `<!DOCTYPE html>
 <html lang="ru">
@@ -2949,25 +3154,45 @@ body::after {
 <title>${title}</title>
 <style>
 body{margin:0;background:#eef2f7;font-family:Arial,sans-serif;color:#111827}
-.wrap{max-width:760px;margin:0 auto;background:#ffffff;min-height:100vh}
-.badge{display:inline-block;background:${meta.buttonClass};color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin:20px 20px 0}
-.hero img{width:100%;display:block;max-height:380px;object-fit:cover}
-.content{padding:22px}
-h1{font-size:30px;line-height:1.15;margin:0 0 12px;font-weight:800}
-h2{font-size:18px;line-height:1.5;margin:0 0 18px;color:#4b5563;font-weight:500}
-p{font-size:17px;line-height:1.75;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:${meta.buttonClass};color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
+.wrap{max-width:820px;margin:0 auto;background:#ffffff;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e5e7eb;background:#fff}
+.brand{font-size:13px;font-weight:800;color:#2563eb;letter-spacing:.08em;text-transform:uppercase}
+.date{font-size:13px;color:#6b7280}
+.hero img{width:100%;display:block;max-height:400px;object-fit:cover}
+.content{padding:24px 22px 28px}
+.live{display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:999px;background:#2563eb}
+h1{font-size:34px;line-height:1.12;margin:0 0 12px;font-weight:900}
+h2{font-size:19px;line-height:1.6;margin:0 0 22px;color:#4b5563;font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 22px}
+.stat{background:#f8fafc;border:1px solid #dbeafe;border-radius:18px;padding:16px}
+.stat strong{display:block;font-size:14px;color:#1d4ed8;margin-bottom:8px;text-transform:uppercase}
+.stat span{font-size:17px;line-height:1.6;color:#1f2937}
+p{font-size:17px;line-height:1.78;margin:0 0 16px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#2563eb;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
 .note{font-size:13px;color:#6b7280;margin-top:14px;text-align:center}
+@media (max-width:700px){
+.stats{grid-template-columns:1fr}
+h1{font-size:30px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="badge">${meta.label}</div>
+<div class="topbar">
+<div class="brand">Новости дня</div>
+<div class="date">${new Date().toLocaleDateString('ru-RU')}</div>
+</div>
 ${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
 <div class="content">
+<div class="live"><span class="dot"></span>Срочное обновление</div>
 <h1>${title}</h1>
 ${subtitle ? `<h2>${subtitle}</h2>` : ''}
-${paragraphs || '<p>Добавь основной текст преленда.</p>'}
+<div class="stats">
+<div class="stat"><strong>Что известно</strong><span>${firstLine}</span></div>
+<div class="stat"><strong>Почему обсуждают</strong><span>${secondLine}</span></div>
+</div>
+${paragraphs}
 <a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
@@ -2987,19 +3212,84 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             const safeContent = escapeHtml(payload.content || 'Без текста').replace(/\n/g, '<br>');
             const safeTargetUrl = escapeAttribute(payload.targetUrl || '#');
 
-            prelandPreview.innerHTML = `
-                <div class="w-full text-left">
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
-                        <span class="text-xs text-gray-500">${meta.label}</span>
+            let previewMarkup = '';
+
+            if (payload.template === 'blog') {
+                previewMarkup = `
+                    <div class="w-full text-left">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 flex items-center justify-center text-white font-bold">A</div>
+                            <div>
+                                <div class="text-white font-semibold">Автор блога</div>
+                                <div class="text-xs text-gray-400">Личный опыт • сегодня</div>
+                            </div>
+                        </div>
+                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
+                        <div class="inner-panel mb-4 text-sm text-gray-300 leading-7">Почему я решил проверить это сам</div>
+                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block secondary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
                     </div>
-                    ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                    <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                    ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
-                    <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                    <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                </div>
-            `;
+                `;
+            } else if (payload.template === 'story') {
+                previewMarkup = `
+                    <div class="w-full text-left">
+                        <div class="rounded-[24px] p-5 mb-4 bg-gradient-to-br from-emerald-500/25 to-teal-400/10 border border-emerald-400/20">
+                            <div class="text-xs uppercase tracking-[0.18em] text-emerald-300 font-semibold mb-3">${meta.badge}</div>
+                            <div class="text-2xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                            ${safeSubtitle ? `<div class="text-sm text-emerald-100/80">${safeSubtitle}</div>` : ''}
+                        </div>
+                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">+127%</div><div class="text-[11px] text-gray-400">рост</div></div>
+                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">24ч</div><div class="text-[11px] text-gray-400">старт</div></div>
+                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">TOP</div><div class="text-[11px] text-gray-400">эффект</div></div>
+                        </div>
+                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block green-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+                    </div>
+                `;
+            } else if (payload.template === 'quiz') {
+                previewMarkup = `
+                    <div class="w-full text-left">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
+                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
+                        <div class="progress-shell mb-4"><div class="progress-bar" style="width:66%"></div></div>
+                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                        <div class="space-y-2 mb-4">
+                            <div class="inner-panel text-sm text-gray-200">Да, хочу попробовать</div>
+                            <div class="inner-panel text-sm text-gray-200">Сначала хочу посмотреть детали</div>
+                            <div class="inner-panel text-sm text-gray-200">Интересно узнать больше отзывов</div>
+                        </div>
+                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block gold-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+                    </div>
+                `;
+            } else {
+                previewMarkup = `
+                    <div class="w-full text-left">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
+                            <span class="text-xs text-gray-500">${meta.label}</span>
+                        </div>
+                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                        <div class="inline-flex items-center gap-2 text-xs text-blue-300 font-semibold mb-3"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>Срочное обновление</div>
+                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                        ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="metric-tile text-sm text-gray-300">Что известно</div>
+                            <div class="metric-tile text-sm text-gray-300">Почему обсуждают</div>
+                        </div>
+                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+                    </div>
+                `;
+            }
+
+            prelandPreview.innerHTML = previewMarkup;
         }
 
         function collectPrelandPayload() {
