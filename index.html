@@ -1073,37 +1073,41 @@ body::after {
 }
 
 
+/* FIX: align everything top */
 .hero-topbar{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 60px;
+    padding: 0 12px;
+    z-index: 100;
+    background: transparent;
 }
 
+/* center title */
 .hero-topbar .brand-title{
-    position: absolute;
+    position: absolute !important;
     left: 50%;
-    transform: translateX(-50%);
     top: 50%;
     transform: translate(-50%, -50%);
+    font-size: 13px !important;
+}
+
+/* left block */
+#userBar{
+    position: relative !important;
+    top: 0 !important;
     margin: 0 !important;
 }
 
-.hero-topbar #userBar{
-    position: relative !important;
-    top: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    width: 100%;
+/* fix spacing below */
+.page-wrap{
+    padding-top: 70px !important;
 }
-
-.hero-topbar #userBar > div{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 
 </style>
 </head>
