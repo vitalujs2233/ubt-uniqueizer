@@ -1389,8 +1389,10 @@ body::after {
                     <input id="prelandTargetUrl" type="text" class="neo-input mb-3" placeholder="Ссылка перехода (smart-link / offer)" />
                     <textarea id="prelandContent" class="neo-input mb-3 min-h-[160px]" placeholder="Основной текст преленда"></textarea>
 
+                    <div class="text-xs text-gray-400 mb-3">Стоимость генерации: <span class="text-white font-semibold">20 кредитов</span></div>
+
                     <button id="generatePrelandBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Сгенерировать преленд
+                        Сгенерировать преленд • 20 кредитов
                     </button>
                 </div>
 
@@ -2816,6 +2818,7 @@ body::after {
         }
 
         const PRELAND_STORAGE_KEY = 'ubt_preland_history_v1';
+        const PRELAND_GENERATION_COST = 20;
 
         function escapeHtml(value) {
             return String(value || '')
@@ -3011,7 +3014,7 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             };
         }
 
-        function generatePreland() {
+        async function generatePreland() {
             const payload = collectPrelandPayload();
 
             if (!payload.title) {
@@ -3022,6 +3025,25 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
             if (!payload.targetUrl || payload.targetUrl === '#') {
                 tg?.showAlert?.('Добавь ссылку перехода');
+                hapticError();
+                return;
+            }
+
+            if (generatePrelandBtn) {
+                generatePrelandBtn.disabled = true;
+                generatePrelandBtn.classList.add('btn-disabled');
+                generatePrelandBtn.textContent = `Списание ${PRELAND_GENERATION_COST} кредитов...`;
+            }
+
+            const spendResult = await spendCredits('preland_generate', PRELAND_GENERATION_COST);
+
+            if (!spendResult.ok) {
+                if (generatePrelandBtn) {
+                    generatePrelandBtn.disabled = false;
+                    generatePrelandBtn.classList.remove('btn-disabled');
+                    generatePrelandBtn.textContent = `Сгенерировать преленд • ${PRELAND_GENERATION_COST} кредитов`;
+                }
+                tg?.showAlert?.(spendResult.message || 'Не удалось списать кредиты');
                 hapticError();
                 return;
             }
@@ -3038,6 +3060,14 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             if (prelandHtmlOutput) prelandHtmlOutput.value = html;
             renderPrelandPreview(item);
             savePrelandHistoryItem(item);
+
+            if (generatePrelandBtn) {
+                generatePrelandBtn.disabled = false;
+                generatePrelandBtn.classList.remove('btn-disabled');
+                generatePrelandBtn.textContent = `Сгенерировать преленд • ${PRELAND_GENERATION_COST} кредитов`;
+            }
+
+            tg?.showAlert?.(`Преленд готов. Списано ${PRELAND_GENERATION_COST} кредитов.`);
             hapticSuccess();
         }
 
