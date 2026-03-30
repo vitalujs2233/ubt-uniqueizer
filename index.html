@@ -2593,12 +2593,27 @@
             refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
 
-        renderSpyTrends();
-        renderVideoHistory();
-        loadSmartLinks();
-        registerTelegramUser();
-        setupSupportLink();
-        showBottomPage('home');
+        async function bootApp() {
+            try {
+                const bootTasks = [
+                    Promise.resolve().then(() => renderSpyTrends()),
+                    Promise.resolve().then(() => renderVideoHistory()),
+                    Promise.resolve().then(() => setupSupportLink()),
+                    Promise.resolve().then(() => showBottomPage('home')),
+                    Promise.resolve().then(() => loadSmartLinks()),
+                    Promise.resolve().then(() => registerTelegramUser())
+                ];
+
+                await Promise.allSettled(bootTasks);
+            } catch (error) {
+                console.error('Boot error:', error);
+            } finally {
+                hideAppLoader();
+            }
+        }
+
+        window.addEventListener('load', bootApp);
+        setTimeout(hideAppLoader, 2200);
     </script>
 </body>
 </html>
