@@ -194,60 +194,112 @@
             </div>
 
             <div id="link-section" class="hidden">
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
-                    <h2 class="section-title text-xl font-bold">Смарт-линк</h2>
-                </div>
+                <div id="smartLinkMainView">
+                    <div class="flex items-center justify-between mb-4 gap-3">
+                        <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
 
-                <input
-                    id="linkInput"
-                    type="text"
-                    placeholder="https://your-offer.com"
-                    class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
-                />
-
-                <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
-
-                <button
-                    id="generateLinkBtn"
-                    class="primary-btn w-full p-4 rounded-2xl font-bold">
-                    Сгенерировать
-                </button>
-
-                <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
-                    <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
-                    <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
-
-                    <div class="flex gap-3">
-                        <button
-                            id="copyLinkBtn"
-                            class="green-btn w-1/2 p-4 rounded-2xl font-bold">
-                            📋 Скопировать
-                        </button>
-
-                        <a
-                            id="openLinkBtn"
-                            href="#"
-                            target="_blank"
-                            class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
-                            🔗 Открыть ссылку
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-bold">Смарт-линк</h2>
+                            <button
+                                id="openSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Статистика
+                            </button>
+                        </div>
                     </div>
 
-                    <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
-                </div>
+                    <input
+                        id="linkInput"
+                        type="text"
+                        placeholder="https://your-offer.com"
+                        class="w-full p-4 rounded-2xl bg-slate-900/80 border border-slate-700 mb-4 outline-none"
+                    />
 
-                <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
-                        <button
-                            id="refreshLinksBtn"
-                            class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Обновить
-                        </button>
+                    <div class="mt-3 text-xs text-gray-500">Списание: 2 кредита</div>
+
+                    <button
+                        id="generateLinkBtn"
+                        class="primary-btn w-full p-4 rounded-2xl font-bold">
+                        Сгенерировать
+                    </button>
+
+                    <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                        <p class="text-green-400 font-semibold mb-2">✅ Ссылка готова</p>
+                        <a id="generatedLink" target="_blank" class="text-blue-400 break-all underline block mb-3"></a>
+
+                        <div class="flex gap-3">
+                            <button
+                                id="copyLinkBtn"
+                                class="green-btn w-1/2 p-4 rounded-2xl font-bold">
+                                📋 Скопировать
+                            </button>
+
+                            <a
+                                id="openLinkBtn"
+                                href="#"
+                                target="_blank"
+                                class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
+                                🔗 Открыть ссылку
+                            </a>
+                        </div>
+
+                        <p id="copyStatus" class="mt-3 text-sm text-gray-300"></p>
                     </div>
 
-                    <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                    <div id="linkHistoryBox" class="mt-4 glass-box p-4 rounded-2xl">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <p class="text-white font-semibold">🔗 Последние 5 ссылок</p>
+                            <button
+                                id="refreshLinksBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
+
+                        <div id="linkHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                    </div>
+                </div>
+
+                <div id="smartLinkStatsView" class="hidden">
+                    <div class="flex items-center justify-between mb-4 gap-3">
+                        <button id="backToSmartLinkBtn" class="text-blue-400">← Назад</button>
+                        <div class="flex items-center gap-2">
+                            <h2 class="section-title text-xl font-bold">Статистика</h2>
+                            <button
+                                id="refreshSmartStatsBtn"
+                                class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="smartStatsSummary" class="glass-box p-4 rounded-2xl mb-4">
+                        <p class="text-white font-semibold mb-3">📊 Общая статистика</p>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Всего ссылок</div>
+                                <div id="summaryTotalLinks" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Всего кликов</div>
+                                <div id="summaryTotalClicks" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Уникальные</div>
+                                <div id="summaryTotalUnique" class="text-white text-xl font-bold">0</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400">Топ ссылка</div>
+                                <div id="summaryTopLink" class="text-white text-xs font-bold break-all">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="allSmartLinksStatsList" class="space-y-4"></div>
                 </div>
             </div>
 
@@ -376,6 +428,7 @@
         };
 
         const inlineCharts = {};
+        const statsCharts = {};
 
         function destroyInlineChart(chartId) {
             if (inlineCharts[chartId]) {
@@ -384,6 +437,23 @@
                 } catch (e) {}
                 delete inlineCharts[chartId];
             }
+        }
+
+        function destroyAllInlineCharts() {
+            Object.keys(inlineCharts).forEach(destroyInlineChart);
+        }
+
+        function destroyStatsChart(chartId) {
+            if (statsCharts[chartId]) {
+                try {
+                    statsCharts[chartId].destroy();
+                } catch (e) {}
+                delete statsCharts[chartId];
+            }
+        }
+
+        function destroyAllStatsCharts() {
+            Object.keys(statsCharts).forEach(destroyStatsChart);
         }
 
         const topupBtn = document.getElementById('topupBtn');
@@ -467,6 +537,7 @@
             document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
 
             if (section === 'link') {
+                closeSmartStatsView();
                 loadSmartLinks();
             }
         }
@@ -937,7 +1008,7 @@
             const linkHistoryList = document.getElementById('linkHistoryList');
             if (!linkHistoryList) return;
 
-            Object.keys(inlineCharts).forEach(destroyInlineChart);
+            destroyAllInlineCharts();
 
             if (!links.length) {
                 linkHistoryList.innerHTML = `
@@ -1181,6 +1252,260 @@
             }
         }
 
+        function openSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
+
+            destroyAllInlineCharts();
+            smartLinkMainView.classList.add('hidden');
+            smartLinkStatsView.classList.remove('hidden');
+            loadAllSmartLinksStats();
+        }
+
+        function closeSmartStatsView() {
+            const smartLinkMainView = document.getElementById('smartLinkMainView');
+            const smartLinkStatsView = document.getElementById('smartLinkStatsView');
+
+            destroyAllStatsCharts();
+            smartLinkStatsView.classList.add('hidden');
+            smartLinkMainView.classList.remove('hidden');
+        }
+
+        function renderLinksSummary(links = []) {
+            const totalLinksEl = document.getElementById('summaryTotalLinks');
+            const totalClicksEl = document.getElementById('summaryTotalClicks');
+            const totalUniqueEl = document.getElementById('summaryTotalUnique');
+            const topLinkEl = document.getElementById('summaryTopLink');
+
+            if (!totalLinksEl || !totalClicksEl || !totalUniqueEl || !topLinkEl) return;
+
+            const totalLinks = links.length;
+            const totalClicks = links.reduce((sum, item) => sum + Number(item.clicks || 0), 0);
+            const totalUnique = links.reduce((sum, item) => sum + Number(item.unique_clicks || 0), 0);
+
+            let topLink = null;
+
+            if (links.length) {
+                topLink = [...links].sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0))[0];
+            }
+
+            totalLinksEl.textContent = totalLinks;
+            totalClicksEl.textContent = totalClicks;
+            totalUniqueEl.textContent = totalUnique;
+            topLinkEl.textContent = topLink ? topLink.short_url : '—';
+        }
+
+        async function loadAllSmartLinksStats() {
+            const list = document.getElementById('allSmartLinksStatsList');
+            if (!list) return;
+
+            destroyAllStatsCharts();
+
+            list.innerHTML = `
+                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    Загружаем статистику...
+                </div>
+            `;
+
+            try {
+                const data = await fetchSmartLinksRequest(100);
+
+                if (!data.ok || !data.links) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                            Ошибка загрузки статистики
+                        </div>
+                    `;
+                    return;
+                }
+
+                const links = data.links || [];
+                renderLinksSummary(links);
+
+                if (!links.length) {
+                    list.innerHTML = `
+                        <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                            Пока нет ссылок
+                        </div>
+                    `;
+                    return;
+                }
+
+                const statsResults = await Promise.all(
+                    links.map(async (link) => {
+                        try {
+                            const statsData = await fetchSmartLinkStatsRequest(link.id);
+                            if (statsData.ok && statsData.stats) {
+                                return statsData.stats;
+                            }
+                            return null;
+                        } catch (e) {
+                            return null;
+                        }
+                    })
+                );
+
+                list.innerHTML = '';
+
+                statsResults.forEach((stats, index) => {
+                    if (!stats) return;
+
+                    const countriesHtml = Object.keys(stats.countries || {}).length
+                        ? Object.entries(stats.countries)
+                            .map(([country, count]) => `
+                                <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                    <span>${country}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const devicesHtml = Object.keys(stats.devices || {}).length
+                        ? Object.entries(stats.devices)
+                            .map(([device, count]) => `
+                                <div class="flex items-center justify-between bg-slate-900/60 rounded-xl px-3 py-2">
+                                    <span>${device}</span>
+                                    <span class="text-white font-semibold">${count}</span>
+                                </div>
+                            `).join('')
+                        : `<div class="text-gray-500">Нет данных</div>`;
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-box p-4 rounded-2xl';
+
+                    const chartId = `stats-chart-${stats.id || index}`;
+
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div class="font-semibold text-white">Ссылка #${index + 1}</div>
+                            <button
+                                class="text-green-400 text-xs underline"
+                                onclick="copySmartLink('${stats.short_url.replace(/'/g, "\\'")}')">
+                                📋 Скопировать
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
+                            <div class="text-xs text-gray-400 mb-1">Короткая ссылка</div>
+                            <div class="text-blue-400 break-all">${stats.short_url}</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400 mb-1">Клики</div>
+                                <div class="text-white text-xl font-bold">${stats.clicks || 0}</div>
+                            </div>
+
+                            <div class="bg-slate-900/60 rounded-xl p-3">
+                                <div class="text-xs text-gray-400 mb-1">Уникальные</div>
+                                <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">🌍 Страны</div>
+                            <div class="space-y-2">${countriesHtml}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="text-white font-semibold mb-2">📱 Устройства</div>
+                            <div class="space-y-2">${devicesHtml}</div>
+                        </div>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3">
+                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
+                            <div class="relative h-44">
+                                <canvas id="${chartId}"></canvas>
+                            </div>
+                        </div>
+                    `;
+
+                    list.appendChild(card);
+
+                    const canvas = document.getElementById(chartId);
+                    if (canvas && window.Chart) {
+                        const labels = (stats.daily || []).map(item => item.date);
+                        const clicksData = (stats.daily || []).map(item => Number(item.clicks || 0));
+                        const uniqueData = (stats.daily || []).map(item => Number(item.unique_clicks || 0));
+
+                        statsCharts[chartId] = new Chart(canvas, {
+                            type: 'line',
+                            data: {
+                                labels,
+                                datasets: [
+                                    {
+                                        label: 'Клики',
+                                        data: clicksData,
+                                        borderColor: '#3b82f6',
+                                        backgroundColor: 'rgba(59,130,246,0.12)',
+                                        tension: 0.35,
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
+                                    },
+                                    {
+                                        label: 'Уникальные',
+                                        data: uniqueData,
+                                        borderColor: '#10b981',
+                                        backgroundColor: 'rgba(16,185,129,0.12)',
+                                        tension: 0.35,
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: '#d1d5db',
+                                            boxWidth: 12
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            color: '#9ca3af',
+                                            maxRotation: 0,
+                                            autoSkip: true,
+                                            maxTicksLimit: 6
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.05)'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#9ca3af',
+                                            precision: 0,
+                                            stepSize: 1
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.05)'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                list.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-red-400 text-center">
+                        Ошибка соединения
+                    </div>
+                `;
+            }
+        }
+
         async function loadSmartLinks() {
             const linkHistoryList = document.getElementById('linkHistoryList');
             if (!linkHistoryList) return;
@@ -1240,6 +1565,9 @@
         const openLinkBtn = document.getElementById('openLinkBtn');
         const copyStatus = document.getElementById('copyStatus');
         const refreshLinksBtn = document.getElementById('refreshLinksBtn');
+        const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
+        const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
+        const refreshSmartStatsBtn = document.getElementById('refreshSmartStatsBtn');
 
         let selectedFile = null;
 
@@ -1412,6 +1740,18 @@
 
         if (refreshLinksBtn) {
             refreshLinksBtn.addEventListener('click', loadSmartLinks);
+        }
+
+        if (openSmartStatsBtn) {
+            openSmartStatsBtn.addEventListener('click', openSmartStatsView);
+        }
+
+        if (backToSmartLinkBtn) {
+            backToSmartLinkBtn.addEventListener('click', closeSmartStatsView);
+        }
+
+        if (refreshSmartStatsBtn) {
+            refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
 
         renderSpyTrends();
