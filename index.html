@@ -1237,19 +1237,21 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
-                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
-                            <canvas id="${chartId}" height="140"></canvas>
-                        </div>
-
                         <div class="mb-3">
                             <div class="text-white font-semibold mb-2">🌍 Страны</div>
                             <div class="space-y-2">${countriesHtml}</div>
                         </div>
 
-                        <div>
+                        <div class="mb-3">
                             <div class="text-white font-semibold mb-2">📱 Устройства</div>
                             <div class="space-y-2">${devicesHtml}</div>
+                        </div>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3">
+                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
+                            <div class="relative h-44">
+                                <canvas id="${chartId}"></canvas>
+                            </div>
                         </div>
                     `;
 
@@ -1270,17 +1272,23 @@
                                         label: 'Клики',
                                         data: clicksData,
                                         borderColor: '#3b82f6',
-                                        backgroundColor: 'rgba(59,130,246,0.15)',
+                                        backgroundColor: 'rgba(59,130,246,0.12)',
                                         tension: 0.35,
-                                        fill: false
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
                                     },
                                     {
                                         label: 'Уникальные',
                                         data: uniqueData,
                                         borderColor: '#10b981',
-                                        backgroundColor: 'rgba(16,185,129,0.15)',
+                                        backgroundColor: 'rgba(16,185,129,0.12)',
                                         tension: 0.35,
-                                        fill: false
+                                        fill: false,
+                                        borderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 4
                                     }
                                 ]
                             },
@@ -1290,27 +1298,32 @@
                                 plugins: {
                                     legend: {
                                         labels: {
-                                            color: '#d1d5db'
+                                            color: '#d1d5db',
+                                            boxWidth: 12
                                         }
                                     }
                                 },
                                 scales: {
                                     x: {
                                         ticks: {
-                                            color: '#9ca3af'
+                                            color: '#9ca3af',
+                                            maxRotation: 0,
+                                            autoSkip: true,
+                                            maxTicksLimit: 6
                                         },
                                         grid: {
-                                            color: 'rgba(255,255,255,0.06)'
+                                            color: 'rgba(255,255,255,0.05)'
                                         }
                                     },
                                     y: {
                                         beginAtZero: true,
                                         ticks: {
                                             color: '#9ca3af',
-                                            precision: 0
+                                            precision: 0,
+                                            stepSize: 1
                                         },
                                         grid: {
-                                            color: 'rgba(255,255,255,0.06)'
+                                            color: 'rgba(255,255,255,0.05)'
                                         }
                                     }
                                 }
