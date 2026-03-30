@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>UBT ToolKit</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -107,7 +108,6 @@
     <div class="page-wrap">
         <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">UBT ToolKit</h1>
 
-        <!-- БЛОК ПОЛЬЗОВАТЕЛЯ -->
         <div id="userBar" class="mb-6 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-800 to-slate-900 p-4 hidden shadow-lg">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
@@ -129,7 +129,6 @@
             </div>
         </div>
 
-        <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="home-screen">
             <div id="main-menu">
                 <div class="card" onclick="showSection('video')">
@@ -163,7 +162,6 @@
                 </div>
             </div>
 
-            <!-- ВИДЕО -->
             <div id="video-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-bold">Уникализатор</h2>
@@ -195,7 +193,6 @@
                 </div>
             </div>
 
-            <!-- ССЫЛКИ -->
             <div id="link-section" class="hidden">
                 <div id="smartLinkMainView">
                     <div class="flex items-center justify-between mb-4 gap-3">
@@ -306,7 +303,6 @@
                 </div>
             </div>
 
-            <!-- ТРЕНДЫ -->
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-bold">🔥 Тренды УБТ</h2>
@@ -323,7 +319,6 @@
             </div>
         </div>
 
-        <!-- ИСТОРИЯ -->
         <div id="history-screen" class="hidden">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="section-title text-xl font-bold">📜 История операций</h2>
@@ -335,7 +330,6 @@
             <div id="historyList" class="space-y-3"></div>
         </div>
 
-        <!-- ПОДДЕРЖКА -->
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-bold">💬 Поддержка</h2>
 
@@ -362,7 +356,6 @@
         </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
         <div class="max-w-xl mx-auto flex items-center justify-around">
             <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1 text-sm text-white" onclick="showBottomPage('home')">
@@ -382,7 +375,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПОПОЛНЕНИЯ -->
     <div id="topupModalBackdrop" class="fixed inset-0 bg-black/60 hidden z-50"></div>
     <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden">
         <div class="glass-box rounded-3xl p-5">
@@ -434,6 +426,17 @@
             user: null,
             transactions: []
         };
+
+        const chartsRegistry = [];
+
+        function destroyCharts() {
+            while (chartsRegistry.length) {
+                const chart = chartsRegistry.pop();
+                try {
+                    chart.destroy();
+                } catch (e) {}
+            }
+        }
 
         const topupBtn = document.getElementById('topupBtn');
         const topupModal = document.getElementById('topupModal');
@@ -845,7 +848,6 @@
             }
         }
 
-        // ===== ИСТОРИЯ ВИДЕО =====
         function getVideoHistory() {
             try {
                 return JSON.parse(localStorage.getItem('ubt_video_history')) || [];
@@ -1006,7 +1008,6 @@
                 row.innerHTML = `
                     <div class="min-w-0">
                         <div class="font-medium text-white break-all">${item.short_url}</div>
-                        <div class="text-xs text-gray-500 mt-1 break-all">${item.original_url}</div>
                         <div class="text-xs text-gray-500 mt-1">
                             ${new Date(item.created_at).toLocaleString('ru-RU')}
                         </div>
@@ -1100,6 +1101,7 @@
             const smartLinkMainView = document.getElementById('smartLinkMainView');
             const smartLinkStatsView = document.getElementById('smartLinkStatsView');
 
+            destroyCharts();
             smartLinkStatsView.classList.add('hidden');
             smartLinkMainView.classList.remove('hidden');
         }
@@ -1131,6 +1133,8 @@
         async function loadAllSmartLinksStats() {
             const list = document.getElementById('allSmartLinksStatsList');
             if (!list) return;
+
+            destroyCharts();
 
             list.innerHTML = `
                 <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
@@ -1204,6 +1208,8 @@
                     const card = document.createElement('div');
                     card.className = 'glass-box p-4 rounded-2xl';
 
+                    const chartId = `chart-${stats.id || index}`;
+
                     card.innerHTML = `
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div class="font-semibold text-white">Ссылка #${index + 1}</div>
@@ -1219,11 +1225,6 @@
                             <div class="text-blue-400 break-all">${stats.short_url}</div>
                         </div>
 
-                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
-                            <div class="text-xs text-gray-400 mb-1">Оригинальная ссылка</div>
-                            <div class="text-white break-all">${stats.original_url}</div>
-                        </div>
-
                         <div class="grid grid-cols-2 gap-3 mb-3">
                             <div class="bg-slate-900/60 rounded-xl p-3">
                                 <div class="text-xs text-gray-400 mb-1">Клики</div>
@@ -1234,6 +1235,11 @@
                                 <div class="text-xs text-gray-400 mb-1">Уникальные</div>
                                 <div class="text-white text-xl font-bold">${stats.unique_clicks || 0}</div>
                             </div>
+                        </div>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-3">
+                            <div class="text-white font-semibold mb-3">📈 Клики по дням</div>
+                            <canvas id="${chartId}" height="140"></canvas>
                         </div>
 
                         <div class="mb-3">
@@ -1248,6 +1254,71 @@
                     `;
 
                     list.appendChild(card);
+
+                    const canvas = document.getElementById(chartId);
+                    if (canvas && window.Chart) {
+                        const labels = (stats.daily || []).map(item => item.date);
+                        const clicksData = (stats.daily || []).map(item => Number(item.clicks || 0));
+                        const uniqueData = (stats.daily || []).map(item => Number(item.unique_clicks || 0));
+
+                        const chart = new Chart(canvas, {
+                            type: 'line',
+                            data: {
+                                labels,
+                                datasets: [
+                                    {
+                                        label: 'Клики',
+                                        data: clicksData,
+                                        borderColor: '#3b82f6',
+                                        backgroundColor: 'rgba(59,130,246,0.15)',
+                                        tension: 0.35,
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'Уникальные',
+                                        data: uniqueData,
+                                        borderColor: '#10b981',
+                                        backgroundColor: 'rgba(16,185,129,0.15)',
+                                        tension: 0.35,
+                                        fill: false
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: '#d1d5db'
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            color: '#9ca3af'
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.06)'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#9ca3af',
+                                            precision: 0
+                                        },
+                                        grid: {
+                                            color: 'rgba(255,255,255,0.06)'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        chartsRegistry.push(chart);
+                    }
                 });
             } catch (error) {
                 console.error(error);
