@@ -1091,159 +1091,6 @@ body::after {
     font-size: 14px !important;
 }
 
-
-/* === Preland live showcase === */
-.preland-template-card {
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
-}
-.preland-template-card:hover {
-    transform: translateY(-2px);
-}
-.preland-thumb {
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.09);
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-}
-.preland-thumb-browser {
-    height: 24px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 10px;
-    background: rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.preland-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.45);
-}
-.preland-thumb-body {
-    padding: 10px;
-    min-height: 124px;
-}
-.preland-line {
-    height: 7px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.14);
-    margin-bottom: 7px;
-}
-.preland-line.sm { width: 36%; }
-.preland-line.md { width: 58%; }
-.preland-line.lg { width: 82%; }
-.preland-line.full { width: 100%; }
-.preland-image-block {
-    width: 100%;
-    border-radius: 14px;
-    margin: 8px 0 10px;
-    position: relative;
-    overflow: hidden;
-}
-.preland-image-block::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 45%, rgba(255,255,255,0.04));
-}
-.preland-news-bg { background: linear-gradient(135deg, #bfdbfe, #60a5fa 52%, #e0f2fe); height: 70px; }
-.preland-blog-bg { background: linear-gradient(135deg, #ddd6fe, #a78bfa 52%, #f5d0fe); height: 70px; }
-.preland-story-bg { background: linear-gradient(135deg, #bbf7d0, #34d399 52%, #99f6e4); height: 80px; }
-.preland-quiz-bg { background: linear-gradient(135deg, #fdba74, #fb923c 52%, #fde68a); height: 68px; }
-.preland-cta-chip {
-    display: inline-flex;
-    padding: 8px 12px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 800;
-    color: white;
-}
-.preland-cta-blue { background: linear-gradient(135deg, #2563eb, #38bdf8); }
-.preland-cta-violet { background: linear-gradient(135deg, #7c3aed, #c026d3); }
-.preland-cta-green { background: linear-gradient(135deg, #059669, #22c55e); }
-.preland-cta-orange { background: linear-gradient(135deg, #ea580c, #f59e0b); }
-.preland-showcase-shell {
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.22);
-}
-.preland-showcase-browser {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-}
-.preland-showcase-address {
-    flex: 1;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    color: #cbd5e1;
-    font-size: 12px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.preland-showcase-body {
-    padding: 16px;
-    min-height: 360px;
-    background: #ffffff;
-    color: #111827;
-}
-.preland-mini-hero {
-    width: 100%;
-    border-radius: 18px;
-    overflow: hidden;
-    margin: 12px 0 14px;
-}
-.preland-mini-hero.news { background: linear-gradient(135deg, #dbeafe, #93c5fd, #ecfeff); height: 170px; }
-.preland-mini-hero.blog { background: linear-gradient(135deg, #ede9fe, #c4b5fd, #fae8ff); height: 170px; }
-.preland-mini-hero.story { background: linear-gradient(135deg, #d1fae5, #6ee7b7, #ccfbf1); height: 180px; }
-.preland-mini-hero.quiz { background: linear-gradient(135deg, #ffedd5, #fdba74, #fde68a); height: 160px; }
-.preland-news-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 14px 0;
-}
-.preland-news-tile, .preland-story-stat, .preland-quiz-option, .preland-blog-quote {
-    border-radius: 16px;
-    padding: 12px;
-}
-.preland-news-tile { background: #f8fafc; border: 1px solid #dbeafe; }
-.preland-story-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 16px; }
-.preland-story-stat { background: #ecfdf5; border: 1px solid #a7f3d0; text-align: center; }
-.preland-blog-author { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.preland-blog-avatar { width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(135deg, #8b5cf6, #d946ef); }
-.preland-blog-quote { background: #faf5ff; border: 1px solid #ddd6fe; margin: 12px 0; }
-.preland-quiz-progress { height: 8px; border-radius: 999px; background: #fed7aa; overflow: hidden; margin: 12px 0 16px; }
-.preland-quiz-progress > span { display: block; width: 66%; height: 100%; background: #ea580c; }
-.preland-quiz-option { background: #fff7ed; border: 1px solid #fdba74; margin-bottom: 8px; }
-.preland-real-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    border-radius: 14px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 800;
-    font-size: 13px;
-    margin-top: 10px;
-}
-.preland-showcase-note {
-    color: #94a3b8;
-    font-size: 12px;
-    margin-top: 10px;
-}
-
 </style>
 </head>
 <body class="p-4">
@@ -1330,25 +1177,6 @@ body::after {
                         </div>
                     </div>
 
-                    <div class="bento-card cursor-pointer" onclick="showSection('preland')">
-                        <div class="h-full flex flex-col justify-between">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <div class="text-[15px] font-bold">Преленд</div>
-                                    <div class="text-xs text-gray-400 mt-1">Собери страницу быстро</div>
-                                </div>
-                                <div class="h-12 w-12 rounded-[18px] bg-emerald-500/15 flex items-center justify-center text-2xl shrink-0">🌐</div>
-                            </div>
-
-                            <div class="mt-3 inner-panel">
-                                <div class="text-xs text-gray-400 mb-1">Preland Builder</div>
-                                <div class="text-[15px] text-white leading-relaxed">Шаблон, текст, кнопка и готовый HTML</div>
-                            </div>
-
-                            <div class="text-xs text-emerald-300 mt-3 tracking-wide">NEWS • BLOG • STORY • QUIZ</div>
-                        </div>
-                    </div>
-
                     <div class="bento-card bento-tall cursor-pointer" onclick="showSection('spy')">
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
@@ -1387,7 +1215,7 @@ body::after {
                 <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
 
                 <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
-                    Уникализировать видео • 5 кредитов
+                    Уникализировать
                 </button>
 
                 <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
@@ -1430,7 +1258,7 @@ body::after {
                     <button
                         id="generateLinkBtn"
                         class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Сгенерировать смарт-линк • 2 кредита
+                        Сгенерировать
                     </button>
 
                     <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
@@ -1513,180 +1341,6 @@ body::after {
                 </div>
             </div>
 
-            <div id="preland-section" class="hidden">
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
-                    <h2 class="section-title text-xl font-extrabold">🌐 Преленд</h2>
-                </div>
-
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-start justify-between gap-3 mb-4">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Preland Builder</div>
-                            <div class="text-sm text-gray-400 mt-1">Собери преленд так же быстро, как создаёшь smart-link</div>
-                        </div>
-                        <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">MVP</div>
-                    </div>
-
-                    <input id="prelandTemplate" type="hidden" value="news" />
-
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between gap-3 mb-3">
-                            <div>
-                                <div class="text-white font-semibold">Выбери макет</div>
-                                <div class="text-sm text-gray-400 mt-1">Нажми на карточку и сразу увидишь, какой стиль тебе подходит</div>
-                            </div>
-                            <div id="selectedTemplateBadge" class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">NEWS</div>
-                        </div>
-
-                        <div id="prelandTemplatePicker" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="news">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">📰 Новостной</div>
-                                    <span class="text-[10px] text-blue-300 font-semibold">NEWS</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Статья, редакционный формат, срочная подача</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-line sm"></div>
-                                        <div class="preland-line lg"></div>
-                                        <div class="preland-image-block preland-news-bg"></div>
-                                        <div class="preland-news-grid">
-                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
-                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
-                                        </div>
-                                        <span class="preland-cta-chip preland-cta-blue">Открыть</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="blog">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">✍️ Блог / отзыв</div>
-                                    <span class="text-[10px] text-violet-300 font-semibold">BLOG</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Личный опыт, мягкий прогрев, история от первого лица</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="preland-blog-avatar" style="width:28px;height:28px"></div><div style="flex:1"><div class="preland-line md"></div><div class="preland-line sm"></div></div></div>
-                                        <div class="preland-image-block preland-blog-bg"></div>
-                                        <div class="preland-blog-quote"><div class="preland-line lg"></div><div class="preland-line md"></div></div>
-                                        <span class="preland-cta-chip preland-cta-violet">Читать</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="story">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">🔥 История успеха</div>
-                                    <span class="text-[10px] text-emerald-300 font-semibold">STORY</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Яркий результат, цифры, эффект “до / после”</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-image-block preland-story-bg"></div>
-                                        <div class="preland-story-stats">
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                        </div>
-                                        <span class="preland-cta-chip preland-cta-green">Получить</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="quiz">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">❓ Quiz / опрос</div>
-                                    <span class="text-[10px] text-orange-300 font-semibold">QUIZ</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Пошаговый формат, вопросники, вовлечение перед кликом</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-line lg"></div>
-                                        <div class="preland-quiz-progress"><span></span></div>
-                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
-                                        <div class="preland-quiz-option"><div class="preland-line lg"></div></div>
-                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
-                                        <span class="preland-cta-chip preland-cta-orange">Продолжить</span>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div class="mt-4">
-                            <div class="flex items-center justify-between gap-3 mb-3">
-                                <div>
-                                    <div class="text-white font-semibold">Как будет выглядеть сайт</div>
-                                    <div class="text-sm text-gray-400 mt-1">Это уже не слепой выбор: ниже показан реальный макет страницы до генерации</div>
-                                </div>
-                                <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LIVE PREVIEW</div>
-                            </div>
-                            <div id="prelandTemplateShowcase" class="preland-showcase-shell"></div>
-                            <div class="preland-showcase-note">Макет меняется сразу при выборе карточки. После заполнения полей итоговый HTML будет в таком же стиле.</div>
-                        </div>
-                    </div>
-
-                    <input id="prelandTitle" type="text" class="neo-input mb-3" placeholder="Заголовок" />
-                    <input id="prelandSubtitle" type="text" class="neo-input mb-3" placeholder="Подзаголовок" />
-                    <input id="prelandImage" type="text" class="neo-input mb-3" placeholder="Ссылка на изображение" />
-                    <input id="prelandButtonText" type="text" class="neo-input mb-3" placeholder="Текст кнопки" value="Перейти" />
-                    <input id="prelandTargetUrl" type="text" class="neo-input mb-3" placeholder="Ссылка перехода (smart-link / offer)" />
-                    <textarea id="prelandContent" class="neo-input mb-3 min-h-[160px]" placeholder="Основной текст преленда"></textarea>
-
-                    <div class="text-xs text-gray-400 mb-3">Стоимость генерации: <span class="text-white font-semibold">20 кредитов</span></div>
-
-                    <button id="generatePrelandBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Сгенерировать преленд • 20 кредитов
-                    </button>
-                </div>
-
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold">👁️ Превью</div>
-                            <div class="text-sm text-gray-400">Быстрый просмотр прямо в Mini App</div>
-                        </div>
-                        <button id="openPrelandPreviewBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Открыть
-                        </button>
-                    </div>
-
-                    <div id="prelandPreview" class="inner-panel text-sm text-gray-300 min-h-[220px] flex items-center justify-center text-center">
-                        Здесь появится превью преленда
-                    </div>
-                </div>
-
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold">🧩 HTML</div>
-                            <div class="text-sm text-gray-400">Готовый код для копирования</div>
-                        </div>
-                        <button id="copyPrelandHtmlBtn" class="green-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Скопировать
-                        </button>
-                    </div>
-
-                    <textarea id="prelandHtmlOutput" class="neo-input min-h-[260px]" placeholder="После генерации тут появится HTML"></textarea>
-                </div>
-
-                <div id="prelandHistoryBox" class="glass-box p-4 rounded-[24px]">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <p class="text-white font-semibold">📦 Последние преленды</p>
-                        <button id="clearPrelandHistoryBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Очистить
-                        </button>
-                    </div>
-
-                    <div id="prelandHistoryList" class="space-y-3 text-sm text-gray-300"></div>
-                </div>
-            </div>
-
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Тренды УБТ</h2>
@@ -1701,6 +1355,53 @@ body::after {
 
                 <div id="spyList" class="flex flex-col gap-4"></div>
             </div>
+        </div>
+
+        <div id="dvizh-screen" class="hidden fade-up">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
+                    <div class="text-sm text-gray-400 mt-1">Лента сообщества внутри UBT ToolKit</div>
+                </div>
+                <button id="dvizhRefreshBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
+                    Обновить
+                </button>
+            </div>
+
+            <div class="glass-box p-5 rounded-[24px] mb-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-bold text-white text-[17px]">Что такое Движ?</div>
+                        <div class="text-sm text-gray-400 mt-1 leading-relaxed">
+                            Лента постов для комьюнити. Здесь можно будет публиковать посты, фото, набирать лайки и донаты.
+                        </div>
+                    </div>
+                    <div class="h-12 w-12 rounded-[18px] bg-orange-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mt-4">
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400 mb-1">Постов</div>
+                        <div id="dvizhPostsCount" class="text-white text-[22px] font-extrabold">1</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400 mb-1">Лайков</div>
+                        <div id="dvizhLikesCount" class="text-white text-[22px] font-extrabold">12</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400 mb-1">Просмотров</div>
+                        <div id="dvizhViewsCount" class="text-white text-[22px] font-extrabold">183</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dvizhFeed" class="space-y-4"></div>
+
+            <button id="openCreatePostBtn"
+                class="fixed right-4 bottom-24 h-14 w-14 rounded-full primary-btn text-[28px] font-bold flex items-center justify-center z-40"
+                aria-label="Создать пост">
+                +
+            </button>
         </div>
 
         <div id="history-screen" class="hidden">
@@ -1752,9 +1453,41 @@ body::after {
                 <span class="font-medium">История</span>
             </button>
 
+            <button id="navDvizhBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('dvizh')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🔥</div>
+                <span class="font-medium">Движ</span>
+            </button>
+
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="dvizhCreateModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
+    <div id="dvizhCreateModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
+        <div class="glass-box rounded-[28px] p-5">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <div class="text-[22px] font-extrabold">Новый пост</div>
+                    <div class="text-sm text-gray-400 mt-1">Каркас формы для будущего Движа</div>
+                </div>
+                <button id="closeDvizhModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
+            </div>
+
+            <textarea id="dvizhPostText" class="neo-input min-h-[120px] mb-3" placeholder="Напиши пост для ленты..."></textarea>
+
+            <div class="glass-box p-4 rounded-2xl mb-3">
+                <div class="text-sm font-semibold mb-2">📷 Фото к посту</div>
+                <input id="dvizhPostImages" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple class="block w-full text-sm text-gray-300" />
+                <div class="text-xs text-gray-500 mt-2">Можно будет прикреплять до 2 фото, до 5 МБ каждое.</div>
+            </div>
+
+            <div class="text-xs text-gray-500 mb-3">Публикация будет стоить 5 кредитов после подключения backend-логики.</div>
+
+            <button id="submitDvizhPostBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
+                Опубликовать • 5 кредитов
             </button>
         </div>
     </div>
@@ -1895,6 +1628,91 @@ body::after {
             }
         }
 
+
+        function renderDvizhFeed() {
+            const dvizhFeed = document.getElementById('dvizhFeed');
+            if (!dvizhFeed) return;
+
+            const demoPosts = [
+                {
+                    id: 1,
+                    author: 'UBT Insider',
+                    handle: '@ubt_feed',
+                    date: 'сегодня',
+                    text: 'Первый каркас Движа уже внутри приложения. Дальше сюда можно подключить реальные посты, модерацию, лайки и донаты.',
+                    images: [
+                        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80'
+                    ],
+                    likes: 12,
+                    comments: 3,
+                    views: 183
+                },
+                {
+                    id: 2,
+                    author: 'Media Hunter',
+                    handle: '@media_hunter',
+                    date: 'сейчас',
+                    text: 'Здесь можно будет публиковать креативы, результаты тестов и быстрые апдейты по рынку прямо внутри UBT ToolKit.',
+                    images: [
+                        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
+                        'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
+                    ],
+                    likes: 8,
+                    comments: 1,
+                    views: 96
+                }
+            ];
+
+            dvizhFeed.innerHTML = demoPosts.map((post) => {
+                const imagesHtml = (post.images || []).slice(0, 2).map((img, index, arr) => `
+                    <div class="${arr.length === 1 ? 'col-span-2' : ''} overflow-hidden rounded-[20px] border border-white/10 bg-white/5">
+                        <img src="${img}" alt="post-image-${post.id}-${index}" class="w-full ${arr.length === 1 ? 'h-56' : 'h-40'} object-cover" />
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="glass-box p-4 rounded-[24px]">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="h-12 w-12 rounded-[18px] bg-gradient-to-br from-orange-400/20 to-pink-500/20 flex items-center justify-center text-xl shrink-0">🔥</div>
+                                <div class="min-w-0">
+                                    <div class="font-bold truncate">${post.author}</div>
+                                    <div class="text-xs text-gray-400 truncate">${post.handle} • ${post.date}</div>
+                                </div>
+                            </div>
+                            <div class="premium-pill">Движ</div>
+                        </div>
+
+                        <div class="text-sm text-gray-200 leading-relaxed mb-3">${post.text}</div>
+
+                        ${imagesHtml ? `<div class="grid grid-cols-2 gap-3 mb-3">${imagesHtml}</div>` : ''}
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">❤️ ${post.likes}</button>
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">💬 ${post.comments}</button>
+                            <button class="secondary-btn p-3 rounded-2xl font-semibold text-sm">👁 ${post.views}</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openDvizhModal() {
+            const modal = document.getElementById('dvizhCreateModal');
+            const backdrop = document.getElementById('dvizhCreateModalBackdrop');
+            if (!modal || !backdrop) return;
+            modal.classList.remove('hidden');
+            backdrop.classList.remove('hidden');
+        }
+
+        function closeDvizhModal() {
+            const modal = document.getElementById('dvizhCreateModal');
+            const backdrop = document.getElementById('dvizhCreateModalBackdrop');
+            if (!modal || !backdrop) return;
+            modal.classList.add('hidden');
+            backdrop.classList.add('hidden');
+        }
+
         function setupSupportLink() {
             const supportBtn = document.getElementById('supportLinkBtn');
             if (!supportBtn) return;
@@ -1904,17 +1722,21 @@ body::after {
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
+                if (!btn) return;
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1932,6 +1754,13 @@ body::after {
                 loadTransactions();
             }
 
+            if (page === 'dvizh') {
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
+                renderDvizhFeed();
+            }
+
             if (page === 'support') {
                 supportScreen.classList.remove('hidden');
                 navSupportBtn.classList.add('active');
@@ -1940,7 +1769,7 @@ body::after {
         }
 
         function showSection(section) {
-            const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section'];
+            const sections = ['main-menu', 'video-section', 'link-section', 'spy-section'];
             sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
             document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
 
@@ -2979,23 +2808,6 @@ body::after {
         const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
         const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
         const refreshSmartStatsBtn = document.getElementById('refreshSmartStatsBtn');
-        const prelandTemplate = document.getElementById('prelandTemplate');
-        const prelandTitle = document.getElementById('prelandTitle');
-        const prelandSubtitle = document.getElementById('prelandSubtitle');
-        const prelandImage = document.getElementById('prelandImage');
-        const prelandButtonText = document.getElementById('prelandButtonText');
-        const prelandTargetUrl = document.getElementById('prelandTargetUrl');
-        const prelandContent = document.getElementById('prelandContent');
-        const generatePrelandBtn = document.getElementById('generatePrelandBtn');
-        const prelandPreview = document.getElementById('prelandPreview');
-        const prelandHtmlOutput = document.getElementById('prelandHtmlOutput');
-        const copyPrelandHtmlBtn = document.getElementById('copyPrelandHtmlBtn');
-        const openPrelandPreviewBtn = document.getElementById('openPrelandPreviewBtn');
-        const prelandHistoryList = document.getElementById('prelandHistoryList');
-        const clearPrelandHistoryBtn = document.getElementById('clearPrelandHistoryBtn');
-        const prelandTemplatePicker = document.getElementById('prelandTemplatePicker');
-        const prelandTemplateShowcase = document.getElementById('prelandTemplateShowcase');
-        const selectedTemplateBadge = document.getElementById('selectedTemplateBadge');
 
         let selectedFile = null;
         let uploadProgressTimer = null;
@@ -3069,690 +2881,6 @@ body::after {
             setVideoProgressUI(100, 'Готово. Видео успешно обработано.');
         }
 
-        const PRELAND_STORAGE_KEY = 'ubt_preland_history_v1';
-        const PRELAND_GENERATION_COST = 20;
-
-        function escapeHtml(value) {
-            return String(value || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function escapeAttribute(value) {
-            return escapeHtml(value).replace(/`/g, '&#96;');
-        }
-
-        function getPrelandHistory() {
-            try {
-                const raw = localStorage.getItem(PRELAND_STORAGE_KEY);
-                const parsed = raw ? JSON.parse(raw) : [];
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                console.error('Preland history parse error:', error);
-                return [];
-            }
-        }
-
-        function savePrelandHistoryItem(item) {
-            const current = getPrelandHistory();
-            current.unshift(item);
-            localStorage.setItem(PRELAND_STORAGE_KEY, JSON.stringify(current.slice(0, 5)));
-            renderPrelandHistory();
-        }
-
-        function renderPrelandHistory() {
-            if (!prelandHistoryList) return;
-
-            const items = getPrelandHistory();
-            if (!items.length) {
-                prelandHistoryList.innerHTML = `
-                    <div class="inner-panel text-center text-gray-400">
-                        История прелендов пока пустая
-                    </div>
-                `;
-                return;
-            }
-
-            prelandHistoryList.innerHTML = '';
-
-            items.forEach((item, index) => {
-                const wrap = document.createElement('div');
-                wrap.className = 'inner-panel';
-                wrap.innerHTML = `
-                    <div class="flex items-start justify-between gap-3 mb-3">
-                        <div class="min-w-0">
-                            <div class="text-white font-semibold truncate">${escapeHtml(item.title || 'Без названия')}</div>
-                            <div class="text-xs text-gray-400 mt-1">${escapeHtml(item.templateLabel || 'Шаблон')}</div>
-                            <div class="text-xs text-gray-500 mt-2">${escapeHtml(item.createdAt || '')}</div>
-                        </div>
-                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">${index + 1}</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="secondary-btn py-3 rounded-2xl font-semibold" onclick="loadPrelandHistoryItem(${index})">Загрузить</button>
-                        <button class="green-btn py-3 rounded-2xl font-semibold" onclick="copyPrelandHistoryHtml(${index})">HTML</button>
-                    </div>
-                `;
-                prelandHistoryList.appendChild(wrap);
-            });
-        }
-
-        window.loadPrelandHistoryItem = function (index) {
-            const items = getPrelandHistory();
-            const item = items[index];
-            if (!item) return;
-
-            applyPrelandTemplateSelection(item.template || 'news');
-            if (prelandTitle) prelandTitle.value = item.title || '';
-            if (prelandSubtitle) prelandSubtitle.value = item.subtitle || '';
-            if (prelandImage) prelandImage.value = item.image || '';
-            if (prelandButtonText) prelandButtonText.value = item.buttonText || 'Перейти';
-            if (prelandTargetUrl) prelandTargetUrl.value = item.targetUrl || '';
-            if (prelandContent) prelandContent.value = item.content || '';
-            if (prelandHtmlOutput) prelandHtmlOutput.value = item.html || '';
-            renderPrelandPreview(item);
-            hapticSuccess();
-        };
-
-        window.copyPrelandHistoryHtml = async function (index) {
-            const items = getPrelandHistory();
-            const item = items[index];
-            if (!item || !item.html) return;
-            const ok = await copyText(item.html);
-            if (ok) {
-                hapticSuccess();
-                tg?.showAlert?.('HTML скопирован');
-            } else {
-                hapticError();
-            }
-        };
-
-
-        function renderPrelandTemplateShowcase(template) {
-            if (!prelandTemplateShowcase) return;
-
-            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
-            let markup = '';
-
-            if (normalized === 'blog') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/blog-review</div>
-                        <div class="text-[11px] text-gray-400">BLOG</div>
-                    </div>
-                    <div class="preland-showcase-body">
-                        <div class="preland-blog-author">
-                            <div class="preland-blog-avatar"></div>
-                            <div>
-                                <div style="font-weight:800;font-size:14px">Автор блога</div>
-                                <div style="font-size:12px;color:#6b7280">Личный опыт • обновлено сегодня</div>
-                            </div>
-                        </div>
-                        <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:800">Личный отзыв</div>
-                        <div style="font-size:30px;line-height:1.1;font-weight:900;margin:14px 0 8px">Преленд в формате личной истории</div>
-                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит, когда нужно сделать отзыв, прогрев и мягкую подводку к кнопке.</div>
-                        <div class="preland-mini-hero blog"></div>
-                        <div class="preland-blog-quote">
-                            <div style="font-size:12px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Почему это цепляет</div>
-                            <div style="font-size:15px;line-height:1.7;color:#374151">Здесь будет выделенный блок-цитата, который создаёт ощущение личного опыта и доверия.</div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут обычные абзацы истории, а в конце — заметная кнопка перехода.</div>
-                        <a class="preland-real-btn preland-cta-violet" href="javascript:void(0)">Посмотреть дальше</a>
-                    </div>`;
-            } else if (normalized === 'story') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/success-story</div>
-                        <div class="text-[11px] text-gray-400">STORY</div>
-                    </div>
-                    <div class="preland-showcase-body" style="background:#ffffff">
-                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff">
-                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:800;margin-bottom:12px">История успеха</div>
-                            <div style="font-size:32px;line-height:1.05;font-weight:900;margin-bottom:8px">Яркий макет с акцентом на результат</div>
-                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.88)">Подходит под кейсы “до / после”, рост, цифры и сильный CTA.</div>
-                        </div>
-                        <div class="preland-mini-hero story"></div>
-                        <div class="preland-story-stats">
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">+127%</div><div style="font-size:12px;color:#6b7280">рост</div></div>
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">24 ч</div><div style="font-size:12px;color:#6b7280">первые результаты</div></div>
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">TOP</div><div style="font-size:12px;color:#6b7280">эффект</div></div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идёт объяснение, почему решение сработало, а затем — большая кнопка.</div>
-                        <a class="preland-real-btn preland-cta-green" href="javascript:void(0)">Получить доступ</a>
-                    </div>`;
-            } else if (normalized === 'quiz') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/quiz-flow</div>
-                        <div class="text-[11px] text-gray-400">QUIZ</div>
-                    </div>
-                    <div class="preland-showcase-body" style="background:#fff">
-                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff">
-                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-size:12px;font-weight:800;margin-bottom:12px">Интерактивный quiz</div>
-                            <div style="font-size:30px;line-height:1.08;font-weight:900;margin-bottom:8px">Пошаговый преленд с вовлечением</div>
-                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.92)">Подходит, когда нужно прогреть человека через вопросы и ответы.</div>
-                        </div>
-                        <div class="preland-quiz-progress"><span></span></div>
-                        <div class="preland-mini-hero quiz"></div>
-                        <div class="preland-quiz-option"><strong style="display:block;margin-bottom:4px">Шаг 1 из 3</strong><span style="font-size:14px;color:#374151">Да, мне интересен такой формат</span></div>
-                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Хочу сначала посмотреть детали</span></div>
-                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Интересно узнать отзывы</span></div>
-                        <a class="preland-real-btn preland-cta-orange" href="javascript:void(0)">Продолжить</a>
-                    </div>`;
-            } else {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/news-page</div>
-                        <div class="text-[11px] text-gray-400">NEWS</div>
-                    </div>
-                    <div class="preland-showcase-body">
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #e5e7eb">
-                            <div style="font-size:12px;font-weight:900;color:#2563eb;letter-spacing:.08em;text-transform:uppercase">Новости дня</div>
-                            <div style="font-size:12px;color:#6b7280">${__import__('datetime').datetime.now().strftime('%d.%m.%Y')}</div>
-                        </div>
-                        <div style="display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-top:14px"><span style="width:8px;height:8px;border-radius:999px;background:#2563eb"></span>Срочное обновление</div>
-                        <div style="font-size:32px;line-height:1.08;font-weight:900;margin:14px 0 8px">Новостной преленд как мини-СМИ сайт</div>
-                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит под формат статьи, новости, разбор ситуации и редакционный стиль.</div>
-                        <div class="preland-mini-hero news"></div>
-                        <div class="preland-news-grid">
-                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Что известно</div><div style="font-size:14px;line-height:1.7;color:#374151">Два информативных блока сразу под заголовком.</div></div>
-                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Почему обсуждают</div><div style="font-size:14px;line-height:1.7;color:#374151">Редакционная подача создаёт ощущение настоящего сайта.</div></div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут абзацы текста и большая синяя кнопка перехода.</div>
-                        <a class="preland-real-btn preland-cta-blue" href="javascript:void(0)">Открыть материал</a>
-                    </div>`;
-            }
-
-            prelandTemplateShowcase.innerHTML = markup;
-        }
-
-        function applyPrelandTemplateSelection(template) {
-            if (!prelandTemplate) return;
-
-            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
-            prelandTemplate.value = normalized;
-
-            const meta = getTemplateMeta(normalized);
-            if (selectedTemplateBadge) selectedTemplateBadge.textContent = meta.badge;
-
-            document.querySelectorAll('.preland-template-card').forEach((card) => {
-                const isActive = card.dataset.template === normalized;
-                card.classList.toggle('ring-2', isActive);
-                card.classList.toggle('ring-offset-2', isActive);
-                card.classList.toggle('ring-offset-transparent', isActive);
-                card.classList.toggle('scale-[1.02]', isActive);
-                card.classList.toggle('shadow-[0_0_24px_rgba(103,232,249,0.16)]', isActive);
-                card.classList.toggle('border-cyan-300/50', isActive);
-                card.classList.toggle('bg-white/10', isActive);
-                card.classList.toggle('border-white/10', !isActive);
-                card.classList.toggle('bg-white/5', !isActive);
-            });
-
-            renderPrelandTemplateShowcase(normalized);
-            renderPrelandPreview(collectPrelandPayload());
-        }
-
-        function bindPrelandTemplatePicker() {
-            if (!prelandTemplatePicker) return;
-            prelandTemplatePicker.querySelectorAll('.preland-template-card').forEach((card) => {
-                card.addEventListener('click', () => {
-                    applyPrelandTemplateSelection(card.dataset.template || 'news');
-                    hapticSelection();
-                });
-            });
-        }
-
-        function getTemplateMeta(template) {
-            const map = {
-                news: {
-                    label: 'Новостной стиль',
-                    badge: 'NEWS',
-                    accent: '#2563eb',
-                    previewClass: 'from-blue-500/25 to-cyan-400/10'
-                },
-                blog: {
-                    label: 'Блог / отзыв',
-                    badge: 'BLOG',
-                    accent: '#7c3aed',
-                    previewClass: 'from-violet-500/25 to-fuchsia-400/10'
-                },
-                story: {
-                    label: 'История успеха',
-                    badge: 'STORY',
-                    accent: '#059669',
-                    previewClass: 'from-emerald-500/25 to-teal-400/10'
-                },
-                quiz: {
-                    label: 'Quiz / опрос',
-                    badge: 'QUIZ',
-                    accent: '#ea580c',
-                    previewClass: 'from-orange-500/25 to-amber-400/10'
-                }
-            };
-            return map[template] || map.news;
-        }
-
-        function splitPrelandParagraphs(content) {
-            return (content || '')
-                .split(/\n+/)
-                .map((line) => line.trim())
-                .filter(Boolean);
-        }
-
-        function buildParagraphsHtml(lines) {
-            return lines.length
-                ? lines.map((line) => `<p>${escapeHtml(line)}</p>`).join('\n')
-                : '<p>Добавь основной текст преленда.</p>';
-        }
-
-        function buildPrelandHtml(payload) {
-            const meta = getTemplateMeta(payload.template);
-            const title = escapeHtml(payload.title || 'Без заголовка');
-            const subtitle = escapeHtml(payload.subtitle || '');
-            const image = escapeAttribute(payload.image || '');
-            const buttonText = escapeHtml(payload.buttonText || 'Перейти');
-            const targetUrl = escapeAttribute(payload.targetUrl || '#');
-            const lines = splitPrelandParagraphs(payload.content);
-            const paragraphs = buildParagraphsHtml(lines);
-            const firstLine = escapeHtml(lines[0] || 'Редакция отмечает резкий рост интереса к этому решению.');
-            const secondLine = escapeHtml(lines[1] || 'Пользователи делятся результатами и продолжают обсуждать тему.');
-            const quoteLine = escapeHtml(lines[2] || lines[0] || 'Я не ожидал такого эффекта, но решил проверить лично.');
-            const storyStat = escapeHtml(lines[3] || 'Результат заметен уже после первых шагов.');
-            const quizQuestion = escapeHtml(payload.subtitle || 'Ответь на несколько коротких вопросов и открой следующий шаг.');
-            const quizOptions = [
-                'Да, хочу попробовать',
-                'Сначала хочу узнать детали',
-                'Интересно посмотреть отзывы'
-            ].map((item) => `<div class="quiz-option">${escapeHtml(item)}</div>`).join('');
-
-            if (payload.template === 'blog') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#f5f3ff;font-family:Arial,sans-serif;color:#1f2937}
-.wrap{max-width:820px;margin:0 auto;background:#fff;min-height:100vh}
-.top{padding:28px 22px 0}
-.author{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.avatar{width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,#c4b5fd,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
-.author-meta small{display:block;color:#6b7280;font-size:12px}
-.tag{display:inline-block;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-.hero img{width:100%;display:block;max-height:420px;object-fit:cover}
-.content{padding:24px 22px 28px}
-h1{font-size:32px;line-height:1.15;margin:0 0 12px;font-weight:800}
-.lead{font-size:18px;line-height:1.65;color:#4b5563;margin:0 0 20px}
-.story-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:18px;padding:18px;margin:18px 0 22px}
-.story-box-title{font-size:13px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#7c3aed;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:26px}
-.footer{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="top">
-<div class="tag">Личный отзыв</div>
-<div class="author">
-<div class="avatar">A</div>
-<div class="author-meta">
-<strong>Автор блога</strong>
-<small>Обновлено сегодня</small>
-</div>
-</div>
-</div>
-${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
-<div class="content">
-<h1>${title}</h1>
-${subtitle ? `<div class="lead">${subtitle}</div>` : ''}
-<div class="story-box">
-<div class="story-box-title">Почему я решил проверить это сам</div>
-<p>${quoteLine}</p>
-</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="footer">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
-
-            if (payload.template === 'story') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#ecfdf5;font-family:Arial,sans-serif;color:#0f172a}
-.wrap{max-width:860px;margin:0 auto;background:#fff;min-height:100vh}
-.hero{padding:24px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
-.hero h1{font-size:36px;line-height:1.1;margin:0 0 14px;font-weight:900}
-.hero p{font-size:18px;line-height:1.65;margin:0;color:rgba(255,255,255,0.88)}
-.hero-media img{width:100%;border-radius:24px;display:block;max-height:360px;object-fit:cover;box-shadow:0 18px 40px rgba(0,0,0,.2)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 24px;margin-top:-28px}
-.stat{background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 30px rgba(15,23,42,.08);border:1px solid #d1fae5}
-.stat strong{display:block;font-size:28px;color:#059669;margin-bottom:6px}
-.content{padding:28px 24px 30px}
-.section-label{display:inline-block;background:#d1fae5;color:#047857;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#059669;color:#fff;padding:17px 18px;border-radius:15px;font-weight:800;font-size:16px;margin-top:26px}
-.note{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
-@media (max-width:700px){
-.hero-grid{grid-template-columns:1fr}
-.stats{grid-template-columns:1fr}
-.hero h1{font-size:30px}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="hero">
-<div class="hero-grid">
-<div>
-<div class="section-label" style="background:rgba(255,255,255,.16);color:#fff">История успеха</div>
-<h1>${title}</h1>
-<p>${subtitle || firstLine}</p>
-</div>
-<div class="hero-media">
-${image ? `<img src="${image}" alt="preview">` : `<div style="height:260px;border-radius:24px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700">Добавь изображение</div>`}
-</div>
-</div>
-</div>
-<div class="stats">
-<div class="stat"><strong>+127%</strong><span>рост интереса</span></div>
-<div class="stat"><strong>24 ч</strong><span>первые результаты</span></div>
-<div class="stat"><strong>TOP</strong><span>${storyStat}</span></div>
-</div>
-<div class="content">
-<div class="section-label">Почему это сработало</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="note">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
-
-            if (payload.template === 'quiz') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#fff7ed;font-family:Arial,sans-serif;color:#111827}
-.wrap{max-width:760px;margin:0 auto;background:#fff;min-height:100vh}
-.head{padding:24px 22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff}
-.badge{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-h1{font-size:32px;line-height:1.15;margin:0 0 10px;font-weight:900}
-.sub{font-size:17px;line-height:1.6;color:rgba(255,255,255,.92)}
-.content{padding:24px 22px 30px}
-.progress{height:10px;border-radius:999px;background:#fed7aa;overflow:hidden;margin:0 0 20px}
-.progress span{display:block;height:100%;width:66%;background:#ea580c;border-radius:inherit}
-.card{background:#fff7ed;border:1px solid #fdba74;border-radius:20px;padding:18px;margin-bottom:18px}
-.card-title{font-size:20px;font-weight:800;margin-bottom:10px}
-.quiz-option{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid #fdba74;margin-bottom:10px;font-weight:600}
-.hero img{width:100%;display:block;max-height:360px;object-fit:cover;border-radius:20px;margin-bottom:18px}
-p{font-size:16px;line-height:1.75;margin:0 0 14px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#ea580c;color:#fff;padding:16px 18px;border-radius:14px;font-weight:800;font-size:16px;margin-top:24px}
-.note{font-size:13px;color:#6b7280;margin-top:15px;text-align:center}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="head">
-<div class="badge">Интерактивный quiz</div>
-<h1>${title}</h1>
-<div class="sub">${quizQuestion}</div>
-</div>
-<div class="content">
-<div class="progress"><span></span></div>
-${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
-<div class="card">
-<div class="card-title">Шаг 1 из 3</div>
-<div class="quiz-option">Да, мне подходит такой формат</div>
-<div class="quiz-option">Хочу посмотреть детали и примеры</div>
-<div class="quiz-option">Интересно узнать больше отзывов</div>
-</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="note">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
-
-            return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#eef2f7;font-family:Arial,sans-serif;color:#111827}
-.wrap{max-width:820px;margin:0 auto;background:#ffffff;min-height:100vh}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e5e7eb;background:#fff}
-.brand{font-size:13px;font-weight:800;color:#2563eb;letter-spacing:.08em;text-transform:uppercase}
-.date{font-size:13px;color:#6b7280}
-.hero img{width:100%;display:block;max-height:400px;object-fit:cover}
-.content{padding:24px 22px 28px}
-.live{display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-bottom:16px}
-.dot{width:8px;height:8px;border-radius:999px;background:#2563eb}
-h1{font-size:34px;line-height:1.12;margin:0 0 12px;font-weight:900}
-h2{font-size:19px;line-height:1.6;margin:0 0 22px;color:#4b5563;font-weight:500}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 22px}
-.stat{background:#f8fafc;border:1px solid #dbeafe;border-radius:18px;padding:16px}
-.stat strong{display:block;font-size:14px;color:#1d4ed8;margin-bottom:8px;text-transform:uppercase}
-.stat span{font-size:17px;line-height:1.6;color:#1f2937}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#2563eb;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
-.note{font-size:13px;color:#6b7280;margin-top:14px;text-align:center}
-@media (max-width:700px){
-.stats{grid-template-columns:1fr}
-h1{font-size:30px}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="topbar">
-<div class="brand">Новости дня</div>
-<div class="date">${new Date().toLocaleDateString('ru-RU')}</div>
-</div>
-${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
-<div class="content">
-<div class="live"><span class="dot"></span>Срочное обновление</div>
-<h1>${title}</h1>
-${subtitle ? `<h2>${subtitle}</h2>` : ''}
-<div class="stats">
-<div class="stat"><strong>Что известно</strong><span>${firstLine}</span></div>
-<div class="stat"><strong>Почему обсуждают</strong><span>${secondLine}</span></div>
-</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="note">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-        }
-
-        function renderPrelandPreview(payload) {
-            if (!prelandPreview) return;
-
-            const meta = getTemplateMeta(payload.template);
-            const safeTitle = escapeHtml(payload.title || 'Без заголовка');
-            const safeSubtitle = escapeHtml(payload.subtitle || '');
-            const safeImage = escapeAttribute(payload.image || '');
-            const safeButtonText = escapeHtml(payload.buttonText || 'Перейти');
-            const safeContent = escapeHtml(payload.content || 'Без текста').replace(/\n/g, '<br>');
-            const safeTargetUrl = escapeAttribute(payload.targetUrl || '#');
-
-            let previewMarkup = '';
-
-            if (payload.template === 'blog') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 flex items-center justify-center text-white font-bold">A</div>
-                            <div>
-                                <div class="text-white font-semibold">Автор блога</div>
-                                <div class="text-xs text-gray-400">Личный опыт • сегодня</div>
-                            </div>
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="inner-panel mb-4 text-sm text-gray-300 leading-7">Почему я решил проверить это сам</div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block secondary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            } else if (payload.template === 'story') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="rounded-[24px] p-5 mb-4 bg-gradient-to-br from-emerald-500/25 to-teal-400/10 border border-emerald-400/20">
-                            <div class="text-xs uppercase tracking-[0.18em] text-emerald-300 font-semibold mb-3">${meta.badge}</div>
-                            <div class="text-2xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                            ${safeSubtitle ? `<div class="text-sm text-emerald-100/80">${safeSubtitle}</div>` : ''}
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">+127%</div><div class="text-[11px] text-gray-400">рост</div></div>
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">24ч</div><div class="text-[11px] text-gray-400">старт</div></div>
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">TOP</div><div class="text-[11px] text-gray-400">эффект</div></div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block green-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            } else if (payload.template === 'quiz') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="progress-shell mb-4"><div class="progress-bar" style="width:66%"></div></div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="space-y-2 mb-4">
-                            <div class="inner-panel text-sm text-gray-200">Да, хочу попробовать</div>
-                            <div class="inner-panel text-sm text-gray-200">Сначала хочу посмотреть детали</div>
-                            <div class="inner-panel text-sm text-gray-200">Интересно узнать больше отзывов</div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block gold-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            } else {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="flex items-center justify-between gap-3 mb-4">
-                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
-                            <span class="text-xs text-gray-500">${meta.label}</span>
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="inline-flex items-center gap-2 text-xs text-blue-300 font-semibold mb-3"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>Срочное обновление</div>
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="metric-tile text-sm text-gray-300">Что известно</div>
-                            <div class="metric-tile text-sm text-gray-300">Почему обсуждают</div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            }
-
-            prelandPreview.innerHTML = previewMarkup;
-        }
-
-        function collectPrelandPayload() {
-            return {
-                template: prelandTemplate?.value || 'news',
-                title: prelandTitle?.value.trim() || '',
-                subtitle: prelandSubtitle?.value.trim() || '',
-                image: prelandImage?.value.trim() || '',
-                buttonText: prelandButtonText?.value.trim() || 'Перейти',
-                targetUrl: prelandTargetUrl?.value.trim() || '#',
-                content: prelandContent?.value.trim() || ''
-            };
-        }
-
-        async function generatePreland() {
-            const payload = collectPrelandPayload();
-
-            if (!payload.title) {
-                tg?.showAlert?.('Добавь заголовок преленда');
-                hapticError();
-                return;
-            }
-
-            if (!payload.targetUrl || payload.targetUrl === '#') {
-                tg?.showAlert?.('Добавь ссылку перехода');
-                hapticError();
-                return;
-            }
-
-            if (generatePrelandBtn) {
-                generatePrelandBtn.disabled = true;
-                generatePrelandBtn.classList.add('btn-disabled');
-                generatePrelandBtn.textContent = `Списание ${PRELAND_GENERATION_COST} кредитов...`;
-            }
-
-            const spendResult = await spendCredits('preland_generate', PRELAND_GENERATION_COST);
-
-            if (!spendResult.ok) {
-                if (generatePrelandBtn) {
-                    generatePrelandBtn.disabled = false;
-                    generatePrelandBtn.classList.remove('btn-disabled');
-                    generatePrelandBtn.textContent = `Сгенерировать преленд • ${PRELAND_GENERATION_COST} кредитов`;
-                }
-                tg?.showAlert?.(spendResult.message || 'Не удалось списать кредиты');
-                hapticError();
-                return;
-            }
-
-            const html = buildPrelandHtml(payload);
-            const meta = getTemplateMeta(payload.template);
-            const item = {
-                ...payload,
-                html,
-                templateLabel: meta.label,
-                createdAt: new Date().toLocaleString('ru-RU')
-            };
-
-            if (prelandHtmlOutput) prelandHtmlOutput.value = html;
-            renderPrelandPreview(item);
-            savePrelandHistoryItem(item);
-
-            if (generatePrelandBtn) {
-                generatePrelandBtn.disabled = false;
-                generatePrelandBtn.classList.remove('btn-disabled');
-                generatePrelandBtn.textContent = `Сгенерировать преленд • ${PRELAND_GENERATION_COST} кредитов`;
-            }
-
-            tg?.showAlert?.(`Преленд готов. Списано ${PRELAND_GENERATION_COST} кредитов.`);
-            hapticSuccess();
-        }
-
-
         videoInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
 
@@ -3780,22 +2908,17 @@ ${paragraphs}
                 return;
             }
 
-            uploadBtn.disabled = true;
-            uploadBtn.classList.add('btn-disabled');
-            uploadBtn.textContent = 'Списание 5 кредитов...';
-
             const spend = await spendCredits('video_unique', 5);
             if (!spend.ok) {
                 statusMessage.textContent = spend.message;
-                uploadBtn.disabled = false;
-                uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
                 hapticError();
                 return;
             }
 
             startFakeVideoProgress();
 
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('btn-disabled');
             uploadBtn.textContent = 'Загрузка...';
             statusMessage.textContent = 'Загружаем видео...';
             resultBox.classList.add('hidden');
@@ -3853,7 +2976,7 @@ ${paragraphs}
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
+                uploadBtn.textContent = 'Уникализировать';
 
                 setTimeout(() => {
                     removeVideoProgressUI();
@@ -3872,27 +2995,11 @@ ${paragraphs}
             }
 
             generatedLinkBox.classList.remove('hidden');
-            generatedLink.textContent = 'Списание 2 кредитов...';
+            generatedLink.textContent = 'Сокращаем...';
             generatedLink.removeAttribute('href');
             copyStatus.textContent = '';
             openLinkBtn.classList.add('hidden');
             openLinkBtn.href = '#';
-            generateLinkBtn.disabled = true;
-            generateLinkBtn.classList.add('btn-disabled');
-            generateLinkBtn.textContent = 'Списание 2 кредитов...';
-
-            const spend = await spendCredits('smart_link_generate', 2);
-            if (!spend.ok) {
-                generatedLink.textContent = spend.message || 'Недостаточно кредитов';
-                generateLinkBtn.disabled = false;
-                generateLinkBtn.classList.remove('btn-disabled');
-                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
-                hapticError();
-                return;
-            }
-
-            generatedLink.textContent = 'Сокращаем...';
-            generateLinkBtn.textContent = 'Создаём ссылку...';
 
             try {
                 const data = await createSmartLinkRequest(url);
@@ -3908,7 +3015,6 @@ ${paragraphs}
                     await registerTelegramUser();
                     await loadTransactions();
                     await loadSmartLinks();
-                    tg?.showAlert?.('Ссылка создана. Списано 2 кредита.');
                 } else {
                     generatedLink.textContent = data.message || 'Ошибка создания ссылки';
                     generatedLink.removeAttribute('href');
@@ -3919,10 +3025,6 @@ ${paragraphs}
                 generatedLink.textContent = 'Ошибка соединения';
                 hapticError();
                 console.error(error);
-            } finally {
-                generateLinkBtn.disabled = false;
-                generateLinkBtn.classList.remove('btn-disabled');
-                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
             }
         });
 
@@ -3986,62 +3088,53 @@ ${paragraphs}
             refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
 
-        if (generatePrelandBtn) {
-            generatePrelandBtn.addEventListener('click', generatePreland);
+        const openCreatePostBtn = document.getElementById('openCreatePostBtn');
+        const closeDvizhModalBtn = document.getElementById('closeDvizhModalBtn');
+        const dvizhCreateModalBackdrop = document.getElementById('dvizhCreateModalBackdrop');
+        const submitDvizhPostBtn = document.getElementById('submitDvizhPostBtn');
+        const dvizhRefreshBtn = document.getElementById('dvizhRefreshBtn');
+
+        if (openCreatePostBtn) {
+            openCreatePostBtn.addEventListener('click', openDvizhModal);
         }
 
-        if (copyPrelandHtmlBtn) {
-            copyPrelandHtmlBtn.addEventListener('click', async function () {
-                const html = prelandHtmlOutput?.value?.trim();
-                if (!html) {
-                    tg?.showAlert?.('Сначала сгенерируй преленд');
-                    hapticError();
+        if (closeDvizhModalBtn) {
+            closeDvizhModalBtn.addEventListener('click', closeDvizhModal);
+        }
+
+        if (dvizhCreateModalBackdrop) {
+            dvizhCreateModalBackdrop.addEventListener('click', closeDvizhModal);
+        }
+
+        if (dvizhRefreshBtn) {
+            dvizhRefreshBtn.addEventListener('click', renderDvizhFeed);
+        }
+
+        if (submitDvizhPostBtn) {
+            submitDvizhPostBtn.addEventListener('click', () => {
+                const textValue = (document.getElementById('dvizhPostText')?.value || '').trim();
+
+                if (!textValue) {
+                    if (tg && tg.showAlert) {
+                        tg.showAlert('Напиши текст для поста');
+                    } else {
+                        alert('Напиши текст для поста');
+                    }
                     return;
                 }
-                const ok = await copyText(html);
-                if (ok) {
-                    tg?.showAlert?.('HTML скопирован');
-                    hapticSuccess();
+
+                if (tg && tg.showAlert) {
+                    tg.showAlert('Каркас готов. Следующий шаг — подключить backend и списание 5 кредитов.');
                 } else {
-                    hapticError();
+                    alert('Каркас готов. Следующий шаг — подключить backend и списание 5 кредитов.');
                 }
-            });
-        }
 
-        if (openPrelandPreviewBtn) {
-            openPrelandPreviewBtn.addEventListener('click', function () {
-                const html = prelandHtmlOutput?.value?.trim();
-                if (!html) {
-                    tg?.showAlert?.('Сначала сгенерируй преленд');
-                    hapticError();
-                    return;
-                }
-                const previewWindow = window.open('', '_blank');
-                if (!previewWindow) {
-                    tg?.showAlert?.('Не удалось открыть превью');
-                    hapticError();
-                    return;
-                }
-                previewWindow.document.open();
-                previewWindow.document.write(html);
-                previewWindow.document.close();
-                hapticSuccess();
-            });
-        }
-
-        if (clearPrelandHistoryBtn) {
-            clearPrelandHistoryBtn.addEventListener('click', function () {
-                localStorage.removeItem(PRELAND_STORAGE_KEY);
-                renderPrelandHistory();
-                hapticLight();
+                closeDvizhModal();
             });
         }
 
         renderSpyTrends();
         renderVideoHistory();
-        bindPrelandTemplatePicker();
-        applyPrelandTemplateSelection(prelandTemplate?.value || 'news');
-        renderPrelandHistory();
         loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
