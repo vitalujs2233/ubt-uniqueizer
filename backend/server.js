@@ -669,13 +669,21 @@ console.log('FILE:', !!req.file);
     if (!text || text.trim().length === 0) {
       return res.status(400).json({ message: 'Пустой текст' });
     }
+let imageUrls = [];
 
+if (req.file && req.file.buffer) {
+  const mime = req.file.mimetype || 'image/jpeg';
+  const base64 = req.file.buffer.toString('base64');
+
+  const dataUrl = `data:${mime};base64,${base64}`;
+  imageUrls = [dataUrl];
+}
     await spendUserCredits(user.id, 5, 'Публикация поста');
 
     await pool.query(
       `insert into posts (user_id, text, image_urls, status, likes_count, views_count)
-       values ($1, $2, '[]', 'pending', 0, 0)`,
-      [user.id, text]
+      values ($1, $2, $3, 'pending', 0, 0)`,
+      [user.id, text, JSON.stringify(imageUrls)]
     );
 
     res.json({ ok: true });
