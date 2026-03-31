@@ -2033,19 +2033,31 @@ body::after {
             }
 
             try {
-                const formData = new FormData();
-                formData.append('initData', tg.initData);
-                formData.append('text', text);
-
                 const files = Array.from(fileEl.files || []).slice(0, 1);
-                if (files[0]) formData.append('image', files[0]);
+                let response;
 
-                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
-                    method: 'POST',
-                    body: formData
-                });
+                if (files.length === 0) {
+                    response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            initData: tg.initData,
+                            text
+                        })
+                    });
+                } else {
+                    const formData = new FormData();
+                    formData.append('initData', tg.initData);
+                    formData.append('text', text);
+                    formData.append('image', files[0]);
 
-                const data = await response.json();
+                    response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                const data = await response.json().catch(() => ({}));
                 if (!response.ok || !data.ok) {
                     throw new Error(data.message || 'Не удалось создать пост');
                 }
@@ -2056,6 +2068,8 @@ body::after {
                         ...data.user
                     };
                     updateUserBar();
+                } else if (typeof loadProfile === 'function') {
+                    await loadProfile().catch(() => {});
                 }
 
                 textEl.value = '';
