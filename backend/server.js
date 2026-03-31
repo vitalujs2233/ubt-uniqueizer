@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
 const geoip = require('geoip-lite');
-
+const multer = require('multer');
 dotenv.config();
 
 const app = express();
@@ -13,6 +13,18 @@ const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 
 app.use(cors());
 app.use(express.json());
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+      return cb(new Error('Можно загружать только изображения'));
+    }
+    cb(null, true);
+  }
+});
 
 app.get('/', (req, res) => {
   res.json({
