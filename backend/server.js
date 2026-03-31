@@ -654,9 +654,10 @@ app.post('/dvizh/feed', async (req, res) => {
 });
 
 // создать пост
-app.post('/dvizh/create-post', async (req, res) => {
+app.post('/dvizh/create-post', upload.single('image'), async (req, res) => {
   try {
-    const { initData, text } = req.body;
+    const initData = req.body?.initData;
+const text = req.body?.text;
 
     const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
     if (!user) return res.status(401).json({ message: 'Invalid user' });
