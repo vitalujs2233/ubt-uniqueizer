@@ -1368,41 +1368,6 @@ body::after {
             <div id="historyList" class="space-y-3"></div>
         </div>
 
-        <div id="dvizh-screen" class="hidden">
-            <div class="flex items-start justify-between gap-3 mb-4">
-                <div>
-                    <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
-                    <p class="text-sm text-gray-400 mt-1">Лента постов сообщества. Публикация поста — 5 кредитов.</p>
-                </div>
-                <div class="premium-pill shrink-0">UBT Feed</div>
-            </div>
-
-            <div class="glass-box p-4 rounded-[24px] mb-4">
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400 mb-1">Постов</div>
-                        <div id="dvizhPostsCount" class="text-white text-[22px] font-extrabold">0</div>
-                    </div>
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400 mb-1">Лайков</div>
-                        <div id="dvizhLikesCount" class="text-white text-[22px] font-extrabold">0</div>
-                    </div>
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400 mb-1">Просмотров</div>
-                        <div id="dvizhViewsCount" class="text-white text-[22px] font-extrabold">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="dvizhFeed" class="space-y-4"></div>
-
-            <button id="openCreatePostBtn"
-                class="fixed right-4 bottom-24 h-14 w-14 rounded-full primary-btn text-[28px] font-bold flex items-center justify-center z-40"
-                aria-label="Создать пост">
-                +
-            </button>
-        </div>
-
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
 
@@ -1427,6 +1392,35 @@ body::after {
                 </a>
             </div>
         </div>
+
+        <div id="dvizh-screen" class="hidden">
+            <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Движ</h2>
+
+            <div class="glass-box p-5 rounded-[24px] mb-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-12 w-12 rounded-[18px] bg-orange-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
+                    <div>
+                        <div class="font-bold">Лента Движа</div>
+                        <div class="text-sm text-gray-400">Каркас нового раздела</div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                    Здесь будет лента постов, создание публикаций, лайки, просмотры и другие функции Движа.
+                </p>
+
+                <div id="feed" class="space-y-3">
+                    <div class="inner-panel">
+                        <div class="text-sm font-semibold mb-1">Пока здесь пусто</div>
+                        <div class="text-xs text-gray-400">Сначала добавим каркас, потом подключим реальные посты и публикацию.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="dvizhCreateBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
+                Создать пост
+            </button>
+        </div>
     </div>
 
     <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
@@ -1450,26 +1444,6 @@ body::after {
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
             </button>
-        </div>
-    </div>
-
-    <div id="dvizhCreateModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
-    <div id="dvizhCreateModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
-        <div class="glass-box rounded-[28px] p-5">
-            <div class="flex items-start justify-between gap-3 mb-4">
-                <div>
-                    <div class="text-lg font-extrabold">Новый пост</div>
-                    <div class="text-sm text-gray-400 mt-1">1–2 фото, текст без ссылок. Публикация — 5 кредитов.</div>
-                </div>
-                <button id="closeDvizhCreateBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
-            </div>
-
-            <textarea id="dvizhPostText" rows="5" class="neo-input mb-3" placeholder="Напиши пост для Движа..."></textarea>
-            <input id="dvizhPostImages" type="file" accept="image/png,image/jpeg,image/webp" multiple class="neo-input mb-3" />
-            <div id="dvizhImageHint" class="text-xs text-gray-500 mb-3">Можно загрузить до 2 изображений: JPG, PNG, WEBP, до 5 МБ каждое.</div>
-            <div id="dvizhCreateStatus" class="text-sm text-gray-300 mb-3"></div>
-
-            <button id="submitDvizhPostBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">Опубликовать • 5 кредитов</button>
         </div>
     </div>
 
@@ -1618,17 +1592,20 @@ body::after {
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1644,6 +1621,12 @@ body::after {
                 navHistoryBtn.classList.add('active');
                 navHistoryBtn.classList.remove('text-white/70');
                 loadTransactions();
+            }
+
+            if (page === 'dvizh') {
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
             }
 
             if (page === 'support') {
@@ -1921,181 +1904,7 @@ body::after {
 
         function filterSpy(niche, button) {
             currentFilter = niche;
-            const DVIZH_DEMO_POSTS = [{
-            id: 'demo-1',
-            author_name: 'UBT ToolKit',
-            text: 'Добро пожаловать в Движ 🔥 Здесь будут посты сообщества после модерации.',
-            image_urls: [],
-            likes_count: 12,
-            views_count: 183,
-            created_at: new Date().toISOString()
-        }];
-        window.DVIZH_CACHE = DVIZH_DEMO_POSTS.slice();
-
-        function escapeHtml(value) {
-            return String(value || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function sanitizeDvizhText(text) {
-            return String(text || '')
-                .replace(/https?:\/\/\S+/gi, '[ссылка удалена]')
-                .replace(/@[a-zA-Z0-9_]{3,}/g, '[ссылка удалена]')
-                .trim();
-        }
-
-        function formatDvizhDate(dateString) {
-            if (!dateString) return 'сейчас';
-            const date = new Date(dateString);
-            if (Number.isNaN(date.getTime())) return 'сейчас';
-            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }) + ' ' + date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function renderDvizhFeed(posts) {
-            const dvizhFeed = document.getElementById('dvizhFeed');
-            if (!dvizhFeed) return;
-
-            const normalizedPosts = Array.isArray(posts) && posts.length ? posts : [];
-            const postsCount = document.getElementById('dvizhPostsCount');
-            const likesCount = document.getElementById('dvizhLikesCount');
-            const viewsCount = document.getElementById('dvizhViewsCount');
-
-            if (postsCount) postsCount.textContent = String(normalizedPosts.length);
-            if (likesCount) likesCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.likes_count || 0), 0));
-            if (viewsCount) viewsCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.views_count || 0), 0));
-
-            if (!normalizedPosts.length) {
-                dvizhFeed.innerHTML = `<div class="glass-box p-5 rounded-[24px] text-center"><div class="text-3xl mb-2">🔥</div><div class="font-bold text-lg mb-1">Пока нет постов</div><div class="text-sm text-gray-400">Стань первым, кто опубликует пост в Движе.</div></div>`;
-                return;
-            }
-
-            dvizhFeed.innerHTML = normalizedPosts.map((post) => {
-                const images = Array.isArray(post.image_urls) ? post.image_urls : [];
-                const imagesHtml = images.length ? `<div class="grid ${images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 mt-3">${images.slice(0,2).map((img) => `<img src="${img}" class="w-full h-44 object-cover rounded-2xl" />`).join('')}</div>` : '';
-                return `<div class="glass-box p-4 rounded-[24px]"><div class="flex items-center gap-3 mb-3"><div class="h-11 w-11 rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center font-bold">${escapeHtml((post.author_name || 'U').slice(0,1).toUpperCase())}</div><div><div class="font-bold">${escapeHtml(post.author_name || 'Пользователь')}</div><div class="text-xs text-gray-400">${formatDvizhDate(post.created_at)}</div></div></div><div class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">${escapeHtml(post.text || '')}</div>${imagesHtml}<div class="mt-4 flex items-center gap-4 text-sm text-gray-400"><div>❤️ ${Number(post.likes_count || 0)}</div><div>💬 Скоро</div><div>👁 ${Number(post.views_count || 0)}</div></div></div>`;
-            }).join('');
-        }
-
-        async function loadDvizhFeed() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dvizh/feed`);
-                if (!response.ok) throw new Error('feed');
-                const data = await response.json();
-                const posts = Array.isArray(data?.posts) ? data.posts : [];
-                window.DVIZH_CACHE = posts;
-                renderDvizhFeed(posts.length ? posts : DVIZH_DEMO_POSTS);
-            } catch (error) {
-                renderDvizhFeed(window.DVIZH_CACHE?.length ? window.DVIZH_CACHE : DVIZH_DEMO_POSTS);
-            }
-        }
-
-        function openDvizhCreateModal() {
-            document.getElementById('dvizhCreateModal')?.classList.remove('hidden');
-            document.getElementById('dvizhCreateModalBackdrop')?.classList.remove('hidden');
-            document.getElementById('dvizhCreateStatus').textContent = '';
-        }
-
-        function closeDvizhCreateModal() {
-            document.getElementById('dvizhCreateModal')?.classList.add('hidden');
-            document.getElementById('dvizhCreateModalBackdrop')?.classList.add('hidden');
-        }
-
-        async function uploadDvizhImages(files) {
-            const uploaded = [];
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', UPLOAD_PRESET);
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-                const data = await response.json();
-                if (!response.ok || !data.secure_url) throw new Error('upload');
-                uploaded.push(data.secure_url);
-            }
-            return uploaded;
-        }
-
-        const openCreatePostBtn = document.getElementById('openCreatePostBtn');
-        const closeDvizhCreateBtn = document.getElementById('closeDvizhCreateBtn');
-        const dvizhCreateModalBackdrop = document.getElementById('dvizhCreateModalBackdrop');
-        const submitDvizhPostBtn = document.getElementById('submitDvizhPostBtn');
-
-        openCreatePostBtn?.addEventListener('click', openDvizhCreateModal);
-        closeDvizhCreateBtn?.addEventListener('click', closeDvizhCreateModal);
-        dvizhCreateModalBackdrop?.addEventListener('click', closeDvizhCreateModal);
-
-        submitDvizhPostBtn?.addEventListener('click', async () => {
-            const textField = document.getElementById('dvizhPostText');
-            const imagesField = document.getElementById('dvizhPostImages');
-            const statusField = document.getElementById('dvizhCreateStatus');
-            const rawText = textField?.value || '';
-            const text = sanitizeDvizhText(rawText);
-            const files = Array.from(imagesField?.files || []);
-
-            if (!text || text.length < 3) {
-                statusField.textContent = 'Напиши текст длиннее 3 символов.';
-                hapticError();
-                return;
-            }
-            if (files.length > 2) {
-                statusField.textContent = 'Можно прикрепить максимум 2 фото.';
-                hapticError();
-                return;
-            }
-            for (const file of files) {
-                const okType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
-                if (!okType) {
-                    statusField.textContent = 'Разрешены только JPG, PNG и WEBP.';
-                    hapticError();
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) {
-                    statusField.textContent = 'Каждое фото должно быть не больше 5 МБ.';
-                    hapticError();
-                    return;
-                }
-            }
-
-            submitDvizhPostBtn.disabled = true;
-            submitDvizhPostBtn.classList.add('btn-disabled');
-            statusField.textContent = 'Публикуем пост...';
-
-            try {
-                let imageUrls = [];
-                if (files.length) imageUrls = await uploadDvizhImages(files);
-                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || '',
-                        text,
-                        image_urls: imageUrls
-                    })
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data?.message || 'create-post');
-                statusField.textContent = 'Пост отправлен на модерацию.';
-                textField.value = '';
-                imagesField.value = '';
-                hapticSuccess();
-                if (typeof registerTelegramUser === 'function') await registerTelegramUser();
-                setTimeout(() => {
-                    closeDvizhCreateModal();
-                    statusField.textContent = '';
-                }, 900);
-            } catch (error) {
-                statusField.textContent = 'Не удалось отправить пост. Проверь backend /dvizh/create-post.';
-                hapticError();
-            } finally {
-                submitDvizhPostBtn.disabled = false;
-                submitDvizhPostBtn.classList.remove('btn-disabled');
-            }
-        });
-
-        renderSpyTrends();
+            renderSpyTrends();
 
             document.querySelectorAll('.spy-filter').forEach(btn => {
                 btn.classList.remove('bg-blue-600');
@@ -3146,180 +2955,6 @@ body::after {
         if (refreshSmartStatsBtn) {
             refreshSmartStatsBtn.addEventListener('click', loadAllSmartLinksStats);
         }
-
-        const DVIZH_DEMO_POSTS = [{
-            id: 'demo-1',
-            author_name: 'UBT ToolKit',
-            text: 'Добро пожаловать в Движ 🔥 Здесь будут посты сообщества после модерации.',
-            image_urls: [],
-            likes_count: 12,
-            views_count: 183,
-            created_at: new Date().toISOString()
-        }];
-        window.DVIZH_CACHE = DVIZH_DEMO_POSTS.slice();
-
-        function escapeHtml(value) {
-            return String(value || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function sanitizeDvizhText(text) {
-            return String(text || '')
-                .replace(/https?:\/\/\S+/gi, '[ссылка удалена]')
-                .replace(/@[a-zA-Z0-9_]{3,}/g, '[ссылка удалена]')
-                .trim();
-        }
-
-        function formatDvizhDate(dateString) {
-            if (!dateString) return 'сейчас';
-            const date = new Date(dateString);
-            if (Number.isNaN(date.getTime())) return 'сейчас';
-            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }) + ' ' + date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function renderDvizhFeed(posts) {
-            const dvizhFeed = document.getElementById('dvizhFeed');
-            if (!dvizhFeed) return;
-
-            const normalizedPosts = Array.isArray(posts) && posts.length ? posts : [];
-            const postsCount = document.getElementById('dvizhPostsCount');
-            const likesCount = document.getElementById('dvizhLikesCount');
-            const viewsCount = document.getElementById('dvizhViewsCount');
-
-            if (postsCount) postsCount.textContent = String(normalizedPosts.length);
-            if (likesCount) likesCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.likes_count || 0), 0));
-            if (viewsCount) viewsCount.textContent = String(normalizedPosts.reduce((sum, post) => sum + Number(post.views_count || 0), 0));
-
-            if (!normalizedPosts.length) {
-                dvizhFeed.innerHTML = `<div class="glass-box p-5 rounded-[24px] text-center"><div class="text-3xl mb-2">🔥</div><div class="font-bold text-lg mb-1">Пока нет постов</div><div class="text-sm text-gray-400">Стань первым, кто опубликует пост в Движе.</div></div>`;
-                return;
-            }
-
-            dvizhFeed.innerHTML = normalizedPosts.map((post) => {
-                const images = Array.isArray(post.image_urls) ? post.image_urls : [];
-                const imagesHtml = images.length ? `<div class="grid ${images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 mt-3">${images.slice(0,2).map((img) => `<img src="${img}" class="w-full h-44 object-cover rounded-2xl" />`).join('')}</div>` : '';
-                return `<div class="glass-box p-4 rounded-[24px]"><div class="flex items-center gap-3 mb-3"><div class="h-11 w-11 rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center font-bold">${escapeHtml((post.author_name || 'U').slice(0,1).toUpperCase())}</div><div><div class="font-bold">${escapeHtml(post.author_name || 'Пользователь')}</div><div class="text-xs text-gray-400">${formatDvizhDate(post.created_at)}</div></div></div><div class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">${escapeHtml(post.text || '')}</div>${imagesHtml}<div class="mt-4 flex items-center gap-4 text-sm text-gray-400"><div>❤️ ${Number(post.likes_count || 0)}</div><div>💬 Скоро</div><div>👁 ${Number(post.views_count || 0)}</div></div></div>`;
-            }).join('');
-        }
-
-        async function loadDvizhFeed() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/dvizh/feed`);
-                if (!response.ok) throw new Error('feed');
-                const data = await response.json();
-                const posts = Array.isArray(data?.posts) ? data.posts : [];
-                window.DVIZH_CACHE = posts;
-                renderDvizhFeed(posts.length ? posts : DVIZH_DEMO_POSTS);
-            } catch (error) {
-                renderDvizhFeed(window.DVIZH_CACHE?.length ? window.DVIZH_CACHE : DVIZH_DEMO_POSTS);
-            }
-        }
-
-        function openDvizhCreateModal() {
-            document.getElementById('dvizhCreateModal')?.classList.remove('hidden');
-            document.getElementById('dvizhCreateModalBackdrop')?.classList.remove('hidden');
-            document.getElementById('dvizhCreateStatus').textContent = '';
-        }
-
-        function closeDvizhCreateModal() {
-            document.getElementById('dvizhCreateModal')?.classList.add('hidden');
-            document.getElementById('dvizhCreateModalBackdrop')?.classList.add('hidden');
-        }
-
-        async function uploadDvizhImages(files) {
-            const uploaded = [];
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', UPLOAD_PRESET);
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-                const data = await response.json();
-                if (!response.ok || !data.secure_url) throw new Error('upload');
-                uploaded.push(data.secure_url);
-            }
-            return uploaded;
-        }
-
-        const openCreatePostBtn = document.getElementById('openCreatePostBtn');
-        const closeDvizhCreateBtn = document.getElementById('closeDvizhCreateBtn');
-        const dvizhCreateModalBackdrop = document.getElementById('dvizhCreateModalBackdrop');
-        const submitDvizhPostBtn = document.getElementById('submitDvizhPostBtn');
-
-        openCreatePostBtn?.addEventListener('click', openDvizhCreateModal);
-        closeDvizhCreateBtn?.addEventListener('click', closeDvizhCreateModal);
-        dvizhCreateModalBackdrop?.addEventListener('click', closeDvizhCreateModal);
-
-        submitDvizhPostBtn?.addEventListener('click', async () => {
-            const textField = document.getElementById('dvizhPostText');
-            const imagesField = document.getElementById('dvizhPostImages');
-            const statusField = document.getElementById('dvizhCreateStatus');
-            const rawText = textField?.value || '';
-            const text = sanitizeDvizhText(rawText);
-            const files = Array.from(imagesField?.files || []);
-
-            if (!text || text.length < 3) {
-                statusField.textContent = 'Напиши текст длиннее 3 символов.';
-                hapticError();
-                return;
-            }
-            if (files.length > 2) {
-                statusField.textContent = 'Можно прикрепить максимум 2 фото.';
-                hapticError();
-                return;
-            }
-            for (const file of files) {
-                const okType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
-                if (!okType) {
-                    statusField.textContent = 'Разрешены только JPG, PNG и WEBP.';
-                    hapticError();
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) {
-                    statusField.textContent = 'Каждое фото должно быть не больше 5 МБ.';
-                    hapticError();
-                    return;
-                }
-            }
-
-            submitDvizhPostBtn.disabled = true;
-            submitDvizhPostBtn.classList.add('btn-disabled');
-            statusField.textContent = 'Публикуем пост...';
-
-            try {
-                let imageUrls = [];
-                if (files.length) imageUrls = await uploadDvizhImages(files);
-                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || '',
-                        text,
-                        image_urls: imageUrls
-                    })
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data?.message || 'create-post');
-                statusField.textContent = 'Пост отправлен на модерацию.';
-                textField.value = '';
-                imagesField.value = '';
-                hapticSuccess();
-                if (typeof registerTelegramUser === 'function') await registerTelegramUser();
-                setTimeout(() => {
-                    closeDvizhCreateModal();
-                    statusField.textContent = '';
-                }, 900);
-            } catch (error) {
-                statusField.textContent = 'Не удалось отправить пост. Проверь backend /dvizh/create-post.';
-                hapticError();
-            } finally {
-                submitDvizhPostBtn.disabled = false;
-                submitDvizhPostBtn.classList.remove('btn-disabled');
-            }
-        });
 
         renderSpyTrends();
         renderVideoHistory();
