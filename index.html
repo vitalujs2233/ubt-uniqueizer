@@ -1454,22 +1454,6 @@ body::after {
             </div>
         </div>
 
-        <div id="dvizh-section" class="hidden">
-            <div class="flex items-center justify-between mb-4 gap-3">
-                <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
-                <button onclick="showBottomPage('home')" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
-                    ← Назад
-                </button>
-            </div>
-
-            <div id="feed" class="space-y-3"></div>
-
-            <button id="openCreatePost"
-                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl z-40">
-                +
-            </button>
-        </div>
-
         <div id="history-screen" class="hidden">
             <div class="flex items-center justify-between mb-4 gap-3">
                 <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
@@ -1479,6 +1463,17 @@ body::after {
             </div>
 
             <div id="historyList" class="space-y-3"></div>
+        </div>
+
+        <div id="dvizh-screen" class="hidden">
+            <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Движ</h2>
+
+            <div id="feed" class="space-y-3 mb-24"></div>
+
+            <button id="openCreatePost"
+                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl z-40">
+                +
+            </button>
         </div>
 
         <div id="support-screen" class="hidden">
@@ -1507,6 +1502,24 @@ body::after {
         </div>
     </div>
 
+    <div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50 px-3">
+        <div class="w-full max-w-md p-4 rounded-t-3xl card">
+            <div class="text-lg font-bold mb-3">Создать пост</div>
+
+            <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
+
+            <input type="file" id="postImage" class="mb-3 block w-full text-sm text-gray-300" accept="image/*" />
+
+            <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
+                Опубликовать • 5 кредитов
+            </button>
+
+            <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
+                Отмена
+            </button>
+        </div>
+    </div>
+
     <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
         <div class="max-w-xl mx-auto flex items-center justify-around">
             <button id="navHomeBtn" class="bottom-nav-btn active flex flex-col items-center gap-1.5 text-sm text-white" onclick="showBottomPage('home')">
@@ -1527,24 +1540,6 @@ body::after {
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
-        <div class="w-full max-w-md p-4 rounded-t-3xl card">
-            <div class="text-lg font-bold mb-3">Создать пост</div>
-
-            <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-
-            <input type="file" id="postImage" class="mb-3" accept="image/*" />
-
-            <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
-                Опубликовать • 5 кредитов
-            </button>
-
-            <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
-                Отмена
             </button>
         </div>
     </div>
@@ -1694,20 +1689,21 @@ body::after {
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
-            const dvizhScreen = document.getElementById('dvizh-section');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
-            const navSupportBtn = document.getElementById('navSupportBtn');
             const navDvizhBtn = document.getElementById('navDvizhBtn');
+            const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
-            dvizhScreen?.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navSupportBtn, navDvizhBtn].filter(Boolean).forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
+                if (!btn) return;
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1725,17 +1721,17 @@ body::after {
                 loadTransactions();
             }
 
+            if (page === 'dvizh') {
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
+                renderTestPost();
+            }
+
             if (page === 'support') {
                 supportScreen.classList.remove('hidden');
                 navSupportBtn.classList.add('active');
                 navSupportBtn.classList.remove('text-white/70');
-            }
-
-            if (page === 'dvizh') {
-                dvizhScreen?.classList.remove('hidden');
-                navDvizhBtn?.classList.add('active');
-                navDvizhBtn?.classList.remove('text-white/70');
-                renderTestPost();
             }
         }
 
@@ -2007,66 +2003,7 @@ body::after {
 
         function filterSpy(niche, button) {
             currentFilter = niche;
-            // Dvizh: modal and test feed
-        function closePostModal() {
-            const modal = document.getElementById('createPostModal');
-            if (!modal) return;
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        const openCreatePostBtn = document.getElementById('openCreatePost');
-        if (openCreatePostBtn) {
-            openCreatePostBtn.addEventListener('click', () => {
-                const modal = document.getElementById('createPostModal');
-                if (!modal) return;
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            });
-        }
-
-        function renderTestPost() {
-            const feed = document.getElementById('feed');
-            if (!feed) return;
-
-            feed.innerHTML = `
-                <div class="card">
-                    <div class="flex items-center mb-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
-                        <div>
-                            <div class="text-sm font-bold">User</div>
-                            <div class="text-xs text-gray-400">сейчас</div>
-                        </div>
-                    </div>
-
-                    <div class="text-sm mb-3">
-                        Первый пост в Движе 🔥
-                    </div>
-
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <div>❤️ 0</div>
-                        <div>👁 1</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        const submitPostBtn = document.getElementById('submitPostBtn');
-        if (submitPostBtn) {
-            submitPostBtn.addEventListener('click', () => {
-                const text = document.getElementById('postText')?.value.trim();
-
-                if (!text) {
-                    Telegram.WebApp.showAlert('Напиши текст');
-                    return;
-                }
-
-                Telegram.WebApp.showAlert('Пост отправлен (пока без backend)');
-                closePostModal();
-            });
-        }
-
-        renderSpyTrends();
+            renderSpyTrends();
 
             document.querySelectorAll('.spy-filter').forEach(btn => {
                 btn.classList.remove('bg-blue-600');
@@ -3435,6 +3372,82 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 localStorage.removeItem(PRELAND_STORAGE_KEY);
                 renderPrelandHistory();
                 hapticLight();
+            });
+        }
+
+        const openCreatePostBtn = document.getElementById('openCreatePost');
+        const createPostModal = document.getElementById('createPostModal');
+        const submitPostBtn = document.getElementById('submitPostBtn');
+
+        function openPostModal() {
+            if (!createPostModal) return;
+            createPostModal.classList.remove('hidden');
+            createPostModal.classList.add('flex');
+        }
+
+        function closePostModal() {
+            if (!createPostModal) return;
+            createPostModal.classList.add('hidden');
+            createPostModal.classList.remove('flex');
+        }
+
+        window.closePostModal = closePostModal;
+
+        function renderTestPost() {
+            const feed = document.getElementById('feed');
+            if (!feed) return;
+
+            feed.innerHTML = `
+                <div class="card">
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
+                        <div>
+                            <div class="text-sm font-bold">User</div>
+                            <div class="text-xs text-gray-400">сейчас</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm mb-3">
+                        Первый пост в Движе 🔥
+                    </div>
+
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <div>❤️ 0</div>
+                        <div>👁 1</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (openCreatePostBtn) {
+            openCreatePostBtn.addEventListener('click', openPostModal);
+        }
+
+        if (createPostModal) {
+            createPostModal.addEventListener('click', function (event) {
+                if (event.target === createPostModal) {
+                    closePostModal();
+                }
+            });
+        }
+
+        if (submitPostBtn) {
+            submitPostBtn.addEventListener('click', function () {
+                const postText = document.getElementById('postText');
+                const text = postText ? postText.value.trim() : '';
+
+                if (!text) {
+                    tg?.showAlert?.('Напиши текст');
+                    hapticError();
+                    return;
+                }
+
+                tg?.showAlert?.('Пост отправлен (пока без backend)');
+                if (postText) postText.value = '';
+                const postImage = document.getElementById('postImage');
+                if (postImage) postImage.value = '';
+                closePostModal();
+                hapticSuccess();
             });
         }
 
