@@ -1470,62 +1470,47 @@ body::after {
             <div class="flex items-center justify-between mb-4 gap-3">
                 <div>
                     <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
-                    <div class="text-sm text-gray-400 mt-1">Лента постов, публикации и активность сообщества</div>
+                    <div class="text-sm text-gray-400 mt-1">Лента сообщества внутри мини‑аппа</div>
                 </div>
-                <button id="refreshDvizhBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
-                    Обновить
-                </button>
+                <button id="refreshDvizhBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Обновить</button>
             </div>
 
             <div class="glass-box p-5 rounded-[24px] mb-4">
-                <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <div class="text-white font-semibold text-lg">Создай пост в Движе</div>
-                        <div class="text-sm text-gray-400 mt-1">Публикация: 5 кредитов • до 2 фото • премодерация</div>
+                        <div class="font-bold text-[18px]">Создай свой пост</div>
+                        <div class="text-sm text-gray-400 mt-1">Имя и фото автора подтягиваются из Telegram</div>
                     </div>
-                    <div class="h-12 w-12 rounded-[18px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">🔥</div>
+                    <span class="premium-pill shrink-0">5 кредитов</span>
                 </div>
-
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400">Посты</div>
-                        <div id="dvizhPostsCount" class="text-lg font-extrabold mt-1">0</div>
+                <div class="grid grid-cols-3 gap-3 mt-4">
+                    <div class="metric-tile text-center">
+                        <div id="dvizhPostsCount" class="text-lg font-extrabold">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Постов</div>
                     </div>
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400">Лайки</div>
-                        <div id="dvizhLikesCount" class="text-lg font-extrabold mt-1">0</div>
+                    <div class="metric-tile text-center">
+                        <div id="dvizhLikesCount" class="text-lg font-extrabold">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Лайков</div>
                     </div>
-                    <div class="metric-tile">
-                        <div class="text-xs text-gray-400">Просмотры</div>
-                        <div id="dvizhViewsCount" class="text-lg font-extrabold mt-1">0</div>
+                    <div class="metric-tile text-center">
+                        <div id="dvizhViewsCount" class="text-lg font-extrabold">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Просмотров</div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-box p-4 rounded-[24px] mb-4">
-                <div class="flex items-center justify-between gap-3 mb-3">
-                    <div>
-                        <div class="font-semibold text-white">Фильтр ленты</div>
-                        <div class="text-sm text-gray-400">Пока каркас, позже можно подключить сортировку с backend</div>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 overflow-x-auto pb-1">
-                    <button class="dvizh-filter active secondary-btn px-3 py-2 rounded-xl text-sm font-semibold" data-filter="all">Все</button>
-                    <button class="dvizh-filter secondary-btn px-3 py-2 rounded-xl text-sm font-semibold" data-filter="new">Новые</button>
-                    <button class="dvizh-filter secondary-btn px-3 py-2 rounded-xl text-sm font-semibold" data-filter="top">Топ</button>
-                    <button class="dvizh-filter secondary-btn px-3 py-2 rounded-xl text-sm font-semibold" data-filter="mine">Мои</button>
+            <div class="glass-box p-3 rounded-[22px] mb-4">
+                <div class="flex gap-2 overflow-x-auto whitespace-nowrap" id="dvizhFilters">
+                    <button class="spy-filter bg-blue-600 px-3 py-2 rounded-xl text-sm font-semibold" data-filter="all">Все</button>
+                    <button class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm font-semibold" data-filter="mine">Мои</button>
+                    <button class="spy-filter bg-gray-700 px-3 py-2 rounded-xl text-sm font-semibold" data-filter="popular">Популярные</button>
                 </div>
             </div>
 
             <div id="dvizhFeed" class="space-y-4"></div>
 
-            <button id="openCreatePostBtn"
-                class="fixed bottom-24 right-4 h-14 w-14 rounded-full primary-btn flex items-center justify-center text-2xl z-40">
-                +
-            </button>
+            <button id="openCreatePostBtn" class="primary-btn fixed bottom-24 right-4 h-14 w-14 rounded-full flex items-center justify-center text-3xl z-40">+</button>
         </div>
-
 
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
@@ -1578,37 +1563,48 @@ body::after {
     </div>
 
 
-    <div id="createDvizhPostModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-[70] p-4">
-        <div class="topup-modal-box max-w-lg mx-auto mt-12 p-5 border border-white/10 shadow-2xl">
-            <div class="flex items-center justify-between mb-4 gap-3">
+    <div id="createPostModal" class="fixed inset-0 bg-black/70 hidden z-[70] items-end justify-center p-0 sm:p-4">
+        <div class="w-full max-w-lg rounded-t-[28px] sm:rounded-[28px] card !mb-0 sm:!mb-4 p-5">
+            <div class="flex items-center justify-between gap-3 mb-4">
                 <div>
-                    <div class="text-[22px] font-extrabold">Новый пост</div>
-                    <div class="text-sm text-gray-400 mt-1">Текст, до 2 фото и отправка в модерацию</div>
+                    <div class="text-[22px] font-extrabold">🔥 Новый пост</div>
+                    <div class="text-sm text-gray-400 mt-1">Автор подтянется из Telegram автоматически</div>
                 </div>
-                <button id="closeCreatePostBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
+                <button id="closeCreatePostModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
             </div>
 
-            <div class="space-y-4">
-                <textarea id="dvizhPostText" class="neo-input min-h-[140px]" maxlength="1000" placeholder="Напиши, что у тебя нового..."></textarea>
-
-                <input id="dvizhPostImages" type="file" accept="image/png,image/jpeg,image/webp" multiple class="neo-input" />
-
-                <div id="dvizhImagesPreview" class="grid grid-cols-2 gap-3"></div>
-
-                <div class="inner-panel">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-400">Стоимость публикации</span>
-                        <span class="font-bold text-white">5 кредитов</span>
+            <div class="inner-panel mb-4">
+                <div class="flex items-center gap-3">
+                    <div id="dvizhAuthorAvatarWrap" class="h-12 w-12 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
+                        <img id="dvizhAuthorAvatar" class="h-full w-full object-cover hidden" alt="author avatar">
+                        <span id="dvizhAuthorAvatarFallback" class="text-sm font-bold text-white">U</span>
                     </div>
-                    <div class="text-xs text-gray-500 mt-2">Пост уйдёт на премодерацию. В каркасе отправка пока заглушка.</div>
+                    <div class="min-w-0">
+                        <div id="dvizhAuthorName" class="font-bold text-white truncate">Пользователь</div>
+                        <div id="dvizhAuthorUsername" class="text-xs text-gray-400 truncate">@username</div>
+                    </div>
                 </div>
-
-                <button id="submitDvizhPostBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
-                    Опубликовать
-                </button>
             </div>
+
+            <textarea id="dvizhPostText" class="neo-input min-h-[130px] resize-none mb-3" maxlength="1000" placeholder="Поделись новостью, опытом или идеей..."></textarea>
+
+            <label class="secondary-btn flex items-center justify-center gap-2 w-full py-3 rounded-2xl font-semibold text-sm cursor-pointer mb-3">
+                <span>🖼</span>
+                <span>Добавить фото (до 2)</span>
+                <input id="dvizhPostImages" type="file" accept="image/png,image/jpeg,image/webp" multiple class="hidden">
+            </label>
+
+            <div id="dvizhImagePreview" class="grid grid-cols-2 gap-3 mb-4"></div>
+
+            <div class="flex items-center justify-between inner-panel mb-4 text-sm">
+                <span class="text-gray-400">Стоимость публикации</span>
+                <span class="font-bold text-white">5 кредитов</span>
+            </div>
+
+            <button id="submitDvizhPostBtn" class="primary-btn w-full py-4 rounded-2xl font-bold">Опубликовать</button>
         </div>
     </div>
+
 
     <div id="topupModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
     <div id="topupModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
@@ -1753,46 +1749,313 @@ body::after {
         }
 
         function showBottomPage(page) {
-            const screens = {
-                home: document.getElementById('home-screen'),
-                history: document.getElementById('history-screen'),
-                dvizh: document.getElementById('dvizh-screen'),
-                support: document.getElementById('support-screen')
-            };
+            const homeScreen = document.getElementById('home-screen');
+            const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
+            const supportScreen = document.getElementById('support-screen');
 
-            const navs = {
-                home: document.getElementById('navHomeBtn'),
-                history: document.getElementById('navHistoryBtn'),
-                dvizh: document.getElementById('navDvizhBtn'),
-                support: document.getElementById('navSupportBtn')
-            };
+            const navHomeBtn = document.getElementById('navHomeBtn');
+            const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
+            const navSupportBtn = document.getElementById('navSupportBtn');
 
-            Object.values(screens).forEach((screen) => {
-                if (screen) screen.classList.add('hidden');
-            });
+            homeScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
+            supportScreen.classList.add('hidden');
 
-            Object.values(navs).forEach((btn) => {
-                if (!btn) return;
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
 
-            if (screens[page]) {
-                screens[page].classList.remove('hidden');
-            }
-
-            if (navs[page]) {
-                navs[page].classList.add('active');
-                navs[page].classList.remove('text-white/70');
+            if (page === 'home') {
+                homeScreen.classList.remove('hidden');
+                navHomeBtn.classList.add('active');
+                navHomeBtn.classList.remove('text-white/70');
             }
 
             if (page === 'history') {
+                historyScreen.classList.remove('hidden');
+                navHistoryBtn.classList.add('active');
+                navHistoryBtn.classList.remove('text-white/70');
                 loadTransactions();
             }
 
             if (page === 'dvizh') {
-                renderDvizhFeed();
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
+                renderDvizhAuthor();
+                loadDvizhFeed();
             }
+
+            if (page === 'support') {
+                supportScreen.classList.remove('hidden');
+                navSupportBtn.classList.add('active');
+                navSupportBtn.classList.remove('text-white/70');
+            }
+        }
+
+
+
+        const DVIZH_STORAGE_KEY = 'ubt_dvizh_posts_v2';
+        const DVIZH_POST_COST = 5;
+        let dvizhFilter = 'all';
+
+        function safeAlert(message) {
+            if (tg?.showAlert) {
+                tg.showAlert(message);
+            } else {
+                alert(message);
+            }
+        }
+
+        function getTelegramAuthor() {
+            const tgUser = tg?.initDataUnsafe?.user || {};
+            const name = tgUser.first_name || tgUser.username || appState.user?.first_name || appState.user?.username || 'Пользователь';
+            const username = tgUser.username || appState.user?.username || '';
+            const photoUrl = tgUser.photo_url || appState.user?.photo_url || '';
+            const telegramId = tgUser.id || appState.user?.telegram_id || appState.user?.id || null;
+
+            return {
+                telegramId,
+                name,
+                username,
+                photoUrl
+            };
+        }
+
+        function getDvizhPosts() {
+            try {
+                const raw = localStorage.getItem(DVIZH_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                console.error('DVIZH parse error', error);
+                return [];
+            }
+        }
+
+        function saveDvizhPosts(posts) {
+            localStorage.setItem(DVIZH_STORAGE_KEY, JSON.stringify(posts));
+        }
+
+        function seedDvizhPosts() {
+            const current = getDvizhPosts();
+            if (current.length) return;
+            const author = getTelegramAuthor();
+            saveDvizhPosts([
+                {
+                    id: Date.now(),
+                    text: 'Первый пост в Движе 🔥 Теперь здесь видно имя автора и фото из Telegram.',
+                    imageUrls: [],
+                    likesCount: 0,
+                    viewsCount: 1,
+                    createdAt: new Date().toISOString(),
+                    likedBy: [],
+                    author
+                }
+            ]);
+        }
+
+        function renderDvizhAuthor() {
+            const author = getTelegramAuthor();
+            const avatar = document.getElementById('dvizhAuthorAvatar');
+            const fallback = document.getElementById('dvizhAuthorAvatarFallback');
+            const nameEl = document.getElementById('dvizhAuthorName');
+            const usernameEl = document.getElementById('dvizhAuthorUsername');
+            if (!nameEl || !usernameEl || !avatar || !fallback) return;
+
+            nameEl.textContent = author.name;
+            usernameEl.textContent = author.username ? '@' + author.username : 'Telegram user';
+            fallback.textContent = (author.name || 'U').charAt(0).toUpperCase();
+
+            if (author.photoUrl) {
+                avatar.src = author.photoUrl;
+                avatar.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else {
+                avatar.classList.add('hidden');
+                fallback.classList.remove('hidden');
+            }
+        }
+
+        function formatDvizhDate(value) {
+            try {
+                return new Date(value).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return 'сейчас';
+            }
+        }
+
+        function getFilteredDvizhPosts() {
+            const posts = getDvizhPosts();
+            const currentUserId = String(getTelegramAuthor().telegramId || '');
+            if (dvizhFilter === 'mine') {
+                return posts.filter((post) => String(post.author?.telegramId || '') === currentUserId);
+            }
+            if (dvizhFilter === 'popular') {
+                return [...posts].sort((a, b) => (b.likesCount + b.viewsCount) - (a.likesCount + a.viewsCount));
+            }
+            return posts;
+        }
+
+        function renderDvizhStats(posts) {
+            const postsCount = document.getElementById('dvizhPostsCount');
+            const likesCount = document.getElementById('dvizhLikesCount');
+            const viewsCount = document.getElementById('dvizhViewsCount');
+            if (!postsCount || !likesCount || !viewsCount) return;
+            postsCount.textContent = String(posts.length);
+            likesCount.textContent = String(posts.reduce((sum, post) => sum + Number(post.likesCount || 0), 0));
+            viewsCount.textContent = String(posts.reduce((sum, post) => sum + Number(post.viewsCount || 0), 0));
+        }
+
+        function renderDvizhFeed() {
+            const feed = document.getElementById('dvizhFeed');
+            if (!feed) return;
+            const allPosts = getDvizhPosts();
+            const posts = getFilteredDvizhPosts();
+            renderDvizhStats(allPosts);
+
+            if (!posts.length) {
+                feed.innerHTML = `
+                    <div class="glass-box p-5 rounded-[24px] text-center text-gray-400">
+                        В этой вкладке пока пусто. Создай первый пост 🔥
+                    </div>
+                `;
+                return;
+            }
+
+            const currentUserId = String(getTelegramAuthor().telegramId || '');
+            feed.innerHTML = posts.map((post) => {
+                const authorName = escapeHtml(post.author?.name || 'Пользователь');
+                const authorUsername = post.author?.username ? '@' + escapeHtml(post.author.username) : 'Telegram user';
+                const authorPhoto = post.author?.photoUrl || '';
+                const liked = Array.isArray(post.likedBy) && post.likedBy.includes(currentUserId);
+                const previewImages = (post.imageUrls || []).slice(0, 2).map((url) => `
+                    <img src="${escapeAttribute(url)}" class="w-full h-40 object-cover rounded-2xl border border-white/10" alt="post image">
+                `).join('');
+
+                return `
+                    <div class="glass-box p-4 rounded-[24px]" data-post-id="${post.id}">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="h-12 w-12 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
+                                    ${authorPhoto ? `<img src="${escapeAttribute(authorPhoto)}" class="h-full w-full object-cover" alt="${authorName}">` : `<span class="text-sm font-bold text-white">${authorName.charAt(0).toUpperCase()}</span>`}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="font-bold text-white truncate">${authorName}</div>
+                                    <div class="text-xs text-gray-400 truncate">${authorUsername} • ${formatDvizhDate(post.createdAt)}</div>
+                                </div>
+                            </div>
+                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">post</span>
+                        </div>
+
+                        <div class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap mb-4">${escapeHtml(post.text || '')}</div>
+                        ${previewImages ? `<div class="grid grid-cols-2 gap-3 mb-4">${previewImages}</div>` : ''}
+
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2">
+                                <button class="${liked ? 'primary-btn' : 'secondary-btn'} px-4 py-2 rounded-2xl text-sm font-semibold" onclick="toggleDvizhLike(${post.id})">❤️ ${post.likesCount || 0}</button>
+                                <div class="text-sm text-gray-400">👁 ${post.viewsCount || 0}</div>
+                            </div>
+                            <button class="green-btn px-4 py-2 rounded-2xl text-sm font-semibold" onclick="safeAlert('Донаты подключим на следующем этапе')">Поддержать</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadDvizhFeed() {
+            seedDvizhPosts();
+            renderDvizhFeed();
+        }
+
+        window.toggleDvizhLike = function (postId) {
+            const currentUserId = String(getTelegramAuthor().telegramId || 'guest');
+            const posts = getDvizhPosts();
+            const updated = posts.map((post) => {
+                if (post.id !== postId) return post;
+                const likedBy = Array.isArray(post.likedBy) ? [...post.likedBy] : [];
+                const index = likedBy.indexOf(currentUserId);
+                if (index >= 0) {
+                    likedBy.splice(index, 1);
+                } else {
+                    likedBy.push(currentUserId);
+                }
+                return {
+                    ...post,
+                    likedBy,
+                    likesCount: likedBy.length
+                };
+            });
+            saveDvizhPosts(updated);
+            hapticLight();
+            renderDvizhFeed();
+        };
+
+        function handleDvizhImagePreview(files) {
+            const preview = document.getElementById('dvizhImagePreview');
+            if (!preview) return;
+            const selected = Array.from(files || []).slice(0, 2);
+            preview.innerHTML = selected.map((file) => `
+                <div class="inner-panel p-2">
+                    <div class="text-xs text-gray-300 truncate">${escapeHtml(file.name)}</div>
+                    <div class="text-[11px] text-gray-500 mt-1">${Math.round(file.size / 1024)} KB</div>
+                </div>
+            `).join('');
+        }
+
+        function openCreatePostModal() {
+            renderDvizhAuthor();
+            const modal = document.getElementById('createPostModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCreatePostModal() {
+            const modal = document.getElementById('createPostModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitDvizhPost() {
+            const textEl = document.getElementById('dvizhPostText');
+            const fileEl = document.getElementById('dvizhPostImages');
+            if (!textEl || !fileEl) return;
+            const text = textEl.value.trim();
+            if (!text) {
+                hapticError();
+                safeAlert('Напиши текст поста');
+                return;
+            }
+
+            const files = Array.from(fileEl.files || []).slice(0, 2);
+            const imageUrls = files.map((file) => URL.createObjectURL(file));
+            const posts = getDvizhPosts();
+            const newPost = {
+                id: Date.now(),
+                text,
+                imageUrls,
+                likesCount: 0,
+                viewsCount: 1,
+                createdAt: new Date().toISOString(),
+                likedBy: [],
+                author: getTelegramAuthor()
+            };
+
+            posts.unshift(newPost);
+            saveDvizhPosts(posts);
+            textEl.value = '';
+            fileEl.value = '';
+            handleDvizhImagePreview([]);
+            closeCreatePostModal();
+            hapticSuccess();
+            safeAlert('Пост опубликован локально. Backend подключим следующим этапом.');
+            renderDvizhFeed();
         }
 
         function showSection(section) {
@@ -1805,278 +2068,6 @@ body::after {
                 loadSmartLinks();
             }
         }
-
-
-        const dvizhMockPosts = [
-            {
-                id: 1,
-                author: {
-                    telegramId: 777001,
-                    name: 'TrafficMax',
-                    username: 'trafficmax',
-                    photoUrl: '',
-                    role: 'TOP author'
-                },
-                text: 'Первый пост в Движе 🔥 Тут будет живая лента, фото, лайки, просмотры и донаты.',
-                images: ['https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80'],
-                likes: 12,
-                views: 128,
-                createdAt: 'сейчас'
-            },
-            {
-                id: 2,
-                author: {
-                    telegramId: 777002,
-                    name: 'UBT User',
-                    username: 'ubt_user',
-                    photoUrl: '',
-                    role: 'member'
-                },
-                text: 'Каркас уже готов. Дальше сюда можно подключить backend: /dvizh/feed, /dvizh/create-post, /dvizh/toggle-like и /dvizh/add-view.',
-                images: [],
-                likes: 5,
-                views: 73,
-                createdAt: 'только что'
-            }
-        ];
-
-        function getDvizhCurrentAuthor() {
-            const tgUser = tg?.initDataUnsafe?.user || {};
-            const appUser = appState?.user || {};
-
-            const name =
-                tgUser.first_name ||
-                appUser.first_name ||
-                tgUser.username ||
-                appUser.username ||
-                'Пользователь';
-
-            const username = tgUser.username || appUser.username || '';
-            const photoUrl = tgUser.photo_url || appUser.photo_url || '';
-            const telegramId = tgUser.id || appUser.telegram_id || appUser.id || null;
-
-            return {
-                telegramId,
-                name,
-                username,
-                photoUrl,
-                role: 'Вы'
-            };
-        }
-
-        function getDvizhAuthorInitials(name = '') {
-            return (name || 'П').trim().charAt(0).toUpperCase() || 'П';
-        }
-
-        function getActiveDvizhFilter() {
-            return document.querySelector('.dvizh-filter.active')?.dataset?.filter || 'all';
-        }
-
-        function getFilteredDvizhPosts() {
-            const filter = getActiveDvizhFilter();
-            const currentAuthor = getDvizhCurrentAuthor();
-            const posts = [...dvizhMockPosts];
-
-            if (filter === 'mine') {
-                return posts.filter((post) => {
-                    const author = post.author || {};
-                    if (currentAuthor.telegramId && author.telegramId) {
-                        return String(author.telegramId) === String(currentAuthor.telegramId);
-                    }
-                    return (author.name || '').trim() === (currentAuthor.name || '').trim();
-                });
-            }
-
-            if (filter === 'new') {
-                return posts.sort((a, b) => b.id - a.id);
-            }
-
-            if (filter === 'top') {
-                return posts.sort((a, b) => (b.likes + b.views) - (a.likes + a.views));
-            }
-
-            return posts.sort((a, b) => b.id - a.id);
-        }
-
-        function openCreatePostModal() {
-            const modal = document.getElementById('createDvizhPostModal');
-            if (!modal) return;
-            modal.classList.remove('hidden');
-        }
-
-        function closeCreatePostModal() {
-            const modal = document.getElementById('createDvizhPostModal');
-            if (!modal) return;
-            modal.classList.add('hidden');
-        }
-
-        function updateDvizhStats(posts) {
-            const postsCount = document.getElementById('dvizhPostsCount');
-            const likesCount = document.getElementById('dvizhLikesCount');
-            const viewsCount = document.getElementById('dvizhViewsCount');
-
-            if (postsCount) postsCount.textContent = posts.length;
-            if (likesCount) likesCount.textContent = posts.reduce((sum, post) => sum + (post.likes || 0), 0);
-            if (viewsCount) viewsCount.textContent = posts.reduce((sum, post) => sum + (post.views || 0), 0);
-        }
-
-        function renderDvizhFeed() {
-            const feed = document.getElementById('dvizhFeed');
-            if (!feed) return;
-
-            const filteredPosts = getFilteredDvizhPosts();
-            updateDvizhStats(dvizhMockPosts);
-
-            if (!filteredPosts.length) {
-                feed.innerHTML = `
-                    <div class="glass-box p-5 rounded-[24px] text-center text-gray-400">
-                        Пока в этом фильтре пусто. Создай первый пост.
-                    </div>
-                `;
-                return;
-            }
-
-            feed.innerHTML = filteredPosts.map((post) => {
-                const author = post.author || {};
-                const authorName = escapeHtml(author.name || 'Пользователь');
-                const authorRole = escapeHtml(author.role || 'member');
-                const authorPhoto = author.photoUrl || '';
-                const authorUsername = author.username ? `@${escapeHtml(author.username)}` : '';
-                const initials = getDvizhAuthorInitials(author.name);
-                const avatarHtml = authorPhoto
-                    ? `<img src="${authorPhoto}" alt="${authorName}" class="h-11 w-11 rounded-[18px] object-cover border border-white/10 shrink-0" />`
-                    : `<div class="h-11 w-11 rounded-[18px] bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center text-lg font-bold shrink-0">${initials}</div>`;
-                const imagesHtml = (post.images || []).map((url) => `
-                    <img src="${url}" alt="post-image" class="w-full h-44 object-cover rounded-2xl border border-white/10" />
-                `).join('');
-
-                return `
-                    <div class="glass-box p-4 rounded-[24px] fade-up">
-                        <div class="flex items-start justify-between gap-3 mb-3">
-                            <div class="flex items-center gap-3 min-w-0">
-                                ${avatarHtml}
-                                <div class="min-w-0">
-                                    <div class="font-bold text-white truncate">${authorName}</div>
-                                    <div class="text-xs text-gray-400 truncate">${post.createdAt} • ${authorRole}${authorUsername ? ` • ${authorUsername}` : ''}</div>
-                                </div>
-                            </div>
-                            <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">approved</div>
-                        </div>
-
-                        <div class="text-sm text-gray-200 leading-relaxed mb-4 whitespace-pre-wrap">${escapeHtml(post.text)}</div>
-
-                        ${imagesHtml ? `<div class="grid grid-cols-1 gap-3 mb-4">${imagesHtml}</div>` : ''}
-
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-2">
-                                <button class="secondary-btn px-4 py-2 rounded-2xl text-sm font-semibold" onclick="toggleDvizhLike(${post.id})">
-                                    ❤️ ${post.likes}
-                                </button>
-                                <div class="text-sm text-gray-400">👁 ${post.views}</div>
-                            </div>
-
-                            <button class="green-btn px-4 py-2 rounded-2xl text-sm font-semibold" onclick="Telegram.WebApp.showAlert('Донаты подключим на следующем этапе')">
-                                Поддержать
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function toggleDvizhLike(postId) {
-            const post = dvizhMockPosts.find((item) => item.id === postId);
-            if (!post) return;
-            post.likes += 1;
-            renderDvizhFeed();
-        }
-
-        function previewDvizhImages(files) {
-            const preview = document.getElementById('dvizhImagesPreview');
-            if (!preview) return;
-
-            preview.innerHTML = '';
-            const selected = Array.from(files).slice(0, 2);
-
-            selected.forEach((file) => {
-                if (!file.type.startsWith('image/')) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'relative';
-
-                    wrap.innerHTML = `
-                        <img src="${e.target.result}" class="w-full h-32 object-cover rounded-2xl border border-white/10" alt="preview" />
-                    `;
-
-                    preview.appendChild(wrap);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function submitDvizhPost() {
-            const textarea = document.getElementById('dvizhPostText');
-            const imagesInput = document.getElementById('dvizhPostImages');
-
-            const text = textarea?.value?.trim();
-            if (!text) {
-                Telegram.WebApp.showAlert('Напиши текст поста');
-                return;
-            }
-
-            const files = Array.from(imagesInput?.files || []).slice(0, 2);
-            const localImages = files.filter((file) => file.type.startsWith('image/')).map((file) => URL.createObjectURL(file));
-
-            const currentAuthor = getDvizhCurrentAuthor();
-
-            dvizhMockPosts.unshift({
-                id: Date.now(),
-                author: {
-                    telegramId: currentAuthor.telegramId,
-                    name: currentAuthor.name,
-                    username: currentAuthor.username,
-                    photoUrl: currentAuthor.photoUrl,
-                    role: 'pending'
-                },
-                text,
-                images: localImages,
-                likes: 0,
-                views: 1,
-                createdAt: 'только что'
-            });
-
-            if (textarea) textarea.value = '';
-            if (imagesInput) imagesInput.value = '';
-            const preview = document.getElementById('dvizhImagesPreview');
-            if (preview) preview.innerHTML = '';
-
-            renderDvizhFeed();
-            closeCreatePostModal();
-            Telegram.WebApp.showAlert('Каркас готов: пост добавлен локально. Backend можно подключить следующим этапом.');
-        }
-
-        function initDvizhSection() {
-            document.getElementById('openCreatePostBtn')?.addEventListener('click', openCreatePostModal);
-            document.getElementById('closeCreatePostBtn')?.addEventListener('click', closeCreatePostModal);
-            document.getElementById('submitDvizhPostBtn')?.addEventListener('click', submitDvizhPost);
-            document.getElementById('refreshDvizhBtn')?.addEventListener('click', renderDvizhFeed);
-            document.getElementById('dvizhPostImages')?.addEventListener('change', (e) => previewDvizhImages(e.target.files));
-
-            document.querySelectorAll('.dvizh-filter').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.dvizh-filter').forEach((item) => item.classList.remove('active'));
-                    btn.classList.add('active');
-                    renderDvizhFeed();
-                });
-            });
-
-            document.getElementById('createDvizhPostModal')?.addEventListener('click', (e) => {
-                if (e.target.id === 'createDvizhPostModal') closeCreatePostModal();
-            });
-        }
-
 
         function openTopupModal() {
             hapticMedium();
@@ -3713,7 +3704,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
-        initDvizhSection();
         showBottomPage('home');
     </script>
 
@@ -3727,6 +3717,32 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
         }, 480);
     }
+
+
+
+    document.getElementById('openCreatePostBtn')?.addEventListener('click', openCreatePostModal);
+    document.getElementById('closeCreatePostModalBtn')?.addEventListener('click', closeCreatePostModal);
+    document.getElementById('submitDvizhPostBtn')?.addEventListener('click', submitDvizhPost);
+    document.getElementById('refreshDvizhBtn')?.addEventListener('click', () => {
+        hapticLight();
+        loadDvizhFeed();
+    });
+    document.getElementById('dvizhPostImages')?.addEventListener('change', (event) => {
+        handleDvizhImagePreview(event.target.files);
+    });
+    document.getElementById('dvizhFilters')?.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-filter]');
+        if (!button) return;
+        dvizhFilter = button.dataset.filter || 'all';
+        document.querySelectorAll('#dvizhFilters [data-filter]').forEach((btn) => {
+            btn.classList.remove('bg-blue-600');
+            btn.classList.add('bg-gray-700');
+        });
+        button.classList.remove('bg-gray-700');
+        button.classList.add('bg-blue-600');
+        hapticLight();
+        renderDvizhFeed();
+    });
 
     window.addEventListener('load', () => {
         setTimeout(hideAppLoader, 1450);
