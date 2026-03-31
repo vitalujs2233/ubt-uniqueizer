@@ -774,7 +774,174 @@ app.post('/dvizh/add-view', async (req, res) => {
 // =======================
 // DVIZH MODULE END
 // =======================
+// =======================
+// DVIZH MODULE START
+// =======================
 
+// получить ленту
+app.post('/dvizh/feed', async (req, res) => {
+  try {
+    const { initData } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const result = await pool.query(`
+      select 
+        p.id,
+        p.text,
+        p.image_urls,
+        p.likes_count,
+        p.views_count,
+        p.created_at,
+        u.telegram_id,
+        u.first_name,
+        u.username
+      from posts p
+      join users u on u.telegram_id = p.user_id
+      where p.status in ('approved', 'pending')
+      order by p.created_at desc
+      limit 20
+    `);
+
+    res.json({
+      ok: true,
+      items: result.rows.map(row => ({
+        id: row.id,
+        text: row.text,
+        imageUrls: row.image_urls || [],
+        likesCount: row.likes_count,
+        viewsCount: row.views_count,
+        createdAt: row.created_at,
+        author: {
+          id: row.telegram_id,
+          name: row.first_name,
+          username: row.username,
+          photoUrl: ''
+        }
+      }))
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// создать пост
+app.post('/dvizh/create-post', async (req, res) => {
+  try {
+    const { initData, text } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({ message: 'Пустой текст' });
+    }
+
+    await spendUserCredits(user.id, 5, 'Публикация поста');
+
+    await pool.query(
+      `insert into posts (user_id, text, image_urls, status, likes_count, views_count)
+       values ($1, $2, '[]', 'pending', 0, 0)`,
+      [user.id, text]
+    );
+
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+
+    if (e.message === 'Недостаточно средств') {
+      return res.status(400).json({ message: e.message });
+    }
+
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// лайк
+app.post('/dvizh/toggle-like', async (req, res) => {
+  try {
+    const { initData, postId } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const existing = await pool.query(
+      `select id from post_likes where post_id = $1 and user_id = $2`,
+      [postId, user.id]
+    );
+
+    let liked;
+
+    if (existing.rows.length > 0) {
+      await pool.query(
+        `delete from post_likes where post_id = $1 and user_id = $2`,
+        [postId, user.id]
+      );
+
+      await pool.query(
+        `update posts set likes_count = GREATEST(likes_count - 1, 0) where id = $1`,
+        [postId]
+      );
+
+      liked = false;
+    } else {
+      await pool.query(
+        `insert into post_likes (post_id, user_id) values ($1, $2)`,
+        [postId, user.id]
+      );
+
+      await pool.query(
+        `update posts set likes_count = likes_count + 1 where id = $1`,
+        [postId]
+      );
+
+      liked = true;
+    }
+
+    res.json({ ok: true, liked });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// просмотры
+app.post('/dvizh/add-view', async (req, res) => {
+  try {
+    const { initData, postId } = req.body;
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const existing = await pool.query(
+      `select id from post_views where post_id = $1 and user_id = $2`,
+      [postId, user.id]
+    );
+
+    if (existing.rows.length === 0) {
+      await pool.query(
+        `insert into post_views (post_id, user_id) values ($1, $2)`,
+        [postId, user.id]
+      );
+
+      await pool.query(
+        `update posts set views_count = views_count + 1 where id = $1`,
+        [postId]
+      );
+    }
+
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// =======================
+// DVIZH MODULE END
+// =======================
 app.listen(port, () => {
   console.log('Server running on port ' + port);
 });
