@@ -222,7 +222,22 @@ app.post('/register', async (req, res) => {
 );
       dbUser = inserted.rows[0];
     } else {
-      dbUser = existing.rows[0];
+      const updated = await pool.query(
+  `update users
+   set username = $2,
+       first_name = $3,
+       photo_url = $4
+   where telegram_id = $1
+   returning *`,
+  [
+    user.id,
+    user.username || null,
+    user.first_name || null,
+    user.photo_url || null
+  ]
+);
+
+dbUser = updated.rows[0];
     }
 
     res.json({
@@ -618,16 +633,17 @@ app.post('/dvizh/feed', async (req, res) => {
     if (!user) return res.status(401).json({ message: 'Invalid user' });
 
     const result = await pool.query(`
-      select 
-        p.id,
-        p.text,
-        p.image_urls,
-        p.likes_count,
-        p.views_count,
-        p.created_at,
-        u.telegram_id,
-        u.first_name,
-        u.username
+     select 
+  p.id,
+  p.text,
+  p.image_urls,
+  p.likes_count,
+  p.views_count,
+  p.created_at,
+  u.telegram_id,
+  u.first_name,
+  u.username,
+  u.photo_url
       from posts p
       join users u on u.telegram_id = p.user_id
       where p.status in ('approved', 'pending')
@@ -648,7 +664,7 @@ app.post('/dvizh/feed', async (req, res) => {
           id: row.telegram_id,
           name: row.first_name,
           username: row.username,
-          photoUrl: ''
+          photoUrl: row.photo_url || ''
         }
       }))
     });
