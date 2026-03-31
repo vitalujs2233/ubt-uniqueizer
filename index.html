@@ -2033,31 +2033,19 @@ body::after {
             }
 
             try {
+                const formData = new FormData();
+                formData.append('initData', tg.initData);
+                formData.append('text', text);
+
                 const files = Array.from(fileEl.files || []).slice(0, 1);
-                let response;
+                if (files[0]) formData.append('image', files[0]);
 
-                if (files.length > 0) {
-                    const formData = new FormData();
-                    formData.append('initData', tg.initData);
-                    formData.append('text', text);
-                    formData.append('image', files[0]);
+                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-                    response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                } else {
-                    response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            initData: tg.initData,
-                            text
-                        })
-                    });
-                }
-
-                const data = await response.json().catch(() => ({}));
+                const data = await response.json();
                 if (!response.ok || !data.ok) {
                     throw new Error(data.message || 'Не удалось создать пост');
                 }
