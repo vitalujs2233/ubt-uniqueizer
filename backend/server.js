@@ -162,7 +162,9 @@ function detectDevice(userAgent = '') {
 
   return 'Unknown';
 }
-
+function isAdmin(user) {
+  return String(user?.id) === String(ADMIN_ID);
+}
 async function spendUserCredits(telegramId, amount, description = 'Создание смарт-ссылки') {
   const result = await pool.query(
     'select * from users where telegram_id = $1',
