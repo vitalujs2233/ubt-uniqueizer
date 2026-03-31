@@ -1091,159 +1091,6 @@ body::after {
     font-size: 14px !important;
 }
 
-
-/* === Preland live showcase === */
-.preland-template-card {
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
-}
-.preland-template-card:hover {
-    transform: translateY(-2px);
-}
-.preland-thumb {
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.09);
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-}
-.preland-thumb-browser {
-    height: 24px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 10px;
-    background: rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.preland-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.45);
-}
-.preland-thumb-body {
-    padding: 10px;
-    min-height: 124px;
-}
-.preland-line {
-    height: 7px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.14);
-    margin-bottom: 7px;
-}
-.preland-line.sm { width: 36%; }
-.preland-line.md { width: 58%; }
-.preland-line.lg { width: 82%; }
-.preland-line.full { width: 100%; }
-.preland-image-block {
-    width: 100%;
-    border-radius: 14px;
-    margin: 8px 0 10px;
-    position: relative;
-    overflow: hidden;
-}
-.preland-image-block::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 45%, rgba(255,255,255,0.04));
-}
-.preland-news-bg { background: linear-gradient(135deg, #bfdbfe, #60a5fa 52%, #e0f2fe); height: 70px; }
-.preland-blog-bg { background: linear-gradient(135deg, #ddd6fe, #a78bfa 52%, #f5d0fe); height: 70px; }
-.preland-story-bg { background: linear-gradient(135deg, #bbf7d0, #34d399 52%, #99f6e4); height: 80px; }
-.preland-quiz-bg { background: linear-gradient(135deg, #fdba74, #fb923c 52%, #fde68a); height: 68px; }
-.preland-cta-chip {
-    display: inline-flex;
-    padding: 8px 12px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 800;
-    color: white;
-}
-.preland-cta-blue { background: linear-gradient(135deg, #2563eb, #38bdf8); }
-.preland-cta-violet { background: linear-gradient(135deg, #7c3aed, #c026d3); }
-.preland-cta-green { background: linear-gradient(135deg, #059669, #22c55e); }
-.preland-cta-orange { background: linear-gradient(135deg, #ea580c, #f59e0b); }
-.preland-showcase-shell {
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.22);
-}
-.preland-showcase-browser {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-}
-.preland-showcase-address {
-    flex: 1;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    color: #cbd5e1;
-    font-size: 12px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.preland-showcase-body {
-    padding: 16px;
-    min-height: 360px;
-    background: #ffffff;
-    color: #111827;
-}
-.preland-mini-hero {
-    width: 100%;
-    border-radius: 18px;
-    overflow: hidden;
-    margin: 12px 0 14px;
-}
-.preland-mini-hero.news { background: linear-gradient(135deg, #dbeafe, #93c5fd, #ecfeff); height: 170px; }
-.preland-mini-hero.blog { background: linear-gradient(135deg, #ede9fe, #c4b5fd, #fae8ff); height: 170px; }
-.preland-mini-hero.story { background: linear-gradient(135deg, #d1fae5, #6ee7b7, #ccfbf1); height: 180px; }
-.preland-mini-hero.quiz { background: linear-gradient(135deg, #ffedd5, #fdba74, #fde68a); height: 160px; }
-.preland-news-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 14px 0;
-}
-.preland-news-tile, .preland-story-stat, .preland-quiz-option, .preland-blog-quote {
-    border-radius: 16px;
-    padding: 12px;
-}
-.preland-news-tile { background: #f8fafc; border: 1px solid #dbeafe; }
-.preland-story-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 16px; }
-.preland-story-stat { background: #ecfdf5; border: 1px solid #a7f3d0; text-align: center; }
-.preland-blog-author { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.preland-blog-avatar { width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(135deg, #8b5cf6, #d946ef); }
-.preland-blog-quote { background: #faf5ff; border: 1px solid #ddd6fe; margin: 12px 0; }
-.preland-quiz-progress { height: 8px; border-radius: 999px; background: #fed7aa; overflow: hidden; margin: 12px 0 16px; }
-.preland-quiz-progress > span { display: block; width: 66%; height: 100%; background: #ea580c; }
-.preland-quiz-option { background: #fff7ed; border: 1px solid #fdba74; margin-bottom: 8px; }
-.preland-real-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    border-radius: 14px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 800;
-    font-size: 13px;
-    margin-top: 10px;
-}
-.preland-showcase-note {
-    color: #94a3b8;
-    font-size: 12px;
-    margin-top: 10px;
-}
-
 </style>
 </head>
 <body class="p-4">
@@ -1387,7 +1234,7 @@ body::after {
                 <div class="mt-3 text-xs text-gray-500">Списание: 5 кредитов</div>
 
                 <button id="uploadBtn" class="primary-btn mt-6 w-full p-4 rounded-2xl font-bold">
-                    Уникализировать видео • 5 кредитов
+                    Уникализировать
                 </button>
 
                 <div id="statusMessage" class="mt-4 text-sm text-gray-300"></div>
@@ -1430,7 +1277,7 @@ body::after {
                     <button
                         id="generateLinkBtn"
                         class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Сгенерировать смарт-линк • 2 кредита
+                        Сгенерировать
                     </button>
 
                     <div id="generatedLinkBox" class="mt-4 hidden glass-box p-4 rounded-2xl">
@@ -1528,108 +1375,12 @@ body::after {
                         <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">MVP</div>
                     </div>
 
-                    <input id="prelandTemplate" type="hidden" value="news" />
-
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between gap-3 mb-3">
-                            <div>
-                                <div class="text-white font-semibold">Выбери макет</div>
-                                <div class="text-sm text-gray-400 mt-1">Нажми на карточку и сразу увидишь, какой стиль тебе подходит</div>
-                            </div>
-                            <div id="selectedTemplateBadge" class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">NEWS</div>
-                        </div>
-
-                        <div id="prelandTemplatePicker" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="news">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">📰 Новостной</div>
-                                    <span class="text-[10px] text-blue-300 font-semibold">NEWS</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Статья, редакционный формат, срочная подача</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-line sm"></div>
-                                        <div class="preland-line lg"></div>
-                                        <div class="preland-image-block preland-news-bg"></div>
-                                        <div class="preland-news-grid">
-                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
-                                            <div class="preland-news-tile"><div class="preland-line md"></div><div class="preland-line full"></div><div class="preland-line md"></div></div>
-                                        </div>
-                                        <span class="preland-cta-chip preland-cta-blue">Открыть</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="blog">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">✍️ Блог / отзыв</div>
-                                    <span class="text-[10px] text-violet-300 font-semibold">BLOG</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Личный опыт, мягкий прогрев, история от первого лица</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="preland-blog-avatar" style="width:28px;height:28px"></div><div style="flex:1"><div class="preland-line md"></div><div class="preland-line sm"></div></div></div>
-                                        <div class="preland-image-block preland-blog-bg"></div>
-                                        <div class="preland-blog-quote"><div class="preland-line lg"></div><div class="preland-line md"></div></div>
-                                        <span class="preland-cta-chip preland-cta-violet">Читать</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="story">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">🔥 История успеха</div>
-                                    <span class="text-[10px] text-emerald-300 font-semibold">STORY</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Яркий результат, цифры, эффект “до / после”</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-image-block preland-story-bg"></div>
-                                        <div class="preland-story-stats">
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                            <div class="preland-story-stat"><div class="preland-line md" style="margin:0 auto 6px"></div><div class="preland-line sm" style="margin:0 auto"></div></div>
-                                        </div>
-                                        <span class="preland-cta-chip preland-cta-green">Получить</span>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button type="button" class="preland-template-card text-left rounded-[22px] p-3 border border-white/10 bg-white/5" data-template="quiz">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="text-sm font-bold text-white">❓ Quiz / опрос</div>
-                                    <span class="text-[10px] text-orange-300 font-semibold">QUIZ</span>
-                                </div>
-                                <div class="text-[11px] text-gray-400 mb-2">Пошаговый формат, вопросники, вовлечение перед кликом</div>
-                                <div class="preland-thumb">
-                                    <div class="preland-thumb-browser"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                                    <div class="preland-thumb-body">
-                                        <div class="preland-line lg"></div>
-                                        <div class="preland-quiz-progress"><span></span></div>
-                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
-                                        <div class="preland-quiz-option"><div class="preland-line lg"></div></div>
-                                        <div class="preland-quiz-option"><div class="preland-line md"></div></div>
-                                        <span class="preland-cta-chip preland-cta-orange">Продолжить</span>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div class="mt-4">
-                            <div class="flex items-center justify-between gap-3 mb-3">
-                                <div>
-                                    <div class="text-white font-semibold">Как будет выглядеть сайт</div>
-                                    <div class="text-sm text-gray-400 mt-1">Это уже не слепой выбор: ниже показан реальный макет страницы до генерации</div>
-                                </div>
-                                <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LIVE PREVIEW</div>
-                            </div>
-                            <div id="prelandTemplateShowcase" class="preland-showcase-shell"></div>
-                            <div class="preland-showcase-note">Макет меняется сразу при выборе карточки. После заполнения полей итоговый HTML будет в таком же стиле.</div>
-                        </div>
-                    </div>
+                    <select id="prelandTemplate" class="neo-input mb-3">
+                        <option value="news">Новостной стиль</option>
+                        <option value="blog">Блог / отзыв</option>
+                        <option value="story">История успеха</option>
+                        <option value="quiz">Quiz / опрос</option>
+                    </select>
 
                     <input id="prelandTitle" type="text" class="neo-input mb-3" placeholder="Заголовок" />
                     <input id="prelandSubtitle" type="text" class="neo-input mb-3" placeholder="Подзаголовок" />
@@ -1703,28 +1454,18 @@ body::after {
             </div>
         </div>
 
-
-        <div id="dvizh-screen" class="hidden">
+        <div id="dvizh-section" class="hidden">
             <div class="flex items-center justify-between mb-4 gap-3">
-                <div>
-                    <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
-                    <div class="text-sm text-gray-400 mt-1">Лента постов сообщества</div>
-                </div>
+                <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
+                <button onclick="showBottomPage('home')" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
+                    ← Назад
+                </button>
             </div>
 
-            <div id="feed" class="space-y-3">
-                <div class="glass-box p-5 rounded-[24px]">
-                    <div class="text-base font-bold mb-2">Пока здесь пусто</div>
-                    <div class="text-sm text-gray-400 leading-relaxed">
-                        Здесь появятся посты пользователей. Нажми на кнопку +, чтобы создать первый пост.
-                    </div>
-                </div>
-            </div>
+            <div id="feed" class="space-y-3"></div>
 
-            <button id="openCreatePostBtn"
-                    class="primary-btn fixed right-5 bottom-24 h-14 w-14 rounded-full text-3xl font-bold flex items-center justify-center z-40"
-                    type="button"
-                    aria-label="Создать пост">
+            <button id="openCreatePost"
+                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl z-40">
                 +
             </button>
         </div>
@@ -1790,31 +1531,20 @@ body::after {
         </div>
     </div>
 
+    <div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
+        <div class="w-full max-w-md p-4 rounded-t-3xl card">
+            <div class="text-lg font-bold mb-3">Создать пост</div>
 
-    <div id="createPostModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
-    <div id="createPostModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
-        <div class="glass-box rounded-[28px] p-5">
-            <div class="flex items-center justify-between mb-4 gap-3">
-                <div>
-                    <div class="text-[22px] font-extrabold">Создать пост</div>
-                    <div class="text-sm text-gray-400 mt-1">Каркас формы для Движа</div>
-                </div>
-                <button id="closeCreatePostBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm" type="button">Закрыть</button>
-            </div>
+            <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
 
-            <textarea id="dvizhPostText"
-                      class="neo-input mb-3"
-                      rows="5"
-                      placeholder="Напиши текст поста..."></textarea>
+            <input type="file" id="postImage" class="mb-3" accept="image/*" />
 
-            <input id="dvizhPostImages"
-                   class="neo-input mb-3"
-                   type="file"
-                   accept="image/png,image/jpeg,image/webp"
-                   multiple />
-
-            <button id="submitDvizhPostBtn" class="primary-btn block w-full p-4 rounded-2xl font-bold text-center" type="button">
+            <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
                 Опубликовать • 5 кредитов
+            </button>
+
+            <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
+                Отмена
             </button>
         </div>
     </div>
@@ -1930,9 +1660,6 @@ body::after {
         const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
         const topupStatus = document.getElementById('topupStatus');
         const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-        const openCreatePostBtn = document.getElementById('openCreatePostBtn');
-        const closeCreatePostBtn = document.getElementById('closeCreatePostBtn');
-        const createPostModalBackdrop = document.getElementById('createPostModalBackdrop');
 
         if (tg) {
             tg.expand();
@@ -1964,27 +1691,23 @@ body::after {
             supportBtn.href = `https://t.me/${SUPPORT_USERNAME}`;
         }
 
-        openCreatePostBtn?.addEventListener('click', openCreatePostModal);
-        closeCreatePostBtn?.addEventListener('click', closeCreatePostModal);
-        createPostModalBackdrop?.addEventListener('click', closeCreatePostModal);
-
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
-            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
+            const dvizhScreen = document.getElementById('dvizh-section');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
-            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
-            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
+            dvizhScreen?.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navSupportBtn, navDvizhBtn].filter(Boolean).forEach((btn) => {
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -2002,16 +1725,17 @@ body::after {
                 loadTransactions();
             }
 
-            if (page === 'dvizh') {
-                dvizhScreen.classList.remove('hidden');
-                navDvizhBtn.classList.add('active');
-                navDvizhBtn.classList.remove('text-white/70');
-            }
-
             if (page === 'support') {
                 supportScreen.classList.remove('hidden');
                 navSupportBtn.classList.add('active');
                 navSupportBtn.classList.remove('text-white/70');
+            }
+
+            if (page === 'dvizh') {
+                dvizhScreen?.classList.remove('hidden');
+                navDvizhBtn?.classList.add('active');
+                navDvizhBtn?.classList.remove('text-white/70');
+                renderTestPost();
             }
         }
 
@@ -2037,24 +1761,6 @@ body::after {
             topupModal.classList.add('hidden');
             topupModalBackdrop.classList.add('hidden');
             topupStatus.textContent = '';
-        }
-
-
-        function openCreatePostModal() {
-            const backdrop = document.getElementById('createPostModalBackdrop');
-            const modal = document.getElementById('createPostModal');
-            if (!backdrop || !modal) return;
-            hapticLight();
-            backdrop.classList.remove('hidden');
-            modal.classList.remove('hidden');
-        }
-
-        function closeCreatePostModal() {
-            const backdrop = document.getElementById('createPostModalBackdrop');
-            const modal = document.getElementById('createPostModal');
-            if (!backdrop || !modal) return;
-            backdrop.classList.add('hidden');
-            modal.classList.add('hidden');
         }
 
         async function registerTelegramUser() {
@@ -2301,7 +2007,66 @@ body::after {
 
         function filterSpy(niche, button) {
             currentFilter = niche;
-            renderSpyTrends();
+            // Dvizh: modal and test feed
+        function closePostModal() {
+            const modal = document.getElementById('createPostModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        const openCreatePostBtn = document.getElementById('openCreatePost');
+        if (openCreatePostBtn) {
+            openCreatePostBtn.addEventListener('click', () => {
+                const modal = document.getElementById('createPostModal');
+                if (!modal) return;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+        }
+
+        function renderTestPost() {
+            const feed = document.getElementById('feed');
+            if (!feed) return;
+
+            feed.innerHTML = `
+                <div class="card">
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
+                        <div>
+                            <div class="text-sm font-bold">User</div>
+                            <div class="text-xs text-gray-400">сейчас</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm mb-3">
+                        Первый пост в Движе 🔥
+                    </div>
+
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <div>❤️ 0</div>
+                        <div>👁 1</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const submitPostBtn = document.getElementById('submitPostBtn');
+        if (submitPostBtn) {
+            submitPostBtn.addEventListener('click', () => {
+                const text = document.getElementById('postText')?.value.trim();
+
+                if (!text) {
+                    Telegram.WebApp.showAlert('Напиши текст');
+                    return;
+                }
+
+                Telegram.WebApp.showAlert('Пост отправлен (пока без backend)');
+                closePostModal();
+            });
+        }
+
+        renderSpyTrends();
 
             document.querySelectorAll('.spy-filter').forEach(btn => {
                 btn.classList.remove('bg-blue-600');
@@ -3087,9 +2852,6 @@ body::after {
         const openPrelandPreviewBtn = document.getElementById('openPrelandPreviewBtn');
         const prelandHistoryList = document.getElementById('prelandHistoryList');
         const clearPrelandHistoryBtn = document.getElementById('clearPrelandHistoryBtn');
-        const prelandTemplatePicker = document.getElementById('prelandTemplatePicker');
-        const prelandTemplateShowcase = document.getElementById('prelandTemplateShowcase');
-        const selectedTemplateBadge = document.getElementById('selectedTemplateBadge');
 
         let selectedFile = null;
         let uploadProgressTimer = null;
@@ -3238,7 +3000,7 @@ body::after {
             const item = items[index];
             if (!item) return;
 
-            applyPrelandTemplateSelection(item.template || 'news');
+            if (prelandTemplate) prelandTemplate.value = item.template || 'news';
             if (prelandTitle) prelandTitle.value = item.title || '';
             if (prelandSubtitle) prelandSubtitle.value = item.subtitle || '';
             if (prelandImage) prelandImage.value = item.image || '';
@@ -3263,186 +3025,14 @@ body::after {
             }
         };
 
-
-        function renderPrelandTemplateShowcase(template) {
-            if (!prelandTemplateShowcase) return;
-
-            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
-            let markup = '';
-
-            if (normalized === 'blog') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/blog-review</div>
-                        <div class="text-[11px] text-gray-400">BLOG</div>
-                    </div>
-                    <div class="preland-showcase-body">
-                        <div class="preland-blog-author">
-                            <div class="preland-blog-avatar"></div>
-                            <div>
-                                <div style="font-weight:800;font-size:14px">Автор блога</div>
-                                <div style="font-size:12px;color:#6b7280">Личный опыт • обновлено сегодня</div>
-                            </div>
-                        </div>
-                        <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:800">Личный отзыв</div>
-                        <div style="font-size:30px;line-height:1.1;font-weight:900;margin:14px 0 8px">Преленд в формате личной истории</div>
-                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит, когда нужно сделать отзыв, прогрев и мягкую подводку к кнопке.</div>
-                        <div class="preland-mini-hero blog"></div>
-                        <div class="preland-blog-quote">
-                            <div style="font-size:12px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Почему это цепляет</div>
-                            <div style="font-size:15px;line-height:1.7;color:#374151">Здесь будет выделенный блок-цитата, который создаёт ощущение личного опыта и доверия.</div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут обычные абзацы истории, а в конце — заметная кнопка перехода.</div>
-                        <a class="preland-real-btn preland-cta-violet" href="javascript:void(0)">Посмотреть дальше</a>
-                    </div>`;
-            } else if (normalized === 'story') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/success-story</div>
-                        <div class="text-[11px] text-gray-400">STORY</div>
-                    </div>
-                    <div class="preland-showcase-body" style="background:#ffffff">
-                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff">
-                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:800;margin-bottom:12px">История успеха</div>
-                            <div style="font-size:32px;line-height:1.05;font-weight:900;margin-bottom:8px">Яркий макет с акцентом на результат</div>
-                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.88)">Подходит под кейсы “до / после”, рост, цифры и сильный CTA.</div>
-                        </div>
-                        <div class="preland-mini-hero story"></div>
-                        <div class="preland-story-stats">
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">+127%</div><div style="font-size:12px;color:#6b7280">рост</div></div>
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">24 ч</div><div style="font-size:12px;color:#6b7280">первые результаты</div></div>
-                            <div class="preland-story-stat"><div style="font-size:24px;font-weight:900;color:#059669">TOP</div><div style="font-size:12px;color:#6b7280">эффект</div></div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идёт объяснение, почему решение сработало, а затем — большая кнопка.</div>
-                        <a class="preland-real-btn preland-cta-green" href="javascript:void(0)">Получить доступ</a>
-                    </div>`;
-            } else if (normalized === 'quiz') {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/quiz-flow</div>
-                        <div class="text-[11px] text-gray-400">QUIZ</div>
-                    </div>
-                    <div class="preland-showcase-body" style="background:#fff">
-                        <div style="padding:20px;border-radius:22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff">
-                            <div style="display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-size:12px;font-weight:800;margin-bottom:12px">Интерактивный quiz</div>
-                            <div style="font-size:30px;line-height:1.08;font-weight:900;margin-bottom:8px">Пошаговый преленд с вовлечением</div>
-                            <div style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.92)">Подходит, когда нужно прогреть человека через вопросы и ответы.</div>
-                        </div>
-                        <div class="preland-quiz-progress"><span></span></div>
-                        <div class="preland-mini-hero quiz"></div>
-                        <div class="preland-quiz-option"><strong style="display:block;margin-bottom:4px">Шаг 1 из 3</strong><span style="font-size:14px;color:#374151">Да, мне интересен такой формат</span></div>
-                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Хочу сначала посмотреть детали</span></div>
-                        <div class="preland-quiz-option"><span style="font-size:14px;color:#374151">Интересно узнать отзывы</span></div>
-                        <a class="preland-real-btn preland-cta-orange" href="javascript:void(0)">Продолжить</a>
-                    </div>`;
-            } else {
-                markup = `
-                    <div class="preland-showcase-browser">
-                        <div style="display:flex;align-items:center;gap:6px"><span class="preland-dot"></span><span class="preland-dot"></span><span class="preland-dot"></span></div>
-                        <div class="preland-showcase-address">preview.ubt/news-page</div>
-                        <div class="text-[11px] text-gray-400">NEWS</div>
-                    </div>
-                    <div class="preland-showcase-body">
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #e5e7eb">
-                            <div style="font-size:12px;font-weight:900;color:#2563eb;letter-spacing:.08em;text-transform:uppercase">Новости дня</div>
-                            <div style="font-size:12px;color:#6b7280">${__import__('datetime').datetime.now().strftime('%d.%m.%Y')}</div>
-                        </div>
-                        <div style="display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-top:14px"><span style="width:8px;height:8px;border-radius:999px;background:#2563eb"></span>Срочное обновление</div>
-                        <div style="font-size:32px;line-height:1.08;font-weight:900;margin:14px 0 8px">Новостной преленд как мини-СМИ сайт</div>
-                        <div style="font-size:16px;color:#4b5563;line-height:1.7">Подходит под формат статьи, новости, разбор ситуации и редакционный стиль.</div>
-                        <div class="preland-mini-hero news"></div>
-                        <div class="preland-news-grid">
-                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Что известно</div><div style="font-size:14px;line-height:1.7;color:#374151">Два информативных блока сразу под заголовком.</div></div>
-                            <div class="preland-news-tile"><div style="font-size:12px;font-weight:800;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Почему обсуждают</div><div style="font-size:14px;line-height:1.7;color:#374151">Редакционная подача создаёт ощущение настоящего сайта.</div></div>
-                        </div>
-                        <div style="font-size:15px;line-height:1.8;color:#374151">Ниже идут абзацы текста и большая синяя кнопка перехода.</div>
-                        <a class="preland-real-btn preland-cta-blue" href="javascript:void(0)">Открыть материал</a>
-                    </div>`;
-            }
-
-            prelandTemplateShowcase.innerHTML = markup;
-        }
-
-        function applyPrelandTemplateSelection(template) {
-            if (!prelandTemplate) return;
-
-            const normalized = ['news', 'blog', 'story', 'quiz'].includes(template) ? template : 'news';
-            prelandTemplate.value = normalized;
-
-            const meta = getTemplateMeta(normalized);
-            if (selectedTemplateBadge) selectedTemplateBadge.textContent = meta.badge;
-
-            document.querySelectorAll('.preland-template-card').forEach((card) => {
-                const isActive = card.dataset.template === normalized;
-                card.classList.toggle('ring-2', isActive);
-                card.classList.toggle('ring-offset-2', isActive);
-                card.classList.toggle('ring-offset-transparent', isActive);
-                card.classList.toggle('scale-[1.02]', isActive);
-                card.classList.toggle('shadow-[0_0_24px_rgba(103,232,249,0.16)]', isActive);
-                card.classList.toggle('border-cyan-300/50', isActive);
-                card.classList.toggle('bg-white/10', isActive);
-                card.classList.toggle('border-white/10', !isActive);
-                card.classList.toggle('bg-white/5', !isActive);
-            });
-
-            renderPrelandTemplateShowcase(normalized);
-            renderPrelandPreview(collectPrelandPayload());
-        }
-
-        function bindPrelandTemplatePicker() {
-            if (!prelandTemplatePicker) return;
-            prelandTemplatePicker.querySelectorAll('.preland-template-card').forEach((card) => {
-                card.addEventListener('click', () => {
-                    applyPrelandTemplateSelection(card.dataset.template || 'news');
-                    hapticSelection();
-                });
-            });
-        }
-
         function getTemplateMeta(template) {
             const map = {
-                news: {
-                    label: 'Новостной стиль',
-                    badge: 'NEWS',
-                    accent: '#2563eb',
-                    previewClass: 'from-blue-500/25 to-cyan-400/10'
-                },
-                blog: {
-                    label: 'Блог / отзыв',
-                    badge: 'BLOG',
-                    accent: '#7c3aed',
-                    previewClass: 'from-violet-500/25 to-fuchsia-400/10'
-                },
-                story: {
-                    label: 'История успеха',
-                    badge: 'STORY',
-                    accent: '#059669',
-                    previewClass: 'from-emerald-500/25 to-teal-400/10'
-                },
-                quiz: {
-                    label: 'Quiz / опрос',
-                    badge: 'QUIZ',
-                    accent: '#ea580c',
-                    previewClass: 'from-orange-500/25 to-amber-400/10'
-                }
+                news: { label: 'Новостной стиль', badge: 'NEWS', buttonClass: '#2563eb' },
+                blog: { label: 'Блог / отзыв', badge: 'BLOG', buttonClass: '#7c3aed' },
+                story: { label: 'История успеха', badge: 'STORY', buttonClass: '#059669' },
+                quiz: { label: 'Quiz / опрос', badge: 'QUIZ', buttonClass: '#ea580c' }
             };
             return map[template] || map.news;
-        }
-
-        function splitPrelandParagraphs(content) {
-            return (content || '')
-                .split(/\n+/)
-                .map((line) => line.trim())
-                .filter(Boolean);
-        }
-
-        function buildParagraphsHtml(lines) {
-            return lines.length
-                ? lines.map((line) => `<p>${escapeHtml(line)}</p>`).join('\n')
-                : '<p>Добавь основной текст преленда.</p>';
         }
 
         function buildPrelandHtml(payload) {
@@ -3452,184 +3042,12 @@ body::after {
             const image = escapeAttribute(payload.image || '');
             const buttonText = escapeHtml(payload.buttonText || 'Перейти');
             const targetUrl = escapeAttribute(payload.targetUrl || '#');
-            const lines = splitPrelandParagraphs(payload.content);
-            const paragraphs = buildParagraphsHtml(lines);
-            const firstLine = escapeHtml(lines[0] || 'Редакция отмечает резкий рост интереса к этому решению.');
-            const secondLine = escapeHtml(lines[1] || 'Пользователи делятся результатами и продолжают обсуждать тему.');
-            const quoteLine = escapeHtml(lines[2] || lines[0] || 'Я не ожидал такого эффекта, но решил проверить лично.');
-            const storyStat = escapeHtml(lines[3] || 'Результат заметен уже после первых шагов.');
-            const quizQuestion = escapeHtml(payload.subtitle || 'Ответь на несколько коротких вопросов и открой следующий шаг.');
-            const quizOptions = [
-                'Да, хочу попробовать',
-                'Сначала хочу узнать детали',
-                'Интересно посмотреть отзывы'
-            ].map((item) => `<div class="quiz-option">${escapeHtml(item)}</div>`).join('');
-
-            if (payload.template === 'blog') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#f5f3ff;font-family:Arial,sans-serif;color:#1f2937}
-.wrap{max-width:820px;margin:0 auto;background:#fff;min-height:100vh}
-.top{padding:28px 22px 0}
-.author{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.avatar{width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,#c4b5fd,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
-.author-meta small{display:block;color:#6b7280;font-size:12px}
-.tag{display:inline-block;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-.hero img{width:100%;display:block;max-height:420px;object-fit:cover}
-.content{padding:24px 22px 28px}
-h1{font-size:32px;line-height:1.15;margin:0 0 12px;font-weight:800}
-.lead{font-size:18px;line-height:1.65;color:#4b5563;margin:0 0 20px}
-.story-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:18px;padding:18px;margin:18px 0 22px}
-.story-box-title{font-size:13px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#7c3aed;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:26px}
-.footer{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="top">
-<div class="tag">Личный отзыв</div>
-<div class="author">
-<div class="avatar">A</div>
-<div class="author-meta">
-<strong>Автор блога</strong>
-<small>Обновлено сегодня</small>
-</div>
-</div>
-</div>
-${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
-<div class="content">
-<h1>${title}</h1>
-${subtitle ? `<div class="lead">${subtitle}</div>` : ''}
-<div class="story-box">
-<div class="story-box-title">Почему я решил проверить это сам</div>
-<p>${quoteLine}</p>
-</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="footer">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
-
-            if (payload.template === 'story') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#ecfdf5;font-family:Arial,sans-serif;color:#0f172a}
-.wrap{max-width:860px;margin:0 auto;background:#fff;min-height:100vh}
-.hero{padding:24px;background:linear-gradient(135deg,#064e3b,#10b981);color:#fff}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
-.hero h1{font-size:36px;line-height:1.1;margin:0 0 14px;font-weight:900}
-.hero p{font-size:18px;line-height:1.65;margin:0;color:rgba(255,255,255,0.88)}
-.hero-media img{width:100%;border-radius:24px;display:block;max-height:360px;object-fit:cover;box-shadow:0 18px 40px rgba(0,0,0,.2)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 24px;margin-top:-28px}
-.stat{background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 30px rgba(15,23,42,.08);border:1px solid #d1fae5}
-.stat strong{display:block;font-size:28px;color:#059669;margin-bottom:6px}
-.content{padding:28px 24px 30px}
-.section-label{display:inline-block;background:#d1fae5;color:#047857;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#059669;color:#fff;padding:17px 18px;border-radius:15px;font-weight:800;font-size:16px;margin-top:26px}
-.note{font-size:13px;color:#6b7280;margin-top:16px;text-align:center}
-@media (max-width:700px){
-.hero-grid{grid-template-columns:1fr}
-.stats{grid-template-columns:1fr}
-.hero h1{font-size:30px}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="hero">
-<div class="hero-grid">
-<div>
-<div class="section-label" style="background:rgba(255,255,255,.16);color:#fff">История успеха</div>
-<h1>${title}</h1>
-<p>${subtitle || firstLine}</p>
-</div>
-<div class="hero-media">
-${image ? `<img src="${image}" alt="preview">` : `<div style="height:260px;border-radius:24px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700">Добавь изображение</div>`}
-</div>
-</div>
-</div>
-<div class="stats">
-<div class="stat"><strong>+127%</strong><span>рост интереса</span></div>
-<div class="stat"><strong>24 ч</strong><span>первые результаты</span></div>
-<div class="stat"><strong>TOP</strong><span>${storyStat}</span></div>
-</div>
-<div class="content">
-<div class="section-label">Почему это сработало</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="note">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
-
-            if (payload.template === 'quiz') {
-                return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-body{margin:0;background:#fff7ed;font-family:Arial,sans-serif;color:#111827}
-.wrap{max-width:760px;margin:0 auto;background:#fff;min-height:100vh}
-.head{padding:24px 22px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff}
-.badge{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin-bottom:16px}
-h1{font-size:32px;line-height:1.15;margin:0 0 10px;font-weight:900}
-.sub{font-size:17px;line-height:1.6;color:rgba(255,255,255,.92)}
-.content{padding:24px 22px 30px}
-.progress{height:10px;border-radius:999px;background:#fed7aa;overflow:hidden;margin:0 0 20px}
-.progress span{display:block;height:100%;width:66%;background:#ea580c;border-radius:inherit}
-.card{background:#fff7ed;border:1px solid #fdba74;border-radius:20px;padding:18px;margin-bottom:18px}
-.card-title{font-size:20px;font-weight:800;margin-bottom:10px}
-.quiz-option{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid #fdba74;margin-bottom:10px;font-weight:600}
-.hero img{width:100%;display:block;max-height:360px;object-fit:cover;border-radius:20px;margin-bottom:18px}
-p{font-size:16px;line-height:1.75;margin:0 0 14px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#ea580c;color:#fff;padding:16px 18px;border-radius:14px;font-weight:800;font-size:16px;margin-top:24px}
-.note{font-size:13px;color:#6b7280;margin-top:15px;text-align:center}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="head">
-<div class="badge">Интерактивный quiz</div>
-<h1>${title}</h1>
-<div class="sub">${quizQuestion}</div>
-</div>
-<div class="content">
-<div class="progress"><span></span></div>
-${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
-<div class="card">
-<div class="card-title">Шаг 1 из 3</div>
-<div class="quiz-option">Да, мне подходит такой формат</div>
-<div class="quiz-option">Хочу посмотреть детали и примеры</div>
-<div class="quiz-option">Интересно узнать больше отзывов</div>
-</div>
-${paragraphs}
-<a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
-<div class="note">Материал подготовлен в UBT ToolKit</div>
-</div>
-</div>
-</body>
-</html>`;
-            }
+            const paragraphs = (payload.content || '')
+                .split(/\n+/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => `<p>${escapeHtml(line)}</p>`)
+                .join('\n');
 
             return `<!DOCTYPE html>
 <html lang="ru">
@@ -3639,45 +3057,25 @@ ${paragraphs}
 <title>${title}</title>
 <style>
 body{margin:0;background:#eef2f7;font-family:Arial,sans-serif;color:#111827}
-.wrap{max-width:820px;margin:0 auto;background:#ffffff;min-height:100vh}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e5e7eb;background:#fff}
-.brand{font-size:13px;font-weight:800;color:#2563eb;letter-spacing:.08em;text-transform:uppercase}
-.date{font-size:13px;color:#6b7280}
-.hero img{width:100%;display:block;max-height:400px;object-fit:cover}
-.content{padding:24px 22px 28px}
-.live{display:inline-flex;align-items:center;gap:8px;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;margin-bottom:16px}
-.dot{width:8px;height:8px;border-radius:999px;background:#2563eb}
-h1{font-size:34px;line-height:1.12;margin:0 0 12px;font-weight:900}
-h2{font-size:19px;line-height:1.6;margin:0 0 22px;color:#4b5563;font-weight:500}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 22px}
-.stat{background:#f8fafc;border:1px solid #dbeafe;border-radius:18px;padding:16px}
-.stat strong{display:block;font-size:14px;color:#1d4ed8;margin-bottom:8px;text-transform:uppercase}
-.stat span{font-size:17px;line-height:1.6;color:#1f2937}
-p{font-size:17px;line-height:1.78;margin:0 0 16px}
-.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:#2563eb;color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
+.wrap{max-width:760px;margin:0 auto;background:#ffffff;min-height:100vh}
+.badge{display:inline-block;background:${meta.buttonClass};color:#fff;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;margin:20px 20px 0}
+.hero img{width:100%;display:block;max-height:380px;object-fit:cover}
+.content{padding:22px}
+h1{font-size:30px;line-height:1.15;margin:0 0 12px;font-weight:800}
+h2{font-size:18px;line-height:1.5;margin:0 0 18px;color:#4b5563;font-weight:500}
+p{font-size:17px;line-height:1.75;margin:0 0 16px}
+.cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:${meta.buttonClass};color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
 .note{font-size:13px;color:#6b7280;margin-top:14px;text-align:center}
-@media (max-width:700px){
-.stats{grid-template-columns:1fr}
-h1{font-size:30px}
-}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="topbar">
-<div class="brand">Новости дня</div>
-<div class="date">${new Date().toLocaleDateString('ru-RU')}</div>
-</div>
+<div class="badge">${meta.label}</div>
 ${image ? `<div class="hero"><img src="${image}" alt="preview"></div>` : ''}
 <div class="content">
-<div class="live"><span class="dot"></span>Срочное обновление</div>
 <h1>${title}</h1>
 ${subtitle ? `<h2>${subtitle}</h2>` : ''}
-<div class="stats">
-<div class="stat"><strong>Что известно</strong><span>${firstLine}</span></div>
-<div class="stat"><strong>Почему обсуждают</strong><span>${secondLine}</span></div>
-</div>
-${paragraphs}
+${paragraphs || '<p>Добавь основной текст преленда.</p>'}
 <a class="cta" href="${targetUrl}" target="_blank" rel="noopener noreferrer">${buttonText}</a>
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
@@ -3697,84 +3095,19 @@ ${paragraphs}
             const safeContent = escapeHtml(payload.content || 'Без текста').replace(/\n/g, '<br>');
             const safeTargetUrl = escapeAttribute(payload.targetUrl || '#');
 
-            let previewMarkup = '';
-
-            if (payload.template === 'blog') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 flex items-center justify-center text-white font-bold">A</div>
-                            <div>
-                                <div class="text-white font-semibold">Автор блога</div>
-                                <div class="text-xs text-gray-400">Личный опыт • сегодня</div>
-                            </div>
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="inner-panel mb-4 text-sm text-gray-300 leading-7">Почему я решил проверить это сам</div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block secondary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+            prelandPreview.innerHTML = `
+                <div class="w-full text-left">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
+                        <span class="text-xs text-gray-500">${meta.label}</span>
                     </div>
-                `;
-            } else if (payload.template === 'story') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="rounded-[24px] p-5 mb-4 bg-gradient-to-br from-emerald-500/25 to-teal-400/10 border border-emerald-400/20">
-                            <div class="text-xs uppercase tracking-[0.18em] text-emerald-300 font-semibold mb-3">${meta.badge}</div>
-                            <div class="text-2xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                            ${safeSubtitle ? `<div class="text-sm text-emerald-100/80">${safeSubtitle}</div>` : ''}
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">+127%</div><div class="text-[11px] text-gray-400">рост</div></div>
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">24ч</div><div class="text-[11px] text-gray-400">старт</div></div>
-                            <div class="metric-tile text-center"><div class="text-emerald-300 font-bold">TOP</div><div class="text-[11px] text-gray-400">эффект</div></div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block green-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            } else if (payload.template === 'quiz') {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold glow-badge mb-4">${meta.badge}</div>
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-300 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="progress-shell mb-4"><div class="progress-bar" style="width:66%"></div></div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="space-y-2 mb-4">
-                            <div class="inner-panel text-sm text-gray-200">Да, хочу попробовать</div>
-                            <div class="inner-panel text-sm text-gray-200">Сначала хочу посмотреть детали</div>
-                            <div class="inner-panel text-sm text-gray-200">Интересно узнать больше отзывов</div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block gold-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            } else {
-                previewMarkup = `
-                    <div class="w-full text-left">
-                        <div class="flex items-center justify-between gap-3 mb-4">
-                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">${meta.badge}</span>
-                            <span class="text-xs text-gray-500">${meta.label}</span>
-                        </div>
-                        ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
-                        <div class="inline-flex items-center gap-2 text-xs text-blue-300 font-semibold mb-3"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>Срочное обновление</div>
-                        <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
-                        ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="metric-tile text-sm text-gray-300">Что известно</div>
-                            <div class="metric-tile text-sm text-gray-300">Почему обсуждают</div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
-                        <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
-                    </div>
-                `;
-            }
-
-            prelandPreview.innerHTML = previewMarkup;
+                    ${safeImage ? `<img src="${safeImage}" alt="preview" class="w-full h-40 object-cover rounded-[18px] mb-4" />` : ''}
+                    <div class="text-xl font-extrabold text-white leading-tight mb-2">${safeTitle}</div>
+                    ${safeSubtitle ? `<div class="text-sm text-gray-400 mb-4">${safeSubtitle}</div>` : ''}
+                    <div class="text-sm text-gray-300 leading-7">${safeContent}</div>
+                    <a href="${safeTargetUrl}" target="_blank" class="mt-5 inline-block primary-btn px-5 py-3 rounded-2xl font-bold no-underline text-white">${safeButtonText}</a>
+                </div>
+            `;
         }
 
         function collectPrelandPayload() {
@@ -3874,22 +3207,17 @@ ${paragraphs}
                 return;
             }
 
-            uploadBtn.disabled = true;
-            uploadBtn.classList.add('btn-disabled');
-            uploadBtn.textContent = 'Списание 5 кредитов...';
-
             const spend = await spendCredits('video_unique', 5);
             if (!spend.ok) {
                 statusMessage.textContent = spend.message;
-                uploadBtn.disabled = false;
-                uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
                 hapticError();
                 return;
             }
 
             startFakeVideoProgress();
 
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('btn-disabled');
             uploadBtn.textContent = 'Загрузка...';
             statusMessage.textContent = 'Загружаем видео...';
             resultBox.classList.add('hidden');
@@ -3947,7 +3275,7 @@ ${paragraphs}
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.classList.remove('btn-disabled');
-                uploadBtn.textContent = 'Уникализировать видео • 5 кредитов';
+                uploadBtn.textContent = 'Уникализировать';
 
                 setTimeout(() => {
                     removeVideoProgressUI();
@@ -3966,27 +3294,11 @@ ${paragraphs}
             }
 
             generatedLinkBox.classList.remove('hidden');
-            generatedLink.textContent = 'Списание 2 кредитов...';
+            generatedLink.textContent = 'Сокращаем...';
             generatedLink.removeAttribute('href');
             copyStatus.textContent = '';
             openLinkBtn.classList.add('hidden');
             openLinkBtn.href = '#';
-            generateLinkBtn.disabled = true;
-            generateLinkBtn.classList.add('btn-disabled');
-            generateLinkBtn.textContent = 'Списание 2 кредитов...';
-
-            const spend = await spendCredits('smart_link_generate', 2);
-            if (!spend.ok) {
-                generatedLink.textContent = spend.message || 'Недостаточно кредитов';
-                generateLinkBtn.disabled = false;
-                generateLinkBtn.classList.remove('btn-disabled');
-                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
-                hapticError();
-                return;
-            }
-
-            generatedLink.textContent = 'Сокращаем...';
-            generateLinkBtn.textContent = 'Создаём ссылку...';
 
             try {
                 const data = await createSmartLinkRequest(url);
@@ -4002,7 +3314,6 @@ ${paragraphs}
                     await registerTelegramUser();
                     await loadTransactions();
                     await loadSmartLinks();
-                    tg?.showAlert?.('Ссылка создана. Списано 2 кредита.');
                 } else {
                     generatedLink.textContent = data.message || 'Ошибка создания ссылки';
                     generatedLink.removeAttribute('href');
@@ -4013,10 +3324,6 @@ ${paragraphs}
                 generatedLink.textContent = 'Ошибка соединения';
                 hapticError();
                 console.error(error);
-            } finally {
-                generateLinkBtn.disabled = false;
-                generateLinkBtn.classList.remove('btn-disabled');
-                generateLinkBtn.textContent = 'Сгенерировать смарт-линк • 2 кредита';
             }
         });
 
@@ -4133,8 +3440,6 @@ ${paragraphs}
 
         renderSpyTrends();
         renderVideoHistory();
-        bindPrelandTemplatePicker();
-        applyPrelandTemplateSelection(prelandTemplate?.value || 'news');
         renderPrelandHistory();
         loadSmartLinks();
         registerTelegramUser();
