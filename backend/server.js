@@ -210,11 +210,16 @@ app.post('/register', async (req, res) => {
     let dbUser;
 
     if (existing.rows.length === 0) {
-      const inserted = await pool.query(
-        `insert into users (telegram_id, username, first_name)
-         values ($1, $2, $3) returning *`,
-        [user.id, user.username || null, user.first_name || null]
-      );
+     const inserted = await pool.query(
+  `insert into users (telegram_id, username, first_name, photo_url)
+   values ($1, $2, $3, $4) returning *`,
+  [
+    user.id,
+    user.username || null,
+    user.first_name || null,
+    user.photo_url || null
+  ]
+);
       dbUser = inserted.rows[0];
     } else {
       dbUser = existing.rows[0];
