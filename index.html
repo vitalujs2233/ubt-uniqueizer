@@ -2038,10 +2038,8 @@ body::after {
                 formData.append('text', text);
 
                 const files = Array.from(fileEl.files || []).slice(0, 2);
-                const files = Array.from(fileEl.files || []).slice(0, 1);
-                if (files[0]) {
-                    formData.append('image', files[0]);
-                }
+                const firstFile = files[0];
+                if (firstFile) formData.append('image', firstFile);
 
                 const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
                     method: 'POST',
