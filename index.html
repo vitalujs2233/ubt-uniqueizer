@@ -1454,24 +1454,6 @@ body::after {
             </div>
         </div>
 
-
-        <div id="dvizh-section" class="hidden fade-up">
-            <div class="px-1 pt-1">
-                <div class="brand-title">🔥 Движ</div>
-
-                <button onclick="showBottomPage('home')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
-                    ← Назад
-                </button>
-
-                <div id="feed" class="space-y-3"></div>
-            </div>
-
-            <button id="openCreatePost"
-                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl z-30">
-                +
-            </button>
-        </div>
-
         <div id="history-screen" class="hidden">
             <div class="flex items-center justify-between mb-4 gap-3">
                 <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
@@ -1507,6 +1489,32 @@ body::after {
                 </a>
             </div>
         </div>
+
+        <div id="dvizh-section" class="page-wrap hidden fade-up">
+
+            <div class="px-4 pt-4">
+
+                <div class="brand-title">🔥 Движ</div>
+
+                <!-- Кнопка назад -->
+                <button onclick="showSection('home-section')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
+                    ← Назад
+                </button>
+
+                <!-- Лента -->
+                <div id="feed" class="space-y-3">
+                    <!-- сюда будут подгружаться посты -->
+                </div>
+
+            </div>
+
+            <!-- FAB кнопка -->
+            <button id="openCreatePost"
+                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl">
+                +
+            </button>
+
+        </div>
     </div>
 
     <div class="bottom-nav fixed left-0 right-0 bottom-0 px-4 py-3">
@@ -1521,11 +1529,12 @@ body::after {
                 <span class="font-medium">История</span>
             </button>
 
-            <button id="navDvizhBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('dvizh')">
-                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🔥</div>
-                <span class="font-medium">Движ</span>
-            </button>
-
+            <div class="bottom-nav-btn flex flex-col items-center text-gray-400" onclick="showSection('dvizh-section')">
+                <div class="nav-icon-wrap p-2 rounded-xl">
+                    🔥
+                </div>
+                <div class="text-xs mt-1">Движ</div>
+            </div>
 
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
@@ -1560,24 +1569,6 @@ body::after {
             </div>
 
             <p id="topupStatus" class="mt-4 text-sm text-gray-300"></p>
-        </div>
-    </div>
-
-    <div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
-        <div class="w-full max-w-md p-4 rounded-t-3xl card">
-            <div class="text-lg font-bold mb-3">Создать пост</div>
-
-            <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-
-            <input type="file" id="postImage" class="mb-3 block w-full text-sm text-gray-300" accept="image/*" />
-
-            <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
-                Опубликовать • 5 кредитов
-            </button>
-
-            <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
-                Отмена
-            </button>
         </div>
     </div>
 
@@ -1701,15 +1692,13 @@ body::after {
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
-            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
-                if (!btn) return;
+            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1718,15 +1707,6 @@ body::after {
                 homeScreen.classList.remove('hidden');
                 navHomeBtn.classList.add('active');
                 navHomeBtn.classList.remove('text-white/70');
-                showSection('main');
-            }
-
-            if (page === 'dvizh') {
-                homeScreen.classList.remove('hidden');
-                navDvizhBtn.classList.add('active');
-                navDvizhBtn.classList.remove('text-white/70');
-                showSection('dvizh');
-                renderTestPost();
             }
 
             if (page === 'history') {
@@ -1745,14 +1725,87 @@ body::after {
 
         function showSection(section) {
             const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section', 'dvizh-section'];
-            sections.forEach((s) => document.getElementById(s).classList.add('hidden'));
-            document.getElementById(section === 'main' ? 'main-menu' : section + '-section').classList.remove('hidden');
+            sections.forEach((s) => {
+                const el = document.getElementById(s);
+                if (el) el.classList.add('hidden');
+            });
+
+            let targetId = 'main-menu';
+
+            if (section === 'main' || section === 'home-section') {
+                targetId = 'main-menu';
+            } else if (section && section.endsWith('-section')) {
+                targetId = section;
+            } else {
+                targetId = section + '-section';
+            }
+
+            const target = document.getElementById(targetId);
+            if (target) target.classList.remove('hidden');
 
             if (section === 'link') {
                 closeSmartStatsView();
                 loadSmartLinks();
             }
         }
+
+
+
+        // открыть модалку
+        document.getElementById('openCreatePost').addEventListener('click', () => {
+            document.getElementById('createPostModal').classList.remove('hidden');
+            document.getElementById('createPostModal').classList.add('flex');
+        });
+
+        // закрыть модалку
+        function closePostModal() {
+            const modal = document.getElementById('createPostModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // тестовая отправка (пока без backend)
+        document.getElementById('submitPostBtn').addEventListener('click', () => {
+            const text = document.getElementById('postText').value.trim();
+
+            if (!text) {
+                Telegram.WebApp.showAlert('Напиши текст');
+                return;
+            }
+
+            Telegram.WebApp.showAlert('Пост отправлен (пока без backend)');
+            closePostModal();
+        });
+
+
+
+        function renderTestPost() {
+            const feed = document.getElementById('feed');
+
+            feed.innerHTML = `
+                <div class="card">
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
+                        <div>
+                            <div class="text-sm font-bold">User</div>
+                            <div class="text-xs text-gray-400">сейчас</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm mb-3">
+                        Первый пост в Движе 🔥
+                    </div>
+
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <div>❤️ 0</div>
+                        <div>👁 1</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // при открытии
+        document.getElementById('dvizh-section').addEventListener('click', renderTestPost);
 
         function openTopupModal() {
             hapticMedium();
@@ -3025,6 +3078,30 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+
+<div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
+
+    <div class="w-full max-w-md p-4 rounded-t-3xl card">
+
+        <div class="text-lg font-bold mb-3">Создать пост</div>
+
+        <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
+
+        <input type="file" id="postImage" class="mb-3" accept="image/*" />
+
+        <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
+            Опубликовать • 5 кредитов
+        </button>
+
+        <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
+            Отмена
+        </button>
+
+    </div>
+
+</div>
+
 </body>
 </html>`;
         }
@@ -3382,68 +3459,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 hapticLight();
             });
         }
-
-        const openCreatePostBtn = document.getElementById('openCreatePost');
-        const createPostModal = document.getElementById('createPostModal');
-        const submitPostBtn = document.getElementById('submitPostBtn');
-
-        openCreatePostBtn?.addEventListener('click', () => {
-            createPostModal?.classList.remove('hidden');
-            createPostModal?.classList.add('flex');
-        });
-
-        function closePostModal() {
-            const modal = document.getElementById('createPostModal');
-            if (!modal) return;
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        submitPostBtn?.addEventListener('click', () => {
-            const postTextEl = document.getElementById('postText');
-            const text = postTextEl ? postTextEl.value.trim() : '';
-
-            if (!text) {
-                Telegram?.WebApp?.showAlert?.('Напиши текст');
-                hapticError?.();
-                return;
-            }
-
-            Telegram?.WebApp?.showAlert?.('Пост отправлен (пока без backend)');
-            if (postTextEl) postTextEl.value = '';
-            const postImageEl = document.getElementById('postImage');
-            if (postImageEl) postImageEl.value = '';
-            closePostModal();
-            hapticSuccess?.();
-        });
-
-        function renderTestPost() {
-            const feed = document.getElementById('feed');
-            if (!feed) return;
-
-            feed.innerHTML = `
-                <div class="card">
-                    <div class="flex items-center mb-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
-                        <div>
-                            <div class="text-sm font-bold">User</div>
-                            <div class="text-xs text-gray-400">сейчас</div>
-                        </div>
-                    </div>
-
-                    <div class="text-sm mb-3">
-                        Первый пост в Движе 🔥
-                    </div>
-
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <div>❤️ 0</div>
-                        <div>👁 1</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        window.closePostModal = closePostModal;
 
         renderSpyTrends();
         renderVideoHistory();
