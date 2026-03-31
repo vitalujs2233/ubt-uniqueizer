@@ -1091,6 +1091,41 @@ body::after {
     font-size: 14px !important;
 }
 
+
+        .dvizh-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dvizh-post-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dvizh-post-image,
+        .dvizh-preview-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .dvizh-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .dvizh-textarea {
+            min-height: 140px;
+            resize: none;
+        }
+
 </style>
 </head>
 <body class="p-4">
@@ -1465,6 +1500,33 @@ body::after {
             <div id="historyList" class="space-y-3"></div>
         </div>
 
+        <div id="dvizh-screen" class="hidden">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <h2 class="section-title text-xl font-extrabold">⚡ Движ</h2>
+                    <div class="text-sm text-gray-400 mt-1">Лента постов сообщества</div>
+                </div>
+                <button id="refreshDvizhBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
+                    Обновить
+                </button>
+            </div>
+
+            <div class="glass-box p-5 rounded-[24px] mb-4">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <div class="font-bold">Создай пост</div>
+                        <div class="text-sm text-gray-400">Публикация стоит 5 кредитов и уходит на модерацию</div>
+                    </div>
+
+                    <button id="openCreatePostModalBtn" class="primary-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap text-[15px]">
+                        + Новый пост
+                    </button>
+                </div>
+            </div>
+
+            <div id="dvizhFeed" class="dvizh-feed"></div>
+        </div>
+
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
 
@@ -1503,10 +1565,47 @@ body::after {
                 <span class="font-medium">История</span>
             </button>
 
+            <button id="navDvizhBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('dvizh')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">⚡</div>
+                <span class="font-medium">Движ</span>
+            </button>
+
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
             </button>
+        </div>
+    </div>
+
+    <div id="createPostModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 p-4">
+        <div class="topup-modal-box max-w-lg mx-auto mt-16 p-5 border border-white/10 shadow-2xl rounded-[28px]">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <div class="text-[22px] font-extrabold">⚡ Новый пост</div>
+                    <div class="text-sm text-gray-400 mt-1">До 2 фото и 1000 символов</div>
+                </div>
+                <button id="closeCreatePostModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
+            </div>
+
+            <div class="space-y-4">
+                <textarea id="dvizhPostText" class="neo-input dvizh-textarea" maxlength="1000" placeholder="Напиши, что у тебя нового..."></textarea>
+
+                <input id="dvizhPostImages" type="file" accept="image/png,image/jpeg,image/webp" multiple class="neo-input" />
+
+                <div id="dvizhImagesPreview" class="dvizh-preview-grid"></div>
+
+                <div class="inner-panel">
+                    <div class="flex items-center justify-between text-sm gap-3">
+                        <span class="text-gray-400">Стоимость публикации</span>
+                        <span class="font-bold text-white">5 кредитов</span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Пост сначала отправится на модерацию</div>
+                </div>
+
+                <button id="submitDvizhPostBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
+                    Опубликовать
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1621,6 +1720,16 @@ body::after {
         const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
         const topupStatus = document.getElementById('topupStatus');
         const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+        const refreshDvizhBtn = document.getElementById('refreshDvizhBtn');
+        const dvizhFeed = document.getElementById('dvizhFeed');
+        const navDvizhBtn = document.getElementById('navDvizhBtn');
+        const createPostModal = document.getElementById('createPostModal');
+        const openCreatePostModalBtn = document.getElementById('openCreatePostModalBtn');
+        const closeCreatePostModalBtn = document.getElementById('closeCreatePostModalBtn');
+        const submitDvizhPostBtn = document.getElementById('submitDvizhPostBtn');
+        const dvizhPostText = document.getElementById('dvizhPostText');
+        const dvizhPostImages = document.getElementById('dvizhPostImages');
+        const dvizhImagesPreview = document.getElementById('dvizhImagesPreview');
 
         if (tg) {
             tg.expand();
@@ -1655,17 +1764,21 @@ body::after {
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
+                if (!btn) return;
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1683,11 +1796,268 @@ body::after {
                 loadTransactions();
             }
 
+            if (page === 'dvizh') {
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
+                loadDvizhFeed();
+            }
+
             if (page === 'support') {
                 supportScreen.classList.remove('hidden');
                 navSupportBtn.classList.add('active');
                 navSupportBtn.classList.remove('text-white/70');
             }
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatDvizhDate(value) {
+            try {
+                return new Date(value).toLocaleString('ru-RU');
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function renderDvizhPostCard(post) {
+            const images = Array.isArray(post.imageUrls || post.image_urls)
+                ? (post.imageUrls || post.image_urls)
+                : [];
+
+            const imagesHtml = images.length
+                ? `<div class="dvizh-post-grid">${images.map((url) => `<img src="${escapeHtml(url)}" alt="post image" class="dvizh-post-image" />`).join('')}</div>`
+                : '';
+
+            const authorName = post.author?.name || post.author_name || 'Пользователь';
+            const likesCount = Number(post.likesCount ?? post.likes_count ?? 0);
+            const viewsCount = Number(post.viewsCount ?? post.views_count ?? 0);
+            const liked = Boolean(post.likedByMe ?? post.liked_by_me);
+
+            return `
+                <div class="glass-box p-5 rounded-[24px] fade-up" data-post-id="${post.id}">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="h-12 w-12 rounded-[18px] bg-violet-500/15 flex items-center justify-center text-2xl shrink-0">⚡</div>
+                            <div>
+                                <div class="font-bold">${escapeHtml(authorName)}</div>
+                                <div class="text-xs text-gray-400 mt-1">${formatDvizhDate(post.createdAt || post.created_at)}</div>
+                            </div>
+                        </div>
+                        <div class="premium-pill">Движ</div>
+                    </div>
+
+                    <div class="text-sm text-gray-300 mb-4 leading-relaxed whitespace-pre-wrap">${escapeHtml(post.text || '')}</div>
+                    ${imagesHtml}
+
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <button class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm" onclick="toggleDvizhLike(${Number(post.id)})">
+                                ${liked ? '💜' : '🤍'} ${likesCount}
+                            </button>
+                            <div class="text-sm text-gray-400">👁 ${viewsCount}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadDvizhFeed() {
+            if (!dvizhFeed) return;
+
+            if (!tg || !tg.initData) {
+                dvizhFeed.innerHTML = `
+                    <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                        Открой Mini App через Telegram
+                    </div>
+                `;
+                return;
+            }
+
+            dvizhFeed.innerHTML = `
+                <div class="glass-box p-4 rounded-2xl text-gray-400 text-center">
+                    Загружаем ленту...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/feed`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData })
+                });
+
+                const data = await response.json();
+                const items = Array.isArray(data.items) ? data.items : Array.isArray(data.posts) ? data.posts : [];
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'feed_error');
+                }
+
+                if (!items.length) {
+                    dvizhFeed.innerHTML = `
+                        <div class="glass-box p-5 rounded-2xl text-gray-400 text-center">
+                            Пока постов нет. Будь первым 🚀
+                        </div>
+                    `;
+                    return;
+                }
+
+                dvizhFeed.innerHTML = items.map(renderDvizhPostCard).join('');
+                markVisibleDvizhViews();
+            } catch (error) {
+                console.error('Dvizh feed load failed:', error);
+                dvizhFeed.innerHTML = `
+                    <div class="glass-box p-5 rounded-2xl text-red-400 text-center">
+                        Не удалось загрузить ленту Движа
+                    </div>
+                `;
+            }
+        }
+
+        function openCreatePostModal() {
+            if (!createPostModal) return;
+            hapticMedium();
+            createPostModal.classList.remove('hidden');
+        }
+
+        function closeCreatePostModal() {
+            if (!createPostModal) return;
+            createPostModal.classList.add('hidden');
+        }
+
+        function renderDvizhImagesPreview() {
+            if (!dvizhImagesPreview || !dvizhPostImages) return;
+            const files = Array.from(dvizhPostImages.files || []).slice(0, 2);
+            dvizhImagesPreview.innerHTML = '';
+
+            files.forEach((file) => {
+                const url = URL.createObjectURL(file);
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'dvizh-preview-image';
+                img.onload = () => URL.revokeObjectURL(url);
+                dvizhImagesPreview.appendChild(img);
+            });
+        }
+
+        async function submitDvizhPost() {
+            if (!tg || !tg.initData) {
+                tg?.showAlert?.('Открой Mini App через Telegram');
+                return;
+            }
+
+            const text = (dvizhPostText?.value || '').trim();
+            const files = Array.from(dvizhPostImages?.files || []).slice(0, 2);
+
+            if (!text) {
+                tg?.showAlert?.('Напиши текст поста');
+                hapticError();
+                return;
+            }
+
+            if (files.length > 2) {
+                tg?.showAlert?.('Можно загрузить максимум 2 фото');
+                hapticError();
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('initData', tg.initData);
+            formData.append('text', text);
+            files.forEach((file) => formData.append('images', file));
+
+            if (submitDvizhPostBtn) {
+                submitDvizhPostBtn.disabled = true;
+                submitDvizhPostBtn.classList.add('btn-disabled');
+                submitDvizhPostBtn.textContent = 'Публикуем...';
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'create_post_error');
+                }
+
+                tg?.showAlert?.('Пост отправлен на модерацию');
+                hapticSuccess();
+                if (dvizhPostText) dvizhPostText.value = '';
+                if (dvizhPostImages) dvizhPostImages.value = '';
+                if (dvizhImagesPreview) dvizhImagesPreview.innerHTML = '';
+                closeCreatePostModal();
+                await registerTelegramUser();
+                await loadDvizhFeed();
+            } catch (error) {
+                console.error('Dvizh create post failed:', error);
+                tg?.showAlert?.('Не удалось отправить пост');
+                hapticError();
+            } finally {
+                if (submitDvizhPostBtn) {
+                    submitDvizhPostBtn.disabled = false;
+                    submitDvizhPostBtn.classList.remove('btn-disabled');
+                    submitDvizhPostBtn.textContent = 'Опубликовать';
+                }
+            }
+        }
+
+        async function toggleDvizhLike(postId) {
+            if (!tg || !tg.initData) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/toggle-like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData, postId })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'toggle_like_error');
+                }
+                hapticLight();
+                await loadDvizhFeed();
+            } catch (error) {
+                console.error('Dvizh like failed:', error);
+                tg?.showAlert?.('Не удалось поставить лайк');
+                hapticError();
+            }
+        }
+
+        const seenDvizhViews = new Set();
+
+        async function addDvizhView(postId) {
+            if (!tg || !tg.initData || seenDvizhViews.has(postId)) return;
+            seenDvizhViews.add(postId);
+
+            try {
+                await fetch(`${API_BASE_URL}/dvizh/add-view`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg.initData, postId })
+                });
+            } catch (error) {
+                console.error('Dvizh view failed:', error);
+            }
+        }
+
+        function markVisibleDvizhViews() {
+            if (!dvizhFeed) return;
+            const cards = dvizhFeed.querySelectorAll('[data-post-id]');
+            cards.forEach((card) => {
+                const postId = Number(card.getAttribute('data-post-id'));
+                if (postId) addDvizhView(postId);
+            });
         }
 
         function showSection(section) {
@@ -2972,84 +3342,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
-
-
-<!-- ===== DVIZH SECTION START ===== -->
-<div id="dvizh-section" class="page-wrap hidden fade-up">
-    <div class="px-4 pt-4">
-        <div class="brand-title">🔥 Движ</div>
-        <button onclick="showSection('home-section')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
-            ← Назад
-        </button>
-        <div id="feed" class="space-y-3"></div>
-    </div>
-    <button id="openCreatePost"
-        class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl">
-        +
-    </button>
-</div>
-
-<div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
-    <div class="w-full max-w-md p-4 rounded-t-3xl card">
-        <div class="text-lg font-bold mb-3">Создать пост</div>
-        <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-        <input type="file" id="postImages" multiple accept="image/*" class="mb-3"/>
-        <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
-            Опубликовать • 5 кредитов
-        </button>
-        <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
-            Отмена
-        </button>
-    </div>
-</div>
-
-<script>
-document.getElementById('openCreatePost')?.addEventListener('click', () => {
-    document.getElementById('createPostModal').classList.remove('hidden');
-    document.getElementById('createPostModal').classList.add('flex');
-});
-
-function closePostModal() {
-    const modal = document.getElementById('createPostModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
-function renderPost(text) {
-    const feed = document.getElementById('feed');
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.innerHTML = `
-        <div class="flex items-center mb-2">
-            <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
-            <div>
-                <div class="text-sm font-bold">User</div>
-                <div class="text-xs text-gray-400">сейчас</div>
-            </div>
-        </div>
-        <div class="text-sm mb-3">${text}</div>
-        <div class="flex justify-between text-xs text-gray-400">
-            <div>❤️ 0</div>
-            <div>💬 0</div>
-            <div>👁 1</div>
-            <div>💰</div>
-        </div>
-    `;
-    feed.prepend(el);
-}
-
-document.getElementById('submitPostBtn')?.addEventListener('click', () => {
-    const text = document.getElementById('postText').value.trim();
-    if (!text) {
-        alert('Напиши текст');
-        return;
-    }
-    renderPost(text);
-    closePostModal();
-});
-</script>
-<!-- ===== DVIZH SECTION END ===== -->
-
 </body>
 </html>`;
         }
@@ -3341,6 +3633,34 @@ document.getElementById('submitPostBtn')?.addEventListener('click', () => {
             refreshHistoryBtn.addEventListener('click', loadTransactions);
         }
 
+        if (refreshDvizhBtn) {
+            refreshDvizhBtn.addEventListener('click', loadDvizhFeed);
+        }
+
+        if (openCreatePostModalBtn) {
+            openCreatePostModalBtn.addEventListener('click', openCreatePostModal);
+        }
+
+        if (closeCreatePostModalBtn) {
+            closeCreatePostModalBtn.addEventListener('click', closeCreatePostModal);
+        }
+
+        if (createPostModal) {
+            createPostModal.addEventListener('click', function (event) {
+                if (event.target === createPostModal) {
+                    closeCreatePostModal();
+                }
+            });
+        }
+
+        if (dvizhPostImages) {
+            dvizhPostImages.addEventListener('change', renderDvizhImagesPreview);
+        }
+
+        if (submitDvizhPostBtn) {
+            submitDvizhPostBtn.addEventListener('click', submitDvizhPost);
+        }
+
         if (refreshLinksBtn) {
             refreshLinksBtn.addEventListener('click', loadSmartLinks);
         }
@@ -3435,84 +3755,6 @@ document.getElementById('submitPostBtn')?.addEventListener('click', () => {
     setTimeout(hideAppLoader, 3200);
 })();
 </script>
-
-
-
-<!-- ===== DVIZH SECTION START ===== -->
-<div id="dvizh-section" class="page-wrap hidden fade-up">
-    <div class="px-4 pt-4">
-        <div class="brand-title">🔥 Движ</div>
-        <button onclick="showSection('home-section')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
-            ← Назад
-        </button>
-        <div id="feed" class="space-y-3"></div>
-    </div>
-    <button id="openCreatePost"
-        class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl">
-        +
-    </button>
-</div>
-
-<div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
-    <div class="w-full max-w-md p-4 rounded-t-3xl card">
-        <div class="text-lg font-bold mb-3">Создать пост</div>
-        <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-        <input type="file" id="postImages" multiple accept="image/*" class="mb-3"/>
-        <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
-            Опубликовать • 5 кредитов
-        </button>
-        <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
-            Отмена
-        </button>
-    </div>
-</div>
-
-<script>
-document.getElementById('openCreatePost')?.addEventListener('click', () => {
-    document.getElementById('createPostModal').classList.remove('hidden');
-    document.getElementById('createPostModal').classList.add('flex');
-});
-
-function closePostModal() {
-    const modal = document.getElementById('createPostModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
-function renderPost(text) {
-    const feed = document.getElementById('feed');
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.innerHTML = `
-        <div class="flex items-center mb-2">
-            <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
-            <div>
-                <div class="text-sm font-bold">User</div>
-                <div class="text-xs text-gray-400">сейчас</div>
-            </div>
-        </div>
-        <div class="text-sm mb-3">${text}</div>
-        <div class="flex justify-between text-xs text-gray-400">
-            <div>❤️ 0</div>
-            <div>💬 0</div>
-            <div>👁 1</div>
-            <div>💰</div>
-        </div>
-    `;
-    feed.prepend(el);
-}
-
-document.getElementById('submitPostBtn')?.addEventListener('click', () => {
-    const text = document.getElementById('postText').value.trim();
-    if (!text) {
-        alert('Напиши текст');
-        return;
-    }
-    renderPost(text);
-    closePostModal();
-});
-</script>
-<!-- ===== DVIZH SECTION END ===== -->
 
 </body>
 </html>
