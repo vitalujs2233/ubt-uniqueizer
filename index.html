@@ -1452,6 +1452,32 @@ body::after {
 
                 <div id="spyList" class="flex flex-col gap-4"></div>
             </div>
+
+            <div id="dvizh-section" class="page-wrap hidden fade-up">
+
+                <div class="px-4 pt-4">
+
+                    <div class="brand-title">🔥 Движ</div>
+
+                    <!-- Кнопка назад -->
+                    <button onclick="showSection('home-section')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
+                        ← Назад
+                    </button>
+
+                    <!-- Лента -->
+                    <div id="feed" class="space-y-3">
+                        <!-- сюда будут подгружаться посты -->
+                    </div>
+
+                </div>
+
+                <!-- FAB кнопка -->
+                <button id="openCreatePost"
+                    class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl">
+                    +
+                </button>
+
+            </div>
         </div>
 
         <div id="history-screen" class="hidden">
@@ -1488,32 +1514,6 @@ body::after {
                     Написать в поддержку
                 </a>
             </div>
-        </div>
-
-        <div id="dvizh-section" class="page-wrap hidden fade-up">
-
-            <div class="px-4 pt-4">
-
-                <div class="brand-title">🔥 Движ</div>
-
-                <!-- Кнопка назад -->
-                <button onclick="showSection('home-section')" class="secondary-btn w-full py-3 rounded-2xl mb-4">
-                    ← Назад
-                </button>
-
-                <!-- Лента -->
-                <div id="feed" class="space-y-3">
-                    <!-- сюда будут подгружаться посты -->
-                </div>
-
-            </div>
-
-            <!-- FAB кнопка -->
-            <button id="openCreatePost"
-                class="fixed bottom-24 right-4 w-14 h-14 rounded-full primary-btn flex items-center justify-center text-2xl">
-                +
-            </button>
-
         </div>
     </div>
 
@@ -1724,17 +1724,41 @@ body::after {
         }
 
         function showSection(section) {
+            const homeScreen = document.getElementById('home-screen');
+            const historyScreen = document.getElementById('history-screen');
+            const supportScreen = document.getElementById('support-screen');
+
+            if (homeScreen && historyScreen && supportScreen) {
+                homeScreen.classList.remove('hidden');
+                historyScreen.classList.add('hidden');
+                supportScreen.classList.add('hidden');
+            }
+
+            const navHomeBtn = document.getElementById('navHomeBtn');
+            const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navSupportBtn = document.getElementById('navSupportBtn');
+
+            [navHomeBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+                if (!btn) return;
+                btn.classList.remove('active');
+                btn.classList.add('text-white/70');
+            });
+
+            if (navHomeBtn) {
+                navHomeBtn.classList.add('active');
+                navHomeBtn.classList.remove('text-white/70');
+            }
+
             const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section', 'dvizh-section'];
             sections.forEach((s) => {
                 const el = document.getElementById(s);
                 if (el) el.classList.add('hidden');
             });
 
-            let targetId = 'main-menu';
-
+            let targetId;
             if (section === 'main' || section === 'home-section') {
                 targetId = 'main-menu';
-            } else if (section && section.endsWith('-section')) {
+            } else if (section.endsWith('-section')) {
                 targetId = section;
             } else {
                 targetId = section + '-section';
@@ -1748,64 +1772,6 @@ body::after {
                 loadSmartLinks();
             }
         }
-
-
-
-        // открыть модалку
-        document.getElementById('openCreatePost').addEventListener('click', () => {
-            document.getElementById('createPostModal').classList.remove('hidden');
-            document.getElementById('createPostModal').classList.add('flex');
-        });
-
-        // закрыть модалку
-        function closePostModal() {
-            const modal = document.getElementById('createPostModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // тестовая отправка (пока без backend)
-        document.getElementById('submitPostBtn').addEventListener('click', () => {
-            const text = document.getElementById('postText').value.trim();
-
-            if (!text) {
-                Telegram.WebApp.showAlert('Напиши текст');
-                return;
-            }
-
-            Telegram.WebApp.showAlert('Пост отправлен (пока без backend)');
-            closePostModal();
-        });
-
-
-
-        function renderTestPost() {
-            const feed = document.getElementById('feed');
-
-            feed.innerHTML = `
-                <div class="card">
-                    <div class="flex items-center mb-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
-                        <div>
-                            <div class="text-sm font-bold">User</div>
-                            <div class="text-xs text-gray-400">сейчас</div>
-                        </div>
-                    </div>
-
-                    <div class="text-sm mb-3">
-                        Первый пост в Движе 🔥
-                    </div>
-
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <div>❤️ 0</div>
-                        <div>👁 1</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // при открытии
-        document.getElementById('dvizh-section').addEventListener('click', renderTestPost);
 
         function openTopupModal() {
             hapticMedium();
@@ -3078,30 +3044,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
-
-
-<div id="createPostModal" class="fixed inset-0 hidden items-end justify-center bg-black/60 z-50">
-
-    <div class="w-full max-w-md p-4 rounded-t-3xl card">
-
-        <div class="text-lg font-bold mb-3">Создать пост</div>
-
-        <textarea id="postText" class="neo-input mb-3" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-
-        <input type="file" id="postImage" class="mb-3" accept="image/*" />
-
-        <button id="submitPostBtn" class="primary-btn w-full py-3 rounded-2xl font-bold">
-            Опубликовать • 5 кредитов
-        </button>
-
-        <button onclick="closePostModal()" class="secondary-btn w-full py-3 rounded-2xl mt-2">
-            Отмена
-        </button>
-
-    </div>
-
-</div>
-
 </body>
 </html>`;
         }
@@ -3459,6 +3401,60 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 hapticLight();
             });
         }
+
+        // открыть модалку
+        document.getElementById('openCreatePost').addEventListener('click', () => {
+            document.getElementById('createPostModal').classList.remove('hidden');
+            document.getElementById('createPostModal').classList.add('flex');
+        });
+
+        // закрыть модалку
+        function closePostModal() {
+            const modal = document.getElementById('createPostModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // тестовая отправка (пока без backend)
+        document.getElementById('submitPostBtn').addEventListener('click', () => {
+            const text = document.getElementById('postText').value.trim();
+
+            if (!text) {
+                Telegram.WebApp.showAlert('Напиши текст');
+                return;
+            }
+
+            Telegram.WebApp.showAlert('Пост отправлен (пока без backend)');
+            closePostModal();
+        });
+
+        function renderTestPost() {
+            const feed = document.getElementById('feed');
+
+            feed.innerHTML = `
+                <div class="card">
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 mr-2"></div>
+                        <div>
+                            <div class="text-sm font-bold">User</div>
+                            <div class="text-xs text-gray-400">сейчас</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm mb-3">
+                        Первый пост в Движе 🔥
+                    </div>
+
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <div>❤️ 0</div>
+                        <div>👁 1</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // при открытии
+        document.getElementById('dvizh-section').addEventListener('click', renderTestPost);
 
         renderSpyTrends();
         renderVideoHistory();
