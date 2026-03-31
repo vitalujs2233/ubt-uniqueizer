@@ -801,7 +801,87 @@ app.post('/dvizh/add-view', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+// ===== ADMIN: получить pending посты =====
+app.post('/dvizh/pending', async (req, res) => {
+  try {
+    const { initData } = req.body || {};
 
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    if (!isAdmin(user)) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const result = await pool.query(`
+      select
+        p.id,
+        p.text,
+        p.image_urls,
+        p.status,
+        p.likes_count,
+        p.views_count,
+        p.created_at,
+        u.telegram_id,
+        u.first_name,
+        u.username,
+        u.photo_url
+      from posts p
+      join users u on u.telegram_id = p.user_id
+      where p.status = 'pending'
+      order by p.created_at desc
+    `);
+
+    res.json({
+      ok: true,
+      items: result.rows
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// ===== ADMIN: approve / reject =====
+app.post('/dvizh/moderate', async (req, res) => {
+  try {
+    const { initData, postId, action } = req.body || {};
+
+    const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    if (!isAdmin(user)) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    if (!postId) {
+      return res.status(400).json({ message: 'postId required' });
+    }
+
+    if (!['approve', 'reject'].includes(action)) {
+      return res.status(400).json({ message: 'Invalid action' });
+    }
+
+    const status = action === 'approve' ? 'approved' : 'rejected';
+
+    const result = await pool.query(
+      `update posts
+       set status = $2
+       where id = $1
+       returning id, status`,
+      [postId, status]
+    );
+
+    res.json({
+      ok: true,
+      post: result.rows[0]
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // =======================
 // DVIZH MODULE END
 // =======================
