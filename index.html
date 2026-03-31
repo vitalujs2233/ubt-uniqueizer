@@ -1703,6 +1703,32 @@ body::after {
             </div>
         </div>
 
+
+        <div id="dvizh-screen" class="hidden">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <h2 class="section-title text-xl font-extrabold">🔥 Движ</h2>
+                    <div class="text-sm text-gray-400 mt-1">Лента постов сообщества</div>
+                </div>
+            </div>
+
+            <div id="feed" class="space-y-3">
+                <div class="glass-box p-5 rounded-[24px]">
+                    <div class="text-base font-bold mb-2">Пока здесь пусто</div>
+                    <div class="text-sm text-gray-400 leading-relaxed">
+                        Здесь появятся посты пользователей. Нажми на кнопку +, чтобы создать первый пост.
+                    </div>
+                </div>
+            </div>
+
+            <button id="openCreatePostBtn"
+                    class="primary-btn fixed right-5 bottom-24 h-14 w-14 rounded-full text-3xl font-bold flex items-center justify-center z-40"
+                    type="button"
+                    aria-label="Создать пост">
+                +
+            </button>
+        </div>
+
         <div id="history-screen" class="hidden">
             <div class="flex items-center justify-between mb-4 gap-3">
                 <h2 class="section-title text-xl font-extrabold">📜 История операций</h2>
@@ -1712,61 +1738,6 @@ body::after {
             </div>
 
             <div id="historyList" class="space-y-3"></div>
-        </div>
-
-        <div id="dvizh-screen" class="hidden">
-            <div class="px-4 pt-4 pb-28 max-w-xl mx-auto">
-                <div class="brand-title">🔥 Движ</div>
-
-                <div class="card rounded-[24px] p-5 mb-4">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <div class="text-[20px] font-extrabold">Лента Движа</div>
-                            <div class="text-sm text-gray-400 mt-1">Каркас раздела для будущих постов, лайков и донатов.</div>
-                        </div>
-                        <div class="premium-pill">beta</div>
-                    </div>
-                </div>
-
-                <div id="feed" class="space-y-3">
-                    <div class="card rounded-[24px] p-5">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl glow-badge">🔥</div>
-                            <div>
-                                <div class="font-bold text-base">Движ скоро будет здесь</div>
-                                <div class="text-xs text-gray-400">Пока это каркас ленты</div>
-                            </div>
-                        </div>
-                        <div class="text-sm text-gray-300 leading-6">
-                            Здесь будут карточки постов пользователей. Следующим шагом можно подключить создание постов, публикацию за кредиты и логику модерации.
-                        </div>
-                    </div>
-                </div>
-
-                <button id="openDvizhCreateBtn" class="primary-btn fixed right-5 bottom-28 h-14 w-14 rounded-full flex items-center justify-center text-3xl font-semibold z-40 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
-                    +
-                </button>
-            </div>
-        </div>
-
-        <div id="createPostModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
-        <div id="createPostModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
-            <div class="glass-box topup-modal-box rounded-[28px] p-5 max-w-xl mx-auto">
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <div>
-                        <div class="text-[22px] font-extrabold">Создать пост</div>
-                        <div class="text-sm text-gray-400 mt-1">Каркас модалки для раздела Движ</div>
-                    </div>
-                    <button id="closeCreatePostModalBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
-                </div>
-
-                <textarea id="dvizhPostText" class="neo-input min-h-[140px] mb-3" placeholder="Напиши текст поста..."></textarea>
-                <input id="dvizhPostImages" type="file" accept="image/*" multiple class="neo-input mb-3 py-3" />
-
-                <button id="submitDvizhPostBtn" class="primary-btn w-full py-3 rounded-2xl font-semibold text-base">
-                    Опубликовать • 5 кредитов
-                </button>
-            </div>
         </div>
 
         <div id="support-screen" class="hidden">
@@ -1802,19 +1773,48 @@ body::after {
                 <span class="font-medium">Домой</span>
             </button>
 
-            <button id="navDvizhBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('dvizh')">
-                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🔥</div>
-                <span class="font-medium">Движ</span>
-            </button>
-
             <button id="navHistoryBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('history')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">📜</div>
                 <span class="font-medium">История</span>
             </button>
 
+            <button id="navDvizhBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('dvizh')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">🔥</div>
+                <span class="font-medium">Движ</span>
+            </button>
+
             <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="createPostModalBackdrop" class="fixed inset-0 bg-black/70 hidden z-50"></div>
+    <div id="createPostModal" class="fixed left-4 right-4 bottom-24 z-[60] hidden fade-up">
+        <div class="glass-box rounded-[28px] p-5">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div>
+                    <div class="text-[22px] font-extrabold">Создать пост</div>
+                    <div class="text-sm text-gray-400 mt-1">Каркас формы для Движа</div>
+                </div>
+                <button id="closeCreatePostBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm" type="button">Закрыть</button>
+            </div>
+
+            <textarea id="dvizhPostText"
+                      class="neo-input mb-3"
+                      rows="5"
+                      placeholder="Напиши текст поста..."></textarea>
+
+            <input id="dvizhPostImages"
+                   class="neo-input mb-3"
+                   type="file"
+                   accept="image/png,image/jpeg,image/webp"
+                   multiple />
+
+            <button id="submitDvizhPostBtn" class="primary-btn block w-full p-4 rounded-2xl font-bold text-center" type="button">
+                Опубликовать • 5 кредитов
             </button>
         </div>
     </div>
@@ -1930,6 +1930,9 @@ body::after {
         const closeTopupModalBtn = document.getElementById('closeTopupModalBtn');
         const topupStatus = document.getElementById('topupStatus');
         const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+        const openCreatePostBtn = document.getElementById('openCreatePostBtn');
+        const closeCreatePostBtn = document.getElementById('closeCreatePostBtn');
+        const createPostModalBackdrop = document.getElementById('createPostModalBackdrop');
 
         if (tg) {
             tg.expand();
@@ -1961,23 +1964,27 @@ body::after {
             supportBtn.href = `https://t.me/${SUPPORT_USERNAME}`;
         }
 
+        openCreatePostBtn?.addEventListener('click', openCreatePostModal);
+        closeCreatePostBtn?.addEventListener('click', closeCreatePostModal);
+        createPostModalBackdrop?.addEventListener('click', closeCreatePostModal);
+
         function showBottomPage(page) {
             const homeScreen = document.getElementById('home-screen');
-            const dvizhScreen = document.getElementById('dvizh-screen');
             const historyScreen = document.getElementById('history-screen');
+            const dvizhScreen = document.getElementById('dvizh-screen');
             const supportScreen = document.getElementById('support-screen');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
-            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
+            const navDvizhBtn = document.getElementById('navDvizhBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
-            dvizhScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
+            dvizhScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navDvizhBtn, navHistoryBtn, navSupportBtn].forEach((btn) => {
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
                 btn.classList.remove('active');
                 btn.classList.add('text-white/70');
             });
@@ -1988,17 +1995,17 @@ body::after {
                 navHomeBtn.classList.remove('text-white/70');
             }
 
-            if (page === 'dvizh') {
-                dvizhScreen.classList.remove('hidden');
-                navDvizhBtn.classList.add('active');
-                navDvizhBtn.classList.remove('text-white/70');
-            }
-
             if (page === 'history') {
                 historyScreen.classList.remove('hidden');
                 navHistoryBtn.classList.add('active');
                 navHistoryBtn.classList.remove('text-white/70');
                 loadTransactions();
+            }
+
+            if (page === 'dvizh') {
+                dvizhScreen.classList.remove('hidden');
+                navDvizhBtn.classList.add('active');
+                navDvizhBtn.classList.remove('text-white/70');
             }
 
             if (page === 'support') {
@@ -2030,6 +2037,24 @@ body::after {
             topupModal.classList.add('hidden');
             topupModalBackdrop.classList.add('hidden');
             topupStatus.textContent = '';
+        }
+
+
+        function openCreatePostModal() {
+            const backdrop = document.getElementById('createPostModalBackdrop');
+            const modal = document.getElementById('createPostModal');
+            if (!backdrop || !modal) return;
+            hapticLight();
+            backdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+        }
+
+        function closeCreatePostModal() {
+            const backdrop = document.getElementById('createPostModalBackdrop');
+            const modal = document.getElementById('createPostModal');
+            if (!backdrop || !modal) return;
+            backdrop.classList.add('hidden');
+            modal.classList.add('hidden');
         }
 
         async function registerTelegramUser() {
@@ -4114,28 +4139,6 @@ ${paragraphs}
         loadSmartLinks();
         registerTelegramUser();
         setupSupportLink();
-
-        const createPostModalBackdrop = document.getElementById('createPostModalBackdrop');
-        const createPostModal = document.getElementById('createPostModal');
-        const openDvizhCreateBtn = document.getElementById('openDvizhCreateBtn');
-        const closeCreatePostModalBtn = document.getElementById('closeCreatePostModalBtn');
-
-        function openCreatePostModal() {
-            if (!createPostModalBackdrop || !createPostModal) return;
-            createPostModalBackdrop.classList.remove('hidden');
-            createPostModal.classList.remove('hidden');
-        }
-
-        function closeCreatePostModal() {
-            if (!createPostModalBackdrop || !createPostModal) return;
-            createPostModalBackdrop.classList.add('hidden');
-            createPostModal.classList.add('hidden');
-        }
-
-        openDvizhCreateBtn?.addEventListener('click', openCreatePostModal);
-        closeCreatePostModalBtn?.addEventListener('click', closeCreatePostModal);
-        createPostModalBackdrop?.addEventListener('click', closeCreatePostModal);
-
         showBottomPage('home');
     </script>
 
