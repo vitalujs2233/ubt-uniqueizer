@@ -659,6 +659,10 @@ app.post('/dvizh/create-post', upload.single('image'), async (req, res) => {
     const initData = req.body?.initData;
 const text = req.body?.text;
 
+    console.log('INITDATA:', initData);
+console.log('BODY:', req.body);
+console.log('FILE:', !!req.file);
+
     const user = validateTelegramInitData(initData, process.env.BOT_TOKEN);
     if (!user) return res.status(401).json({ message: 'Invalid user' });
 
