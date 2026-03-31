@@ -1716,24 +1716,72 @@ body::after {
 
         <div id="dvizh-screen" class="hidden">
             <div class="glass-box p-5 rounded-[26px] mb-4 fade-up">
-                <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="flex items-center justify-between gap-3 mb-4">
                     <div>
                         <div class="text-[22px] font-extrabold">🔥 Движ</div>
-                        <div class="text-sm text-gray-400 mt-1">Лента комьюнити появится здесь</div>
+                        <div class="text-sm text-gray-400 mt-1">Комьюнити внутри UBT ToolKit</div>
                     </div>
                     <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">BETA</span>
                 </div>
 
-                <div id="feed" class="space-y-3">
-                    <div class="inner-panel rounded-[20px]">
-                        <div class="text-white font-semibold mb-1">Скоро будет движ</div>
-                        <div class="text-sm text-gray-400 leading-relaxed">Здесь появится лента постов, карточки пользователей и интерактив внутри комьюнити.</div>
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="metric-tile text-center rounded-[18px]">
+                        <div class="text-xs text-gray-400 mb-1">Постов</div>
+                        <div id="dvizhPostCount" class="text-lg font-extrabold">0</div>
+                    </div>
+                    <div class="metric-tile text-center rounded-[18px]">
+                        <div class="text-xs text-gray-400 mb-1">Лайков</div>
+                        <div id="dvizhLikeCount" class="text-lg font-extrabold">0</div>
+                    </div>
+                    <div class="metric-tile text-center rounded-[18px]">
+                        <div class="text-xs text-gray-400 mb-1">Просмотров</div>
+                        <div id="dvizhViewCount" class="text-lg font-extrabold">0</div>
                     </div>
                 </div>
 
+                <div id="feed" class="space-y-3"></div>
+
                 <button id="openDvizhCreateBtn" class="primary-btn w-full mt-4 p-4 rounded-2xl font-bold">
-                    Создать пост
+                    Создать пост • 5 кредитов
                 </button>
+            </div>
+        </div>
+
+        <div id="dvizhCreateModal" class="fixed inset-0 hidden z-[120] items-end justify-center bg-black/70 backdrop-blur-sm px-3 pb-3">
+            <div class="glass-box w-full max-w-[640px] rounded-[28px] p-5 fade-up">
+                <div class="flex items-center justify-between gap-3 mb-4">
+                    <div>
+                        <div class="text-[20px] font-extrabold">Создать пост</div>
+                        <div class="text-sm text-gray-400 mt-1">Текст, 1–2 фото и отправка в Движ</div>
+                    </div>
+                    <button id="closeDvizhCreateBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
+                </div>
+
+                <div class="space-y-3">
+                    <textarea id="dvizhPostText" class="neo-input min-h-[120px]" placeholder="Напиши пост для комьюнити..."></textarea>
+
+                    <div class="inner-panel rounded-[18px]">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <div>
+                                <div class="font-semibold">Фото к посту</div>
+                                <div class="text-xs text-gray-400 mt-1">До 2 фото, JPG / PNG / WEBP</div>
+                            </div>
+                            <label for="dvizhPostImages" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm cursor-pointer">Выбрать</label>
+                        </div>
+                        <input id="dvizhPostImages" type="file" accept="image/png,image/jpeg,image/webp" multiple class="hidden" />
+                        <div id="dvizhSelectedFiles" class="text-sm text-gray-400">Фото не выбраны</div>
+                        <div id="dvizhImagePreview" class="grid grid-cols-2 gap-3 mt-3"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="submitDvizhPostBtn" class="primary-btn p-4 rounded-2xl font-bold">Опубликовать • 5 кредитов</button>
+                        <button id="cancelDvizhPostBtn" class="secondary-btn p-4 rounded-2xl font-bold">Отмена</button>
+                    </div>
+
+                    <div class="text-xs text-gray-500 leading-relaxed">
+                        Пока это фронтенд-каркас внутри вкладки Движ. Следующим шагом можно подключить backend, кредиты, модерацию и реальные лайки.
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1968,6 +2016,7 @@ body::after {
                 dvizhScreen.classList.remove('hidden');
                 navDvizhBtn.classList.add('active');
                 navDvizhBtn.classList.remove('text-white/70');
+                renderDvizhFeed();
             }
 
             if (page === 'support') {
@@ -2245,7 +2294,252 @@ body::after {
 
         function filterSpy(niche, button) {
             currentFilter = niche;
-            renderSpyTrends();
+            const DVIZH_STORAGE_KEY = 'ubt_dvizh_posts_v1';
+        const dvizhSeedPosts = [
+            {
+                id: 'seed-1',
+                author: 'Команда UBT',
+                username: 'ubttoolkit',
+                avatar: '',
+                text: 'Добро пожаловать в Движ 🔥 Здесь будут появляться посты комьюнити, апдейты, идеи и активности внутри UBT ToolKit.',
+                images: [
+                    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
+                ],
+                likes: 18,
+                views: 143,
+                comments: 6,
+                created_at: 'сегодня'
+            },
+            {
+                id: 'seed-2',
+                author: 'Арбитражный чат',
+                username: 'community',
+                avatar: '',
+                text: 'Скоро сюда можно будет публиковать свои посты, заливать фото, собирать лайки и донаты. Пока собираем красивый и удобный интерфейс.',
+                images: [
+                    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80'
+                ],
+                likes: 9,
+                views: 96,
+                comments: 2,
+                created_at: '1 час назад'
+            }
+        ];
+
+        function getDvizhPosts() {
+            try {
+                const raw = localStorage.getItem(DVIZH_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return [...parsed, ...dvizhSeedPosts];
+            } catch (e) {
+                return [...dvizhSeedPosts];
+            }
+        }
+
+        function setDvizhLocalPosts(posts) {
+            try {
+                localStorage.setItem(DVIZH_STORAGE_KEY, JSON.stringify(posts));
+            } catch (e) {}
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function sanitizeDvizhText(value) {
+            return String(value || '')
+                .replace(/https?:\/\/\S+/gi, '[ссылка удалена]')
+                .replace(/@\w+/g, '[контакт удалён]')
+                .trim();
+        }
+
+        function getDvizhAuthorName() {
+            if (!appState.user) {
+                return tg?.initDataUnsafe?.user?.first_name || tg?.initDataUnsafe?.user?.username || 'Пользователь';
+            }
+            return appState.user.first_name || appState.user.username || 'Пользователь';
+        }
+
+        function getDvizhAuthorUsername() {
+            if (!appState.user) {
+                return tg?.initDataUnsafe?.user?.username || 'user';
+            }
+            return appState.user.username || 'user';
+        }
+
+        function getDvizhAuthorAvatar() {
+            return appState.user?.photo_url || tg?.initDataUnsafe?.user?.photo_url || '';
+        }
+
+        function renderDvizhCounters(posts) {
+            const counters = posts.reduce((acc, post) => {
+                acc.likes += Number(post.likes || 0);
+                acc.views += Number(post.views || 0);
+                return acc;
+            }, { likes: 0, views: 0 });
+
+            const postCount = document.getElementById('dvizhPostCount');
+            const likeCount = document.getElementById('dvizhLikeCount');
+            const viewCount = document.getElementById('dvizhViewCount');
+            if (postCount) postCount.textContent = String(posts.length);
+            if (likeCount) likeCount.textContent = String(counters.likes);
+            if (viewCount) viewCount.textContent = String(counters.views);
+        }
+
+        function renderDvizhFeed() {
+            const feed = document.getElementById('feed');
+            if (!feed) return;
+            const posts = getDvizhPosts();
+            renderDvizhCounters(posts);
+
+            feed.innerHTML = posts.map((post) => {
+                const images = Array.isArray(post.images) ? post.images.slice(0, 2) : [];
+                const imageGridClass = images.length === 1 ? 'grid-cols-1' : 'grid-cols-2';
+                const imageHtml = images.length ? `
+                    <div class="grid ${imageGridClass} gap-2 mt-3">
+                        ${images.map((img) => `
+                            <div class="overflow-hidden rounded-[18px] border border-white/10 bg-black/20">
+                                <img src="${escapeHtml(img)}" alt="post image" class="w-full h-44 object-cover" />
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '';
+                const avatarHtml = post.avatar
+                    ? `<img src="${escapeHtml(post.avatar)}" alt="avatar" class="w-11 h-11 rounded-full object-cover border border-white/10" />`
+                    : `<div class="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center font-bold text-sm">${escapeHtml((post.author || 'U').charAt(0).toUpperCase())}</div>`;
+
+                return `
+                    <div class="glass-box rounded-[24px] p-4 fade-up">
+                        <div class="flex items-start gap-3">
+                            ${avatarHtml}
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <div class="font-bold leading-tight">${escapeHtml(post.author)}</div>
+                                        <div class="text-xs text-gray-400 mt-1">@${escapeHtml(post.username)} • ${escapeHtml(post.created_at || 'сейчас')}</div>
+                                    </div>
+                                    <span class="text-[11px] px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">Пост</span>
+                                </div>
+                                <div class="text-sm text-gray-200 leading-relaxed mt-3 whitespace-pre-line">${escapeHtml(post.text)}</div>
+                                ${imageHtml}
+                                <div class="grid grid-cols-4 gap-2 mt-4 text-sm">
+                                    <button type="button" class="secondary-btn rounded-2xl py-2 px-3 font-semibold">❤️ ${post.likes || 0}</button>
+                                    <button type="button" class="secondary-btn rounded-2xl py-2 px-3 font-semibold">💬 ${post.comments || 0}</button>
+                                    <button type="button" class="secondary-btn rounded-2xl py-2 px-3 font-semibold">👁 ${post.views || 0}</button>
+                                    <button type="button" class="gold-btn rounded-2xl py-2 px-3 font-semibold">💰 Донат</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openDvizhCreateModal() {
+            const modal = document.getElementById('dvizhCreateModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            hapticLight();
+        }
+
+        function closeDvizhCreateModal() {
+            const modal = document.getElementById('dvizhCreateModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            hapticLight();
+        }
+
+        function updateDvizhSelectedFilesPreview() {
+            const input = document.getElementById('dvizhPostImages');
+            const info = document.getElementById('dvizhSelectedFiles');
+            const preview = document.getElementById('dvizhImagePreview');
+            if (!input || !info || !preview) return;
+            const files = Array.from(input.files || []).slice(0, 2);
+            if (!files.length) {
+                info.textContent = 'Фото не выбраны';
+                preview.innerHTML = '';
+                return;
+            }
+            info.textContent = `Выбрано фото: ${files.length}`;
+            preview.innerHTML = '';
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    preview.innerHTML += `
+                        <div class="overflow-hidden rounded-[18px] border border-white/10 bg-black/20">
+                            <img src="${reader.result}" alt="preview" class="w-full h-32 object-cover" />
+                            <div class="text-xs text-gray-400 px-3 py-2 truncate">${escapeHtml(file.name)}</div>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function createDvizhLocalPost() {
+            const textArea = document.getElementById('dvizhPostText');
+            const imagesInput = document.getElementById('dvizhPostImages');
+            if (!textArea || !imagesInput) return;
+
+            const cleanText = sanitizeDvizhText(textArea.value);
+            if (cleanText.length < 4) {
+                tg?.showAlert?.('Напиши текст подлиннее для поста');
+                hapticError();
+                return;
+            }
+
+            const files = Array.from(imagesInput.files || []).slice(0, 2);
+            const objectUrls = files.map((file) => URL.createObjectURL(file));
+            const localPosts = (() => {
+                try {
+                    return JSON.parse(localStorage.getItem(DVIZH_STORAGE_KEY) || '[]');
+                } catch (e) {
+                    return [];
+                }
+            })();
+
+            localPosts.unshift({
+                id: `local-${Date.now()}`,
+                author: getDvizhAuthorName(),
+                username: getDvizhAuthorUsername(),
+                avatar: getDvizhAuthorAvatar(),
+                text: cleanText,
+                images: objectUrls,
+                likes: 0,
+                views: 0,
+                comments: 0,
+                created_at: 'только что'
+            });
+
+            setDvizhLocalPosts(localPosts);
+            textArea.value = '';
+            imagesInput.value = '';
+            updateDvizhSelectedFilesPreview();
+            renderDvizhFeed();
+            closeDvizhCreateModal();
+            tg?.showAlert?.('Каркас поста добавлен в Движ');
+            hapticSuccess();
+        }
+
+        document.getElementById('openDvizhCreateBtn')?.addEventListener('click', openDvizhCreateModal);
+        document.getElementById('closeDvizhCreateBtn')?.addEventListener('click', closeDvizhCreateModal);
+        document.getElementById('cancelDvizhPostBtn')?.addEventListener('click', closeDvizhCreateModal);
+        document.getElementById('dvizhCreateModal')?.addEventListener('click', function (e) {
+            if (e.target === this) closeDvizhCreateModal();
+        });
+        document.getElementById('dvizhPostImages')?.addEventListener('change', updateDvizhSelectedFilesPreview);
+        document.getElementById('submitDvizhPostBtn')?.addEventListener('click', createDvizhLocalPost);
+
+        renderDvizhFeed();
+        renderSpyTrends();
 
             document.querySelectorAll('.spy-filter').forEach(btn => {
                 btn.classList.remove('bg-blue-600');
