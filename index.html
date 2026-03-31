@@ -1799,9 +1799,12 @@ body::after {
 
 
 
-        const DVIZH_STORAGE_KEY = 'ubt_dvizh_posts_v2';
+
         const DVIZH_POST_COST = 5;
         let dvizhFilter = 'all';
+        let dvizhFeedCache = [];
+        let dvizhViewObserver = null;
+        const dvizhViewedPostIds = new Set();
 
         function safeAlert(message) {
             if (tg?.showAlert) {
@@ -1824,39 +1827,6 @@ body::after {
                 username,
                 photoUrl
             };
-        }
-
-        function getDvizhPosts() {
-            try {
-                const raw = localStorage.getItem(DVIZH_STORAGE_KEY);
-                const parsed = raw ? JSON.parse(raw) : [];
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                console.error('DVIZH parse error', error);
-                return [];
-            }
-        }
-
-        function saveDvizhPosts(posts) {
-            localStorage.setItem(DVIZH_STORAGE_KEY, JSON.stringify(posts));
-        }
-
-        function seedDvizhPosts() {
-            const current = getDvizhPosts();
-            if (current.length) return;
-            const author = getTelegramAuthor();
-            saveDvizhPosts([
-                {
-                    id: Date.now(),
-                    text: 'Первый пост в Движе 🔥 Теперь здесь видно имя автора и фото из Telegram.',
-                    imageUrls: [],
-                    likesCount: 0,
-                    viewsCount: 1,
-                    createdAt: new Date().toISOString(),
-                    likedBy: [],
-                    author
-                }
-            ]);
         }
 
         function renderDvizhAuthor() {
@@ -1883,22 +1853,26 @@ body::after {
 
         function formatDvizhDate(value) {
             try {
-                return new Date(value).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                return new Date(value).toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
             } catch (e) {
                 return 'сейчас';
             }
         }
 
         function getFilteredDvizhPosts() {
-            const posts = getDvizhPosts();
             const currentUserId = String(getTelegramAuthor().telegramId || '');
             if (dvizhFilter === 'mine') {
-                return posts.filter((post) => String(post.author?.telegramId || '') === currentUserId);
+                return dvizhFeedCache.filter((post) => String(post.author?.telegramId || '') === currentUserId);
             }
             if (dvizhFilter === 'popular') {
-                return [...posts].sort((a, b) => (b.likesCount + b.viewsCount) - (a.likesCount + a.viewsCount));
+                return [...dvizhFeedCache].sort((a, b) => (Number(b.likesCount || 0) + Number(b.viewsCount || 0)) - (Number(a.likesCount || 0) + Number(a.viewsCount || 0)));
             }
-            return posts;
+            return dvizhFeedCache;
         }
 
         function renderDvizhStats(posts) {
@@ -1914,9 +1888,8 @@ body::after {
         function renderDvizhFeed() {
             const feed = document.getElementById('dvizhFeed');
             if (!feed) return;
-            const allPosts = getDvizhPosts();
             const posts = getFilteredDvizhPosts();
-            renderDvizhStats(allPosts);
+            renderDvizhStats(dvizhFeedCache);
 
             if (!posts.length) {
                 feed.innerHTML = `
@@ -1927,12 +1900,11 @@ body::after {
                 return;
             }
 
-            const currentUserId = String(getTelegramAuthor().telegramId || '');
             feed.innerHTML = posts.map((post) => {
                 const authorName = escapeHtml(post.author?.name || 'Пользователь');
                 const authorUsername = post.author?.username ? '@' + escapeHtml(post.author.username) : 'Telegram user';
                 const authorPhoto = post.author?.photoUrl || '';
-                const liked = Array.isArray(post.likedBy) && post.likedBy.includes(currentUserId);
+                const liked = !!post.likedByMe;
                 const previewImages = (post.imageUrls || []).slice(0, 2).map((url) => `
                     <img src="${escapeAttribute(url)}" class="w-full h-40 object-cover rounded-2xl border border-white/10" alt="post image">
                 `).join('');
@@ -1949,7 +1921,7 @@ body::after {
                                     <div class="text-xs text-gray-400 truncate">${authorUsername} • ${formatDvizhDate(post.createdAt)}</div>
                                 </div>
                             </div>
-                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">post</span>
+                            <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold shrink-0">${escapeHtml(post.status || 'approved')}</span>
                         </div>
 
                         <div class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap mb-4">${escapeHtml(post.text || '')}</div>
@@ -1957,43 +1929,17 @@ body::after {
 
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-2">
-                                <button class="${liked ? 'primary-btn' : 'secondary-btn'} px-4 py-2 rounded-2xl text-sm font-semibold" onclick="toggleDvizhLike(${post.id})">❤️ ${post.likesCount || 0}</button>
-                                <div class="text-sm text-gray-400">👁 ${post.viewsCount || 0}</div>
+                                <button class="${liked ? 'primary-btn' : 'secondary-btn'} px-4 py-2 rounded-2xl text-sm font-semibold" onclick="toggleDvizhLike('${escapeAttribute(String(post.id))}')">❤️ ${Number(post.likesCount || 0)}</button>
+                                <div class="text-sm text-gray-400">👁 ${Number(post.viewsCount || 0)}</div>
                             </div>
                             <button class="green-btn px-4 py-2 rounded-2xl text-sm font-semibold" onclick="safeAlert('Донаты подключим на следующем этапе')">Поддержать</button>
                         </div>
                     </div>
                 `;
             }).join('');
-        }
 
-        function loadDvizhFeed() {
-            seedDvizhPosts();
-            renderDvizhFeed();
+            setupDvizhViewTracking();
         }
-
-        window.toggleDvizhLike = function (postId) {
-            const currentUserId = String(getTelegramAuthor().telegramId || 'guest');
-            const posts = getDvizhPosts();
-            const updated = posts.map((post) => {
-                if (post.id !== postId) return post;
-                const likedBy = Array.isArray(post.likedBy) ? [...post.likedBy] : [];
-                const index = likedBy.indexOf(currentUserId);
-                if (index >= 0) {
-                    likedBy.splice(index, 1);
-                } else {
-                    likedBy.push(currentUserId);
-                }
-                return {
-                    ...post,
-                    likedBy,
-                    likesCount: likedBy.length
-                };
-            });
-            saveDvizhPosts(updated);
-            hapticLight();
-            renderDvizhFeed();
-        };
 
         function handleDvizhImagePreview(files) {
             const preview = document.getElementById('dvizhImagePreview');
@@ -2022,10 +1968,51 @@ body::after {
             modal.classList.remove('flex');
         }
 
-        function submitDvizhPost() {
+        async function loadDvizhFeed() {
+            const feed = document.getElementById('dvizhFeed');
+            if (feed) {
+                feed.innerHTML = `
+                    <div class="glass-box p-5 rounded-[24px] text-center text-gray-400">
+                        Загружаем ленту...
+                    </div>
+                `;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/feed`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || ''
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.message || 'Не удалось загрузить ленту');
+                }
+
+                dvizhFeedCache = Array.isArray(data.items) ? data.items : [];
+                renderDvizhFeed();
+            } catch (error) {
+                console.error('DVIZH feed error:', error);
+                dvizhFeedCache = [];
+                if (feed) {
+                    feed.innerHTML = `
+                        <div class="glass-box p-5 rounded-[24px] text-center text-red-400">
+                            ${escapeHtml(error.message || 'Ошибка загрузки ленты')}
+                        </div>
+                    `;
+                }
+                renderDvizhStats([]);
+            }
+        }
+
+        async function submitDvizhPost() {
             const textEl = document.getElementById('dvizhPostText');
             const fileEl = document.getElementById('dvizhPostImages');
             if (!textEl || !fileEl) return;
+
             const text = textEl.value.trim();
             if (!text) {
                 hapticError();
@@ -2033,30 +2020,149 @@ body::after {
                 return;
             }
 
-            const files = Array.from(fileEl.files || []).slice(0, 2);
-            const imageUrls = files.map((file) => URL.createObjectURL(file));
-            const posts = getDvizhPosts();
-            const newPost = {
-                id: Date.now(),
-                text,
-                imageUrls,
-                likesCount: 0,
-                viewsCount: 1,
-                createdAt: new Date().toISOString(),
-                likedBy: [],
-                author: getTelegramAuthor()
-            };
+            if (!tg?.initData) {
+                hapticError();
+                safeAlert('Открой Mini App через Telegram');
+                return;
+            }
 
-            posts.unshift(newPost);
-            saveDvizhPosts(posts);
-            textEl.value = '';
-            fileEl.value = '';
-            handleDvizhImagePreview([]);
-            closeCreatePostModal();
-            hapticSuccess();
-            safeAlert('Пост опубликован локально. Backend подключим следующим этапом.');
-            renderDvizhFeed();
+            const submitBtn = document.getElementById('submitDvizhPostBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-70', 'pointer-events-none');
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('initData', tg.initData);
+                formData.append('text', text);
+
+                const files = Array.from(fileEl.files || []).slice(0, 2);
+                files.forEach((file) => formData.append('images', file));
+
+                const response = await fetch(`${API_BASE_URL}/dvizh/create-post`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.message || 'Не удалось создать пост');
+                }
+
+                if (data.user) {
+                    appState.user = {
+                        ...appState.user,
+                        ...data.user
+                    };
+                    updateUserBar();
+                }
+
+                textEl.value = '';
+                fileEl.value = '';
+                handleDvizhImagePreview([]);
+                closeCreatePostModal();
+                hapticSuccess();
+                safeAlert(data.message || `Пост отправлен на модерацию. Списано ${DVIZH_POST_COST} кредитов.`);
+                await loadDvizhFeed();
+            } catch (error) {
+                console.error('DVIZH create post error:', error);
+                hapticError();
+                safeAlert(error.message || 'Ошибка публикации');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-70', 'pointer-events-none');
+                }
+            }
         }
+
+        async function addDvizhView(postId) {
+            if (!tg?.initData || dvizhViewedPostIds.has(String(postId))) return;
+            dvizhViewedPostIds.add(String(postId));
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/add-view`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        postId
+                    })
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.ok) return;
+
+                dvizhFeedCache = dvizhFeedCache.map((post) => (
+                    String(post.id) === String(postId)
+                        ? { ...post, viewsCount: Number(data.viewsCount || post.viewsCount || 0) }
+                        : post
+                ));
+                renderDvizhFeed();
+            } catch (error) {
+                console.error('DVIZH add view error:', error);
+            }
+        }
+
+        function setupDvizhViewTracking() {
+            if (dvizhViewObserver) {
+                dvizhViewObserver.disconnect();
+            }
+
+            const cards = document.querySelectorAll('#dvizhFeed [data-post-id]');
+            if (!cards.length) return;
+
+            dvizhViewObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const postId = entry.target.getAttribute('data-post-id');
+                    if (postId) addDvizhView(postId);
+                    dvizhViewObserver.unobserve(entry.target);
+                });
+            }, { threshold: 0.6 });
+
+            cards.forEach((card) => dvizhViewObserver.observe(card));
+        }
+
+        window.toggleDvizhLike = async function (postId) {
+            if (!tg?.initData) {
+                safeAlert('Открой Mini App через Telegram');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/dvizh/toggle-like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg.initData,
+                        postId
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.message || 'Не удалось поставить лайк');
+                }
+
+                dvizhFeedCache = dvizhFeedCache.map((post) => (
+                    String(post.id) === String(postId)
+                        ? {
+                            ...post,
+                            likedByMe: !!data.liked,
+                            likesCount: Number(data.likesCount || 0)
+                        }
+                        : post
+                ));
+
+                hapticLight();
+                renderDvizhFeed();
+            } catch (error) {
+                console.error('DVIZH like error:', error);
+                safeAlert(error.message || 'Ошибка лайка');
+            }
+        };
 
         function showSection(section) {
             const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section'];
