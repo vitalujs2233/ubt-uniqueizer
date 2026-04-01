@@ -4045,19 +4045,25 @@ closeDvizhRulesModal();
 </script>
 <div id="dvizhRulesModal" class="fixed inset-0 z-[999] hidden items-end justify-center bg-black/70 backdrop-blur-sm">
 <div class="w-full max-w-xl rounded-t-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.96),rgba(8,10,24,0.98))] p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
-<div class="flex items-center justify-between mb-4">
-<div>
-<h3 class="text-xl font-extrabold">📜 Правила Движа</h3>
-<div class="text-sm text-gray-400 mt-1">Перед публикацией ознакомьтесь</div>
+<div class="flex items-center justify-between mb-4 gap-3">
+    <div>
+        <h3 class="text-xl font-extrabold">📜 Правила Движа</h3>
+        <div class="text-sm text-gray-400 mt-1">Перед публикацией ознакомьтесь</div>
+    </div>
+
+    <button id="closeDvizhRulesBtn"
+            onclick="closeDvizhRulesModal()"
+            class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm shrink-0">
+        Закрыть
+    </button>
+</div>
 </div>
 
 <button onclick="closeDvizhRulesModal()"
         class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
     Закрыть
 </button>
-class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
-Закрыть
-</button>
+
 </div>
 
 <div class="space-y-4 text-sm leading-6 text-gray-200">
