@@ -1511,7 +1511,19 @@ body::after {
 
             <button id="openCreatePostBtn" class="primary-btn fixed bottom-24 right-4 h-14 w-14 rounded-full flex items-center justify-center text-3xl z-40">+</button>
         </div>
+<div id="admin-screen" class="hidden">
+    <div class="flex items-center justify-between mb-4 gap-3">
+        <div>
+            <h2 class="section-title text-xl font-extrabold">👑 Админ</h2>
+            <div class="text-sm text-gray-400 mt-1">Посты на модерации</div>
+        </div>
+        <button id="refreshAdminBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
+            Обновить
+        </button>
+    </div>
 
+    <div id="adminPendingFeed" class="space-y-4"></div>
+</div>
         <div id="support-screen" class="hidden">
             <h2 class="section-title text-xl mb-4 font-extrabold">💬 Поддержка</h2>
 
@@ -1555,7 +1567,10 @@ body::after {
                 <span class="font-medium">Движ</span>
             </button>
 
-            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
+            <button id="<button id="navAdminBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70 hidden" onclick="showBottomPage('admin')">
+    <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">👑</div>
+    <span class="font-medium">Админ</span>
+</button>navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
             </button>
@@ -1749,6 +1764,67 @@ body::after {
         }
 
         function showBottomPage(page) {
+    const homeScreen = document.getElementById('home-screen');
+    const historyScreen = document.getElementById('history-screen');
+    const dvizhScreen = document.getElementById('dvizh-screen');
+    const adminScreen = document.getElementById('admin-screen');
+    const supportScreen = document.getElementById('support-screen');
+
+    const navHomeBtn = document.getElementById('navHomeBtn');
+    const navHistoryBtn = document.getElementById('navHistoryBtn');
+    const navDvizhBtn = document.getElementById('navDvizhBtn');
+    const navAdminBtn = document.getElementById('navAdminBtn');
+    const navSupportBtn = document.getElementById('navSupportBtn');
+
+    homeScreen.classList.add('hidden');
+    historyScreen.classList.add('hidden');
+    dvizhScreen.classList.add('hidden');
+    if (adminScreen) adminScreen.classList.add('hidden');
+    supportScreen.classList.add('hidden');
+
+    [navHomeBtn, navHistoryBtn, navDvizhBtn, navAdminBtn, navSupportBtn]
+        .filter(Boolean)
+        .forEach((btn) => {
+            btn.classList.remove('active');
+            btn.classList.add('text-white/70');
+        });
+
+    if (page === 'home') {
+        homeScreen.classList.remove('hidden');
+        navHomeBtn.classList.add('active');
+        navHomeBtn.classList.remove('text-white/70');
+    }
+
+    if (page === 'history') {
+        historyScreen.classList.remove('hidden');
+        navHistoryBtn.classList.add('active');
+        navHistoryBtn.classList.remove('text-white/70');
+        loadTransactions?.();
+    }
+
+    if (page === 'dvizh') {
+        dvizhScreen.classList.remove('hidden');
+        navDvizhBtn.classList.add('active');
+        navDvizhBtn.classList.remove('text-white/70');
+        if (typeof renderDvizhAuthor === 'function') renderDvizhAuthor();
+        if (typeof loadDvizhFeed === 'function') loadDvizhFeed();
+    }
+
+    if (page === 'admin') {
+        if (adminScreen) adminScreen.classList.remove('hidden');
+        if (navAdminBtn) {
+            navAdminBtn.classList.add('active');
+            navAdminBtn.classList.remove('text-white/70');
+        }
+        if (typeof loadPendingPosts === 'function') loadPendingPosts();
+    }
+
+    if (page === 'support') {
+        supportScreen.classList.remove('hidden');
+        navSupportBtn.classList.add('active');
+        navSupportBtn.classList.remove('text-white/70');
+    }
+}
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
             const dvizhScreen = document.getElementById('dvizh-screen');
@@ -3859,6 +3935,18 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
     setTimeout(hideAppLoader, 3200);
 })();
+    function setupAdminButton() {
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const adminBtn = document.getElementById('navAdminBtn');
+
+    if (!tgUser || !adminBtn) return;
+
+    const ADMIN_ID = 232682307;
+
+    if (String(tgUser.id) === String(ADMIN_ID)) {
+        adminBtn.classList.remove('hidden');
+    }
+setupAdminButton();
 </script>
 
 </body>
