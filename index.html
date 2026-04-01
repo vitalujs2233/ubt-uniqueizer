@@ -4020,7 +4020,28 @@ function setupAdminButton() {
     }
 setupAdminButton();
 document.getElementById('refreshAdminBtn')?.addEventListener('click', loadPendingPosts);
+function openDvizhRulesModal() {
+const modal = document.getElementById('dvizhRulesModal');
+if (!modal) return;
+modal.classList.remove('hidden');
+modal.classList.add('flex');
+}
 
+function closeDvizhRulesModal() {
+const modal = document.getElementById('dvizhRulesModal');
+if (!modal) return;
+modal.classList.add('hidden');
+modal.classList.remove('flex');
+}
+
+document.getElementById('openDvizhRulesBtn')?.addEventListener('click', openDvizhRulesModal);
+document.getElementById('closeDvizhRulesBtn')?.addEventListener('click', closeDvizhRulesModal);
+
+document.getElementById('dvizhRulesModal')?.addEventListener('click', (e) => {
+if (e.target.id === 'dvizhRulesModal') {
+closeDvizhRulesModal();
+}
+});
 </script>
 <div id="dvizhRulesModal" class="fixed inset-0 z-[999] hidden items-end justify-center bg-black/70 backdrop-blur-sm">
 <div class="w-full max-w-xl rounded-t-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.96),rgba(8,10,24,0.98))] p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
