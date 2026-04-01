@@ -1258,80 +1258,49 @@ body::after {
                     <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">TRAFORCE • PARTNER</div>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-start justify-between gap-3 mb-4">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Dating CPA</div>
-                            <div class="text-sm text-gray-400 mt-1">Полный раздел партнёрской программы с балансом в USD</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="metric-tile metric-tile-strong">
-                            <div class="text-xs text-gray-400 mb-1">Доступно</div>
-                            <div id="cpaUsdBalance" class="text-white text-[22px] font-extrabold">$0.00</div>
-                        </div>
-
-                        <div class="metric-tile metric-tile-strong">
-                            <div class="text-xs text-gray-400 mb-1">Hold</div>
-                            <div id="cpaUsdHold" class="text-white text-[22px] font-extrabold">$0.00</div>
-                        </div>
-
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Всего выведено</div>
-                            <div id="cpaTotalWithdrawn" class="text-white text-[18px] font-bold">$0.00</div>
-                        </div>
-
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Сеть</div>
-                            <div id="cpaNetworkName" class="text-white text-[18px] font-bold">TrafForce</div>
-                        </div>
-                    </div>
+                <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
+                    <button onclick="openCpaTab('dashboard')" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap">Dashboard</button>
+                    <button onclick="openCpaTab('offers')" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap">Offers</button>
+                    <button onclick="openCpaTab('stats')" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap">Stats</button>
+                    <button onclick="openCpaTab('finance')" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap">Finance</button>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Smartlink</div>
-                            <div class="text-sm text-gray-400 mt-1">Генерация партнёрской ссылки с привязкой к Telegram ID</div>
-                        </div>
-                        <div class="premium-pill">sub1 = telegram_id</div>
-                    </div>
-
-                    <button id="createCpaSmartlinkBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
-                        Создать Smartlink
-                    </button>
-
-                    <div id="cpaSmartlinkResult" class="mt-4 hidden glass-box p-4 rounded-2xl">
-                        <p class="text-green-400 font-semibold mb-2">✅ CPA-ссылка готова</p>
-                        <input id="cpaSmartlinkOutput" type="text" readonly class="neo-input mb-3" placeholder="Тут появится smartlink" />
-
-                        <div class="flex gap-3">
-                            <button id="copyCpaLinkBtn" class="green-btn w-1/2 p-4 rounded-2xl font-bold">
-                                📋 Скопировать
+                <div id="cpa-dashboard">
+                    <div class="glass-box p-4 rounded-[24px] mb-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold text-lg">Dating CPA</div>
+                                <div class="text-sm text-gray-400 mt-1">Полный кабинет партнёрской программы Traforce внутри Mini App</div>
+                            </div>
+                            <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить
                             </button>
-
-                            <a id="openCpaLinkBtn" href="#" target="_blank" class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
-                                🔗 Открыть
-                            </a>
                         </div>
 
-                        <p id="cpaLinkStatus" class="mt-3 text-sm text-gray-300"></p>
-                    </div>
-                </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Доступно</div>
+                                <div id="cpaUsdBalance" class="text-white text-[22px] font-extrabold">$0.00</div>
+                            </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Статистика</div>
-                            <div class="text-sm text-gray-400 mt-1">Данные тянутся через backend и API партнёрской сети</div>
+                            <div class="metric-tile metric-tile-strong">
+                                <div class="text-xs text-gray-400 mb-1">Hold</div>
+                                <div id="cpaUsdHold" class="text-white text-[22px] font-extrabold">$0.00</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Всего выведено</div>
+                                <div id="cpaTotalWithdrawn" class="text-white text-[18px] font-bold">$0.00</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Сеть</div>
+                                <div id="cpaNetworkName" class="text-white text-[18px] font-bold">TrafForce</div>
+                            </div>
                         </div>
-                        <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Обновить
-                        </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="metric-tile">
                             <div class="text-xs text-gray-400 mb-1">Клики</div>
                             <div id="cpaClicks" class="text-white text-[22px] font-extrabold">0</div>
@@ -1352,13 +1321,107 @@ body::after {
                             <div id="cpaCr" class="text-white text-[18px] font-bold">0%</div>
                         </div>
                     </div>
+
+                    <div class="glass-box p-4 rounded-[24px]">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold text-lg">Smartlink</div>
+                                <div class="text-sm text-gray-400 mt-1">Генерация партнёрской ссылки с привязкой к Telegram ID</div>
+                            </div>
+                            <div class="premium-pill">sub1 = telegram_id</div>
+                        </div>
+
+                        <button id="createCpaSmartlinkBtn" class="primary-btn w-full p-4 rounded-2xl font-bold">
+                            Создать Smartlink
+                        </button>
+
+                        <div id="cpaSmartlinkResult" class="mt-4 hidden glass-box p-4 rounded-2xl">
+                            <p class="text-green-400 font-semibold mb-2">✅ CPA-ссылка готова</p>
+                            <input id="cpaSmartlinkOutput" type="text" readonly class="neo-input mb-3" placeholder="Тут появится smartlink" />
+
+                            <div class="flex gap-3">
+                                <button id="copyCpaLinkBtn" class="green-btn w-1/2 p-4 rounded-2xl font-bold">
+                                    📋 Скопировать
+                                </button>
+
+                                <a id="openCpaLinkBtn" href="#" target="_blank" class="primary-btn w-1/2 p-4 rounded-2xl font-bold text-center hidden">
+                                    🔗 Открыть
+                                </a>
+                            </div>
+
+                            <p id="cpaLinkStatus" class="mt-3 text-sm text-gray-300"></p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px]">
-                    <div class="text-white font-semibold mb-2">Выплаты</div>
-                    <div class="text-sm text-gray-400 leading-relaxed">
-                        Нажми <span class="text-white font-semibold">Вывести</span>, укажи сумму и USDT-кошелёк.
-                        Заявка отправится в backend на обработку.
+                <div id="cpa-offers" class="hidden">
+                    <div class="glass-box p-4 rounded-[24px] mb-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold text-lg">Marketplace</div>
+                                <div class="text-sm text-gray-400 mt-1">Офферы Traforce с твоей маржой внутри Telegram</div>
+                            </div>
+                            <button onclick="loadCpaOffers()" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                                Обновить офферы
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <input id="cpaOfferGeoFilter" class="neo-input" placeholder="Фильтр GEO" />
+                            <input id="cpaOfferCategoryFilter" class="neo-input" placeholder="Категория" />
+                        </div>
+                    </div>
+
+                    <div id="offersList" class="space-y-3"></div>
+                </div>
+
+                <div id="cpa-stats" class="hidden">
+                    <div class="glass-box p-4 rounded-[24px] mb-4">
+                        <div class="text-white font-semibold text-lg mb-2">Статистика</div>
+                        <div class="text-sm text-gray-400">Сводка по кликам, конверсиям и профиту из Traforce API / postback.</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Сегодня</div>
+                            <div id="cpaStatsToday" class="text-white text-[18px] font-bold">$0.00</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">7 дней</div>
+                            <div id="cpaStats7d" class="text-white text-[18px] font-bold">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-box p-4 rounded-[24px]">
+                        <div class="text-sm text-gray-400 mb-2">Лента статистики</div>
+                        <div id="cpaStatsFeed" class="text-sm text-gray-300 leading-relaxed">
+                            После подключения backend сюда можно выводить таблицу по датам, GEO и офферам.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cpa-finance" class="hidden">
+                    <div class="glass-box p-4 rounded-[24px] mb-4">
+                        <div class="text-white font-semibold text-lg mb-2">Финансы и выплаты</div>
+                        <div class="text-sm text-gray-400 leading-relaxed">
+                            В этом разделе пользователь видит свой баланс, hold, историю и отправляет заявку на вывод.
+                        </div>
+                    </div>
+
+                    <div class="glass-box p-4 rounded-[24px] mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Быстрая заявка на вывод</div>
+                        <input id="withdrawAmount" class="neo-input mb-3" placeholder="Сумма в USD" />
+                        <input id="withdrawWallet" class="neo-input" placeholder="USDT кошелёк" />
+                        <button id="submitCpaWithdrawBtn" class="green-btn w-full mt-3 p-4 rounded-2xl font-bold">
+                            Отправить заявку
+                        </button>
+                    </div>
+
+                    <div class="glass-box p-4 rounded-[24px]">
+                        <div class="text-sm text-gray-400">История выплат</div>
+                        <div id="cpaFinanceHistory" class="mt-2 text-sm text-gray-300">
+                            После подключения backend сюда подтягивается история выплат и начислений.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2365,6 +2428,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             if (section === 'dating-cpa') {
+                openCpaTab('dashboard');
                 loadCpaDashboard();
             }
         }
@@ -2379,6 +2443,79 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (cpaBalanceBlock) cpaBalanceBlock.classList.toggle('hidden', !isCpa);
             if (topupBtn) topupBtn.classList.toggle('hidden', isCpa);
             if (cpaWithdrawBtn) cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
+        }
+
+        function openCpaTab(tab) {
+            ['dashboard', 'offers', 'stats', 'finance'].forEach((name) => {
+                const el = document.getElementById(`cpa-${name}`);
+                if (el) el.classList.toggle('hidden', name !== tab);
+            });
+
+            if (tab === 'offers') {
+                loadCpaOffers();
+            }
+        }
+
+        async function loadCpaOffers() {
+            const list = document.getElementById('offersList');
+            if (!list) return;
+
+            list.innerHTML = '<div class="glass-box p-4 rounded-[24px] text-sm text-gray-300">Загрузка офферов...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/offers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offers unavailable');
+                }
+
+                const data = await response.json();
+                const offers = Array.isArray(data?.offers) ? data.offers : (Array.isArray(data) ? data : []);
+
+                if (!offers.length) {
+                    list.innerHTML = '<div class="glass-box p-4 rounded-[24px] text-sm text-gray-300">Офферы пока не загружены.</div>';
+                    return;
+                }
+
+                list.innerHTML = offers.map((offer) => {
+                    const payout = Number(offer.display_payout ?? offer.payout ?? 0).toFixed(2);
+                    const title = offer.name || offer.title || 'Offer';
+                    const geo = offer.geo || offer.country || 'GEO';
+                    const category = offer.category || 'Dating';
+                    const traffic = offer.allowed_traffic || offer.traffic || 'Разрешённый трафик';
+                    return `
+                        <div class="glass-box p-4 rounded-[24px]">
+                            <div class="flex items-start justify-between gap-3 mb-3">
+                                <div>
+                                    <div class="text-white font-semibold text-lg">${title}</div>
+                                    <div class="text-sm text-gray-400 mt-1">${geo} • ${category}</div>
+                                </div>
+                                <div class="premium-pill">$${payout}</div>
+                            </div>
+                            <div class="text-sm text-gray-300 mb-3">${traffic}</div>
+                            <button class="primary-btn w-full p-3 rounded-2xl font-bold" onclick="createCpaSmartlink()">Сгенерировать ссылку</button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('CPA offers error:', error);
+                list.innerHTML = `
+                    <div class="glass-box p-4 rounded-[24px]">
+                        <div class="text-white font-semibold text-lg mb-2">TrafForce Dating Offer</div>
+                        <div class="text-sm text-gray-400 mb-3">Fallback-карточка до подключения backend /cpa/offers</div>
+                        <div class="premium-pill mb-3">$3.40</div>
+                        <button class="primary-btn w-full p-3 rounded-2xl font-bold" onclick="createCpaSmartlink()">Сгенерировать ссылку</button>
+                    </div>
+                `;
+            }
         }
 
         function updateCpaUi(data = {}) {
@@ -4119,6 +4256,24 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
         if (refreshCpaDashboardBtn) {
             refreshCpaDashboardBtn.addEventListener('click', loadCpaDashboard);
+        }
+
+        if (submitCpaWithdrawBtn) {
+            submitCpaWithdrawBtn.addEventListener('click', async () => {
+                const amount = document.getElementById('withdrawAmount')?.value?.trim();
+                const wallet = document.getElementById('withdrawWallet')?.value?.trim();
+                if (!amount || !wallet) {
+                    safeAlert('Заполни сумму и кошелёк');
+                    return;
+                }
+                const originalPrompt = window.prompt;
+                try {
+                    window.prompt = (message) => message.includes('сумму') ? amount : wallet;
+                    await openCpaWithdrawFlow();
+                } finally {
+                    window.prompt = originalPrompt;
+                }
+            });
         }
 
         if (refreshLinksBtn) {
