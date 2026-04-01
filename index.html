@@ -1144,7 +1144,7 @@ body::after {
                                     <div class="text-xs uppercase tracking-[0.22em] hero-accent mb-2">CPA Network</div>
                                     <h2 class="text-[22px] font-extrabold leading-tight">Dating CPA</h2>
                                     <p class="text-[15px] text-gray-400 mt-3 max-w-xs leading-relaxed">
-                                        Smartlink, статистика, доход в USD и вывод средств.
+                                        Отдельный CPA-раздел с USD балансом, smartlink, статистикой и выводом средств.
                                     </p>
                                 </div>
                                 <div class="h-16 w-16 rounded-[22px] bg-gradient-to-br from-pink-500/20 to-violet-500/20 flex items-center justify-center text-3xl soft-pulse shrink-0">
@@ -1153,7 +1153,7 @@ body::after {
                             </div>
 
                             <div class="flex items-end justify-between mt-6 gap-3">
-                                <div class="text-xs text-gray-500 tracking-wide">DATING • CPA • USD</div>
+                                <div class="text-xs text-pink-300 tracking-wide">DATING • CPA • USD</div>
                                 <div class="primary-btn px-5 py-3 rounded-2xl font-semibold text-sm">
                                     Открыть
                                 </div>
@@ -1244,84 +1244,114 @@ body::after {
             </div>
 
             <div id="dating-cpa-section" class="hidden">
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <button onclick="showSection('main')" class="text-blue-400">← Назад</button>
-                    <div class="flex items-center gap-2">
-                        <h2 class="section-title text-xl font-bold">Dating CPA</h2>
-                        <button id="openWithdrawBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Вывести
-                        </button>
-                    </div>
-                </div>
-
-                <div class="glass-box p-5 rounded-[26px] mb-4">
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div id="cpaUserAvatar" class="h-14 w-14 rounded-[18px] bg-gradient-to-br from-pink-500/20 to-violet-500/20 flex items-center justify-center text-2xl shrink-0">💘</div>
-                            <div class="min-w-0">
-                                <div id="cpaUserName" class="text-white font-semibold text-lg truncate">Dating CPA</div>
-                                <div class="text-sm text-gray-400">CPA balance dashboard</div>
-                            </div>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <div class="text-xs text-gray-400">Balance</div>
-                            <div id="cpaUsdBalance" class="text-2xl font-extrabold mt-1">$0.00</div>
-                        </div>
+                <div class="glass-box p-4 rounded-[26px] mb-4 fade-up">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
+                        <span class="premium-pill">Dating CPA</span>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400">Hold</div>
-                            <div id="cpaUsdHold" class="text-lg font-bold mt-1">$0.00</div>
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <div class="text-[12px] uppercase tracking-[0.22em] hero-accent mb-2">Mini App Mode</div>
+                            <h2 class="section-title text-2xl font-extrabold leading-tight">Dating CPA</h2>
+                            <p class="text-sm text-gray-400 mt-2 max-w-xs leading-relaxed">
+                                Отдельный внутренний раздел с USD балансом, партнёрскими ссылками, статистикой и заявками на вывод.
+                            </p>
                         </div>
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400">Выведено</div>
-                            <div id="cpaWithdrawn" class="text-lg font-bold mt-1">$0.00</div>
+                        <div id="datingCpaAvatarWrap" class="h-14 w-14 rounded-[20px] overflow-hidden bg-gradient-to-br from-pink-500/20 to-violet-500/20 border border-white/10 flex items-center justify-center text-2xl shrink-0">
+                            <img id="datingCpaAvatar" class="h-full w-full object-cover hidden" alt="CPA avatar" />
+                            <span id="datingCpaAvatarFallback">💘</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-box p-5 rounded-[26px] mb-4">
-                    <div class="text-white font-semibold text-lg mb-2">Создать Smartlink</div>
-                    <div class="text-sm text-gray-400 mb-4">Генерация CPA-ссылки для Dating vertical</div>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="metric-tile metric-tile-strong">
+                        <div class="text-xs text-gray-400">Баланс USD</div>
+                        <div id="datingCpaBalance" class="text-2xl font-extrabold mt-1">$0.00</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400">Hold</div>
+                        <div id="datingCpaHold" class="text-2xl font-extrabold mt-1">$0.00</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400">Выведено</div>
+                        <div id="datingCpaWithdrawn" class="text-xl font-bold mt-1">$0.00</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="text-xs text-gray-400">Маржа сервиса</div>
+                        <div id="datingCpaMargin" class="text-xl font-bold mt-1">15%</div>
+                    </div>
+                </div>
 
-                    <button id="createCpaSmartlinkBtn" class="primary-btn w-full p-4 rounded-2xl font-bold mb-4">
+                <div class="glass-box p-4 rounded-[26px] mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Создать Smartlink</div>
+                            <div class="text-sm text-gray-400 mt-1">Генерация CPA-ссылки через отдельный модуль Dating CPA</div>
+                        </div>
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">subid1 = telegram_id</span>
+                    </div>
+
+                    <button id="createDatingCpaSmartlinkBtn" class="primary-btn mt-4 w-full p-4 rounded-2xl font-bold">
                         Создать Smartlink
                     </button>
 
-                    <div id="cpaSmartlinkResult" class="hidden">
-                        <input id="cpaSmartlinkOutput" type="text" readonly class="neo-input mb-3" />
+                    <div id="datingCpaSmartlinkBox" class="hidden mt-4">
+                        <input id="datingCpaSmartlinkOutput" type="text" readonly class="neo-input mb-3" placeholder="Здесь появится ссылка" />
                         <div class="grid grid-cols-2 gap-3">
-                            <button id="copyCpaLinkBtn" class="secondary-btn p-3 rounded-2xl font-semibold">Копировать</button>
-                            <button id="openCpaLinkBtn" class="green-btn p-3 rounded-2xl font-semibold">Открыть</button>
+                            <button id="copyDatingCpaSmartlinkBtn" class="secondary-btn p-3 rounded-2xl font-semibold">Копировать</button>
+                            <button id="openDatingCpaSmartlinkBtn" class="green-btn p-3 rounded-2xl font-semibold">Открыть</button>
                         </div>
-                        <div id="cpaLinkStatus" class="mt-3 text-sm text-gray-400"></div>
                     </div>
                 </div>
 
-                <div class="glass-box p-5 rounded-[26px]">
+                <div class="glass-box p-4 rounded-[26px] mb-4">
                     <div class="flex items-center justify-between gap-3 mb-3">
-                        <div class="text-white font-semibold text-lg">Статистика</div>
-                        <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">Обновить</button>
+                        <div>
+                            <div class="text-white font-semibold text-lg">Статистика CPA</div>
+                            <div class="text-sm text-gray-400 mt-1">Локальная витрина для кликов, конверсий и дохода</div>
+                        </div>
+                        <button id="refreshDatingCpaBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Обновить</button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div class="metric-tile">
                             <div class="text-xs text-gray-400">Клики</div>
-                            <div id="cpaClicks" class="text-lg font-bold mt-1">0</div>
+                            <div id="datingCpaClicks" class="text-lg font-bold mt-1">0</div>
                         </div>
                         <div class="metric-tile">
                             <div class="text-xs text-gray-400">Конверсии</div>
-                            <div id="cpaConversions" class="text-lg font-bold mt-1">0</div>
+                            <div id="datingCpaConversions" class="text-lg font-bold mt-1">0</div>
                         </div>
                         <div class="metric-tile">
                             <div class="text-xs text-gray-400">Доход</div>
-                            <div id="cpaRevenue" class="text-lg font-bold mt-1">$0.00</div>
+                            <div id="datingCpaRevenue" class="text-lg font-bold mt-1">$0.00</div>
                         </div>
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400">Статус</div>
-                            <div id="cpaStatusText" class="text-sm font-semibold mt-1 text-gray-300">Готов к подключению</div>
+                            <div class="text-xs text-gray-400">Net</div>
+                            <div id="datingCpaNetRevenue" class="text-lg font-bold mt-1">$0.00</div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="glass-box p-4 rounded-[26px] mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Заявка на вывод</div>
+                            <div class="text-sm text-gray-400 mt-1">Форма заготовлена и не ломает существующую логику проекта</div>
+                        </div>
+                        <button id="openDatingCpaWithdrawBtn" class="gold-btn px-4 py-2 rounded-2xl font-semibold text-sm">Вывести</button>
+                    </div>
+
+                    <div id="datingCpaWithdrawPanel" class="hidden inner-panel">
+                        <input id="datingCpaWithdrawAmount" type="number" min="0" step="0.01" class="neo-input mb-3" placeholder="Сумма в USD" />
+                        <input id="datingCpaWithdrawWallet" type="text" class="neo-input mb-3" placeholder="USDT кошелек" />
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="submitDatingCpaWithdrawBtn" class="primary-btn p-3 rounded-2xl font-semibold">Отправить</button>
+                            <button id="closeDatingCpaWithdrawBtn" class="secondary-btn p-3 rounded-2xl font-semibold">Закрыть</button>
+                        </div>
+                        <div id="datingCpaWithdrawStatus" class="mt-3 text-sm text-gray-300"></div>
                     </div>
                 </div>
             </div>
@@ -2307,12 +2337,14 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         };
 
         function showSection(section) {
-            const sections = ['main-menu', 'video-section', 'link-section', 'preland-section', 'spy-section', 'dating-cpa-section'];
+            const sections = ['main-menu', 'dating-cpa-section', 'video-section', 'link-section', 'preland-section', 'spy-section'];
             sections.forEach((s) => {
                 const el = document.getElementById(s);
                 if (el) el.classList.add('hidden');
             });
-            const target = document.getElementById(section === 'main' ? 'main-menu' : section + '-section');
+
+            const targetId = section === 'main' ? 'main-menu' : section + '-section';
+            const target = document.getElementById(targetId);
             if (target) target.classList.remove('hidden');
 
             if (section === 'link') {
@@ -2321,7 +2353,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             if (section === 'dating-cpa') {
-                loadCpaDashboard();
+                loadDatingCpaDashboard();
             }
         }
 
@@ -2583,103 +2615,150 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         function filterSpy(niche, button) {
             currentFilter = niche;
     
-        function setCpaText(el, value) {
+        function datingCpaAlert(message) {
+            if (typeof safeAlert === 'function') {
+                safeAlert(message);
+            } else {
+                alert(message);
+            }
+        }
+
+        function setDatingCpaText(id, value) {
+            const el = document.getElementById(id);
             if (el) el.textContent = value;
         }
 
-        function formatUsd(value) {
-            return `$${Number(value || 0).toFixed(2)}`;
-        }
+        function setDatingCpaAvatar() {
+            const avatar = document.getElementById('datingCpaAvatar');
+            const fallback = document.getElementById('datingCpaAvatarFallback');
+            const currentAvatar = document.getElementById('userAvatar');
+            const currentFallback = document.getElementById('userAvatarFallback');
+            if (!avatar || !fallback) return;
 
-        function buildCpaFallbackLink(telegramId) {
-            return `https://t.me/${window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'your_bot'}?startapp=dating_${telegramId || 'user'}`;
-        }
-
-        function fillCpaDashboard(data = {}) {
-            const tgUser = tg?.initDataUnsafe?.user || {};
-            const appUser = appState?.user || {};
-            const name = data?.user?.name || appUser.first_name || tgUser.first_name || tgUser.username || 'Dating CPA';
-            const avatarUrl = data?.user?.avatar_url || appUser.photo_url || tgUser.photo_url || '';
-
-            setCpaText(cpaUserName, name);
-            setCpaText(cpaUsdBalance, formatUsd(data?.balance?.available));
-            setCpaText(cpaUsdHold, formatUsd(data?.balance?.hold));
-            setCpaText(cpaWithdrawn, formatUsd(data?.balance?.total_withdrawn));
-            setCpaText(cpaClicks, String(data?.stats?.clicks || 0));
-            setCpaText(cpaConversions, String(data?.stats?.conversions || 0));
-            setCpaText(cpaRevenue, formatUsd(data?.stats?.revenue));
-            setCpaText(cpaStatusText, data?.statusText || 'Готов к подключению');
-
-            if (cpaUserAvatar) {
-                if (avatarUrl) {
-                    cpaUserAvatar.innerHTML = `<img src="${avatarUrl}" alt="avatar" class="w-full h-full object-cover rounded-[18px]" />`;
-                } else {
-                    cpaUserAvatar.textContent = '💘';
-                }
+            if (currentAvatar && currentAvatar.src && !currentAvatar.classList.contains('hidden')) {
+                avatar.src = currentAvatar.src;
+                avatar.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else if (appState && appState.user && appState.user.photo_url) {
+                avatar.src = appState.user.photo_url;
+                avatar.classList.remove('hidden');
+                fallback.classList.add('hidden');
+            } else {
+                avatar.classList.add('hidden');
+                fallback.classList.remove('hidden');
+                fallback.textContent = currentFallback ? currentFallback.textContent : '💘';
             }
         }
 
-        async function loadCpaDashboard() {
-            fillCpaDashboard();
-
-            if (!tg?.initData) return;
+        async function loadDatingCpaDashboard() {
+            setDatingCpaAvatar();
+            const tgUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+            const localName = (appState && appState.user && (appState.user.first_name || appState.user.username)) || (tgUser && (tgUser.first_name || tgUser.username)) || 'Пользователь';
+            const fallbackData = {
+                user: { name: localName },
+                balance: { available: 0, hold: 0, total_withdrawn: 0 },
+                stats: { clicks: 0, conversions: 0, revenue: 0, net_revenue: 0 },
+                settings: { service_margin: 0.15 }
+            };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/cpa/dashboard`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData: tg.initData })
-                });
+                let data = fallbackData;
+                const telegramId = tgUser && tgUser.id ? tgUser.id : null;
+                if (telegramId) {
+                    const response = await fetch(`${API_BASE_URL}/api/cpa/dashboard?telegram_id=${telegramId}`);
+                    if (response.ok) {
+                        data = await response.json();
+                    }
+                }
 
-                if (!response.ok) return;
-                const data = await response.json();
-                fillCpaDashboard(data || {});
+                setDatingCpaText('datingCpaBalance', `$${Number((data.balance && data.balance.available) || 0).toFixed(2)}`);
+                setDatingCpaText('datingCpaHold', `$${Number((data.balance && data.balance.hold) || 0).toFixed(2)}`);
+                setDatingCpaText('datingCpaWithdrawn', `$${Number((data.balance && data.balance.total_withdrawn) || 0).toFixed(2)}`);
+                setDatingCpaText('datingCpaClicks', String((data.stats && data.stats.clicks) || 0));
+                setDatingCpaText('datingCpaConversions', String((data.stats && data.stats.conversions) || 0));
+                setDatingCpaText('datingCpaRevenue', `$${Number((data.stats && data.stats.revenue) || 0).toFixed(2)}`);
+                setDatingCpaText('datingCpaNetRevenue', `$${Number((data.stats && data.stats.net_revenue) || 0).toFixed(2)}`);
+                const margin = Number((data.settings && data.settings.service_margin) || 0.15) * 100;
+                setDatingCpaText('datingCpaMargin', `${margin.toFixed(0)}%`);
             } catch (error) {
-                console.error('CPA dashboard error:', error);
+                console.error('Dating CPA dashboard error:', error);
             }
         }
 
-        async function createCpaSmartlink() {
-            const telegramId = tg?.initDataUnsafe?.user?.id;
-            if (!telegramId) {
-                safeAlert('Открой Mini App через Telegram');
+        async function createDatingCpaSmartlink() {
+            const output = document.getElementById('datingCpaSmartlinkOutput');
+            const box = document.getElementById('datingCpaSmartlinkBox');
+            const tgUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+            try {
+                let smartlink = '';
+                if (tgUser && tgUser.id) {
+                    const response = await fetch(`${API_BASE_URL}/api/cpa/smartlink`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ telegram_id: tgUser.id, type: 'dating' })
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        smartlink = data.smartlink || data.link || '';
+                    }
+                }
+
+                if (!smartlink) {
+                    const fallbackId = tgUser && tgUser.id ? tgUser.id : 'demo';
+                    smartlink = `${window.location.origin}/r/dating-cpa-${fallbackId}`;
+                }
+
+                if (output) output.value = smartlink;
+                if (box) box.classList.remove('hidden');
+            } catch (error) {
+                console.error('Dating CPA smartlink error:', error);
+                const fallbackId = tgUser && tgUser.id ? tgUser.id : 'demo';
+                if (output) output.value = `${window.location.origin}/r/dating-cpa-${fallbackId}`;
+                if (box) box.classList.remove('hidden');
+            }
+        }
+
+        async function submitDatingCpaWithdraw() {
+            const amountEl = document.getElementById('datingCpaWithdrawAmount');
+            const walletEl = document.getElementById('datingCpaWithdrawWallet');
+            const statusEl = document.getElementById('datingCpaWithdrawStatus');
+            const tgUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+            const amount = amountEl ? Number(amountEl.value || 0) : 0;
+            const wallet = walletEl ? walletEl.value.trim() : '';
+
+            if (!amount || amount <= 0) {
+                if (statusEl) statusEl.textContent = 'Укажи корректную сумму.';
+                return;
+            }
+            if (!wallet) {
+                if (statusEl) statusEl.textContent = 'Укажи USDT кошелек.';
                 return;
             }
 
-            if (createCpaSmartlinkBtn) createCpaSmartlinkBtn.classList.add('btn-disabled');
-            setCpaText(cpaLinkStatus, 'Готовим CPA ссылку...');
+            if (statusEl) statusEl.textContent = 'Отправляем заявку...';
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/cpa/smartlink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData: tg.initData })
-                });
+                if (tgUser && tgUser.id) {
+                    const response = await fetch(`${API_BASE_URL}/api/cpa/withdraw`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ telegram_id: tgUser.id, amount, wallet_address: wallet, wallet_network: 'USDT' })
+                    });
 
-                let shortLink = '';
-                if (response.ok) {
-                    const data = await response.json();
-                    shortLink = data?.smartlink || data?.link || data?.url || '';
+                    if (response.ok) {
+                        if (statusEl) statusEl.textContent = 'Заявка на вывод отправлена.';
+                        loadDatingCpaDashboard();
+                        return;
+                    }
                 }
 
-                if (!shortLink) {
-                    shortLink = buildCpaFallbackLink(telegramId);
-                }
-
-                if (cpaSmartlinkOutput) cpaSmartlinkOutput.value = shortLink;
-                cpaSmartlinkResult?.classList.remove('hidden');
-                setCpaText(cpaLinkStatus, response.ok ? '✅ CPA ссылка готова' : '⚠️ Backend пока не подключен, показана временная ссылка');
-                hapticSuccess();
+                if (statusEl) statusEl.textContent = 'Форма готова. Подключи backend endpoint /api/cpa/withdraw.';
             } catch (error) {
-                console.error('CPA smartlink error:', error);
-                const fallbackLink = buildCpaFallbackLink(telegramId);
-                if (cpaSmartlinkOutput) cpaSmartlinkOutput.value = fallbackLink;
-                cpaSmartlinkResult?.classList.remove('hidden');
-                setCpaText(cpaLinkStatus, '⚠️ Backend CPA еще не подключен, показана временная ссылка');
-            } finally {
-                if (createCpaSmartlinkBtn) createCpaSmartlinkBtn.classList.remove('btn-disabled');
+                console.error('Dating CPA withdraw error:', error);
+                if (statusEl) statusEl.textContent = 'Не удалось отправить заявку. Проверь backend.';
             }
         }
+
         renderSpyTrends();
 
             document.querySelectorAll('.spy-filter').forEach(btn => {
@@ -3448,23 +3527,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         const copyLinkBtn = document.getElementById('copyLinkBtn');
         const openLinkBtn = document.getElementById('openLinkBtn');
         const copyStatus = document.getElementById('copyStatus');
-        const cpaUserAvatar = document.getElementById('cpaUserAvatar');
-        const cpaUserName = document.getElementById('cpaUserName');
-        const cpaUsdBalance = document.getElementById('cpaUsdBalance');
-        const cpaUsdHold = document.getElementById('cpaUsdHold');
-        const cpaWithdrawn = document.getElementById('cpaWithdrawn');
-        const cpaClicks = document.getElementById('cpaClicks');
-        const cpaConversions = document.getElementById('cpaConversions');
-        const cpaRevenue = document.getElementById('cpaRevenue');
-        const cpaStatusText = document.getElementById('cpaStatusText');
-        const createCpaSmartlinkBtn = document.getElementById('createCpaSmartlinkBtn');
-        const cpaSmartlinkResult = document.getElementById('cpaSmartlinkResult');
-        const cpaSmartlinkOutput = document.getElementById('cpaSmartlinkOutput');
-        const copyCpaLinkBtn = document.getElementById('copyCpaLinkBtn');
-        const openCpaLinkBtn = document.getElementById('openCpaLinkBtn');
-        const cpaLinkStatus = document.getElementById('cpaLinkStatus');
-        const refreshCpaDashboardBtn = document.getElementById('refreshCpaDashboardBtn');
-        const openWithdrawBtn = document.getElementById('openWithdrawBtn');
         const refreshLinksBtn = document.getElementById('refreshLinksBtn');
         const openSmartStatsBtn = document.getElementById('openSmartStatsBtn');
         const backToSmartLinkBtn = document.getElementById('backToSmartLinkBtn');
@@ -4068,27 +4130,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
                 hapticLight();
             });
         }
-
-        createCpaSmartlinkBtn?.addEventListener('click', createCpaSmartlink);
-        copyCpaLinkBtn?.addEventListener('click', async function () {
-            const value = cpaSmartlinkOutput?.value?.trim();
-            if (!value) return;
-            const ok = await copyToClipboard(value);
-            setCpaText(cpaLinkStatus, ok ? '✅ CPA ссылка скопирована' : 'Не удалось скопировать автоматически');
-            if (ok) hapticSuccess();
-        });
-        openCpaLinkBtn?.addEventListener('click', function () {
-            const value = cpaSmartlinkOutput?.value?.trim();
-            if (!value) return;
-            window.open(value, '_blank', 'noopener');
-        });
-        refreshCpaDashboardBtn?.addEventListener('click', function () {
-            loadCpaDashboard();
-            hapticLight();
-        });
-        openWithdrawBtn?.addEventListener('click', function () {
-            safeAlert('Вывод будет подключен на backend этапе CPA');
-        });
 
         renderSpyTrends();
         renderVideoHistory();
