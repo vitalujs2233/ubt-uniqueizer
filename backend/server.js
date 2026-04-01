@@ -649,7 +649,7 @@ app.post('/dvizh/feed', async (req, res) => {
   u.photo_url
       from posts p
       join users u on u.telegram_id = p.user_id
-      where p.status in ('approved', 'pending')
+      where p.status = 'approved'
       order by p.created_at desc
       limit 20
     `);
