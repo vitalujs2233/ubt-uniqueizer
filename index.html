@@ -1264,9 +1264,6 @@ body::after {
                             <div class="text-white font-semibold text-lg">Dating CPA</div>
                             <div class="text-sm text-gray-400 mt-1">Полный раздел партнёрской программы с балансом в USD</div>
                         </div>
-                        <button id="openCpaWithdrawBtn" class="gold-btn px-4 py-3 rounded-2xl font-semibold text-sm shrink-0">
-                            💸 Вывести
-                        </button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -4084,7 +4081,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
         const createCpaSmartlinkBtn = document.getElementById('createCpaSmartlinkBtn');
         const copyCpaLinkBtn = document.getElementById('copyCpaLinkBtn');
-        const openCpaWithdrawBtn = document.getElementById('openCpaWithdrawBtn');
         const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
         const refreshCpaDashboardBtn = document.getElementById('refreshCpaDashboardBtn');
 
@@ -4116,9 +4112,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             });
         }
 
-        if (openCpaWithdrawBtn) {
-            openCpaWithdrawBtn.addEventListener('click', openCpaWithdrawFlow);
-        }
 
         if (cpaWithdrawBtn) {
             cpaWithdrawBtn.addEventListener('click', openCpaWithdrawFlow);
