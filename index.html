@@ -1252,11 +1252,7 @@ body::after {
                 </div>
             </div>
 
-            <div id="dating-cpa-section"
->
-<!-- OFFERS LIST -->
-<div id="offersList" class="space-y-3 mt-4"></div>
- class="hidden">
+            <div id="dating-cpa-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
                     <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">TRAFORCE • PARTNER</div>
@@ -1321,6 +1317,25 @@ body::after {
                         </div>
 
                         <p id="cpaLinkStatus" class="mt-3 text-sm text-gray-300"></p>
+                    </div>
+                </div>
+
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Офферы</div>
+                            <div class="text-sm text-gray-400 mt-1">Карточки офферов, ставки и доступные GEO из TrafForce</div>
+                        </div>
+                        <button id="refreshCpaOffersBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                            Обновить
+                        </button>
+                    </div>
+
+                    <div id="offersList" class="space-y-3">
+                        <div class="metric-tile">
+                            <div class="text-sm text-gray-400">Офферы загружаются...</div>
+                        </div>
                     </div>
                 </div>
 
@@ -2370,6 +2385,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             if (section === 'dating-cpa') {
                 loadCpaDashboard();
+                loadCpaOffers();
             }
         }
 
@@ -2519,6 +2535,175 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 safeAlert('Backend вывода ещё не подключён. Подключи endpoint /cpa/withdraw.');
             }
         }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function formatOfferListValue(value, fallback = 'Не указано') {
+            if (Array.isArray(value)) {
+                return value.length ? value.map((item) => escapeHtml(item)).join(', ') : fallback;
+            }
+            if (typeof value === 'string' && value.trim()) {
+                return escapeHtml(value.trim());
+            }
+            return fallback;
+        }
+
+        function createOfferCard(offer = {}) {
+            const title = escapeHtml(offer.title || offer.name || 'Offer');
+            const category = escapeHtml(offer.category || 'Dating');
+            const payout = Number(offer.display_payout ?? offer.payout ?? 0).toFixed(2);
+            const geo = formatOfferListValue(offer.geo || offer.countries || offer.geos, 'All GEO');
+            const allowedTraffic = formatOfferListValue(offer.allowedTraffic || offer.allowed_traffic, 'Не указано');
+            const restrictedTraffic = formatOfferListValue(offer.restrictedTraffic || offer.restricted_traffic, 'Не указано');
+            const offerId = escapeHtml(offer.id || offer.offer_id || offer.traforce_offer_id || '');
+
+            return `
+                <div class="metric-tile">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="min-w-0">
+                            <div class="text-white font-bold text-[17px] leading-tight">${title}</div>
+                            <div class="text-sm text-gray-400 mt-1">${category}</div>
+                        </div>
+                        <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold shrink-0">$${payout}</div>
+                    </div>
+
+                    <div class="space-y-2 mb-3">
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">GEO</div>
+                            <div class="text-white text-sm leading-relaxed">${geo}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Разрешённый трафик</div>
+                            <div class="text-white text-sm leading-relaxed">${allowedTraffic}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Запрещённый трафик</div>
+                            <div class="text-white text-sm leading-relaxed">${restrictedTraffic}</div>
+                        </div>
+                    </div>
+
+                    <button class="primary-btn w-full p-3 rounded-2xl font-bold" onclick="generateOfferLink('${offerId}')">
+                        Сгенерировать ссылку
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderOffers(offers = []) {
+            const offersList = document.getElementById('offersList');
+            if (!offersList) return;
+
+            if (!Array.isArray(offers) || !offers.length) {
+                offersList.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-white font-semibold">Офферы пока не загружены</div>
+                        <div class="text-sm text-gray-400 mt-1">Подключи backend endpoint <span class="text-white">/cpa/offers</span> или дождись синхронизации.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            offersList.innerHTML = offers.map(createOfferCard).join('');
+        }
+
+        async function loadCpaOffers() {
+            const offersList = document.getElementById('offersList');
+            if (offersList) {
+                offersList.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-sm text-gray-400">Загружаем офферы...</div>
+                    </div>
+                `;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/offers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offers unavailable');
+                }
+
+                const data = await response.json();
+                renderOffers(data?.offers || data?.items || []);
+            } catch (error) {
+                console.error('CPA offers error:', error);
+                renderOffers([
+                    {
+                        id: 'demo-1',
+                        title: 'Dating SOI - Android',
+                        category: 'Dating',
+                        display_payout: 3.40,
+                        geo: ['DE', 'FR', 'IT'],
+                        allowedTraffic: ['FB', 'TikTok', 'Native'],
+                        restrictedTraffic: ['Brand', 'Spam']
+                    },
+                    {
+                        id: 'demo-2',
+                        title: 'Mainstream Dating DOI',
+                        category: 'Dating',
+                        display_payout: 4.20,
+                        geo: ['US', 'CA', 'AU'],
+                        allowedTraffic: ['Push', 'Pop', 'UAC'],
+                        restrictedTraffic: ['Incent', 'Brand bidding']
+                    }
+                ]);
+            }
+        }
+
+        async function generateOfferLink(offerId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        offer_id: offerId,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offer link unavailable');
+                }
+
+                const data = await response.json();
+                const link = data?.link || data?.smartlink || '';
+
+                if (!link) {
+                    throw new Error('Пустая ссылка');
+                }
+
+                await navigator.clipboard.writeText(link);
+                hapticSuccess();
+                safeAlert('Ссылка создана и скопирована');
+            } catch (error) {
+                console.error('CPA generate offer link error:', error);
+                const fallbackLink = `https://traforce.com/?offer=${encodeURIComponent(offerId || 'demo')}&sub1=${encodeURIComponent(tg?.initDataUnsafe?.user?.id || 'telegram_user')}`;
+                try {
+                    await navigator.clipboard.writeText(fallbackLink);
+                    safeAlert('Backend ещё не подключён. В буфер скопирована временная ссылка.');
+                } catch {
+                    safeAlert('Backend ещё не подключён. Подключи endpoint /cpa/generate-link.');
+                }
+            }
+        }
+
 
         function openTopupModal() {
             hapticMedium();
@@ -4474,64 +4659,3 @@ closeDvizhRulesModal();
 </div>
 </body>
 </html>
-<script>
-function createOfferCard(offer) {
-    const geo = (offer.geo || []).join(', ');
-    const allowed = (offer.allowedTraffic || []).join(', ');
-    const restricted = (offer.restrictedTraffic || []).join(', ');
-
-    return `
-    <div class="glass-box p-4 rounded-[24px]">
-        <div class="flex justify-between mb-2">
-            <div>
-                <div class="text-white font-bold">${offer.title}</div>
-                <div class="text-gray-400 text-sm">${offer.category}</div>
-            </div>
-            <div class="text-green-400 font-bold">$${offer.payout}</div>
-        </div>
-
-        <div class="text-sm text-gray-400 mb-1">GEO: ${geo}</div>
-        <div class="text-sm text-gray-400 mb-1">Allowed: ${allowed}</div>
-        <div class="text-sm text-gray-400 mb-3">Restricted: ${restricted}</div>
-
-        <button class="primary-btn w-full p-3 rounded-xl"
-        onclick="generateOfferLink('${offer.id}')">
-        Сгенерировать ссылку
-        </button>
-    </div>`;
-}
-
-function renderOffers(offers){
-    const el = document.getElementById('offersList');
-    if(!el) return;
-    el.innerHTML = offers.map(createOfferCard).join('');
-}
-
-function loadCpaOffers(){
-    renderOffers([
-        {
-            id:'1',
-            title:'Dating SOI DE',
-            category:'Dating',
-            payout:3.4,
-            geo:['DE'],
-            allowedTraffic:['FB','TikTok'],
-            restrictedTraffic:['Brand']
-        },
-        {
-            id:'2',
-            title:'Dating DOI US',
-            category:'Dating',
-            payout:4.2,
-            geo:['US'],
-            allowedTraffic:['Push'],
-            restrictedTraffic:['Spam']
-        }
-    ]);
-}
-
-function generateOfferLink(id){
-    alert("Ссылка создана для оффера "+id);
-}
-
-</script>
