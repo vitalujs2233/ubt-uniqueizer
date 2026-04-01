@@ -1567,10 +1567,12 @@ body::after {
                 <span class="font-medium">Движ</span>
             </button>
 
-            <button id="<button id="navAdminBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70 hidden" onclick="showBottomPage('admin')">
-    <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">👑</div>
-    <span class="font-medium">Админ</span>
-</button>navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
+            <button id="navAdminBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70 hidden" onclick="showBottomPage('admin')">
+                <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">👑</div>
+                <span class="font-medium">Админ</span>
+            </button>
+
+            <button id="navSupportBtn" class="bottom-nav-btn flex flex-col items-center gap-1.5 text-sm text-white/70" onclick="showBottomPage('support')">
                 <div class="nav-icon-wrap h-11 w-11 rounded-2xl flex items-center justify-center text-xl">💬</div>
                 <span class="font-medium">Поддержка</span>
             </button>
@@ -1764,86 +1766,30 @@ body::after {
         }
 
         function showBottomPage(page) {
-    const homeScreen = document.getElementById('home-screen');
-    const historyScreen = document.getElementById('history-screen');
-    const dvizhScreen = document.getElementById('dvizh-screen');
-    const adminScreen = document.getElementById('admin-screen');
-    const supportScreen = document.getElementById('support-screen');
-
-    const navHomeBtn = document.getElementById('navHomeBtn');
-    const navHistoryBtn = document.getElementById('navHistoryBtn');
-    const navDvizhBtn = document.getElementById('navDvizhBtn');
-    const navAdminBtn = document.getElementById('navAdminBtn');
-    const navSupportBtn = document.getElementById('navSupportBtn');
-
-    homeScreen.classList.add('hidden');
-    historyScreen.classList.add('hidden');
-    dvizhScreen.classList.add('hidden');
-    if (adminScreen) adminScreen.classList.add('hidden');
-    supportScreen.classList.add('hidden');
-
-    [navHomeBtn, navHistoryBtn, navDvizhBtn, navAdminBtn, navSupportBtn]
-        .filter(Boolean)
-        .forEach((btn) => {
-            btn.classList.remove('active');
-            btn.classList.add('text-white/70');
-        });
-
-    if (page === 'home') {
-        homeScreen.classList.remove('hidden');
-        navHomeBtn.classList.add('active');
-        navHomeBtn.classList.remove('text-white/70');
-    }
-
-    if (page === 'history') {
-        historyScreen.classList.remove('hidden');
-        navHistoryBtn.classList.add('active');
-        navHistoryBtn.classList.remove('text-white/70');
-        loadTransactions?.();
-    }
-
-    if (page === 'dvizh') {
-        dvizhScreen.classList.remove('hidden');
-        navDvizhBtn.classList.add('active');
-        navDvizhBtn.classList.remove('text-white/70');
-        if (typeof renderDvizhAuthor === 'function') renderDvizhAuthor();
-        if (typeof loadDvizhFeed === 'function') loadDvizhFeed();
-    }
-
-    if (page === 'admin') {
-        if (adminScreen) adminScreen.classList.remove('hidden');
-        if (navAdminBtn) {
-            navAdminBtn.classList.add('active');
-            navAdminBtn.classList.remove('text-white/70');
-        }
-        if (typeof loadPendingPosts === 'function') loadPendingPosts();
-    }
-
-    if (page === 'support') {
-        supportScreen.classList.remove('hidden');
-        navSupportBtn.classList.add('active');
-        navSupportBtn.classList.remove('text-white/70');
-    }
-}
             const homeScreen = document.getElementById('home-screen');
             const historyScreen = document.getElementById('history-screen');
             const dvizhScreen = document.getElementById('dvizh-screen');
+            const adminScreen = document.getElementById('admin-screen');
             const supportScreen = document.getElementById('support-screen');
 
             const navHomeBtn = document.getElementById('navHomeBtn');
             const navHistoryBtn = document.getElementById('navHistoryBtn');
             const navDvizhBtn = document.getElementById('navDvizhBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
             const navSupportBtn = document.getElementById('navSupportBtn');
 
             homeScreen.classList.add('hidden');
             historyScreen.classList.add('hidden');
             dvizhScreen.classList.add('hidden');
+            if (adminScreen) adminScreen.classList.add('hidden');
             supportScreen.classList.add('hidden');
 
-            [navHomeBtn, navHistoryBtn, navDvizhBtn, navSupportBtn].forEach((btn) => {
-                btn.classList.remove('active');
-                btn.classList.add('text-white/70');
-            });
+            [navHomeBtn, navHistoryBtn, navDvizhBtn, navAdminBtn, navSupportBtn]
+                .filter(Boolean)
+                .forEach((btn) => {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-white/70');
+                });
 
             if (page === 'home') {
                 homeScreen.classList.remove('hidden');
@@ -1866,15 +1812,21 @@ body::after {
                 loadDvizhFeed();
             }
 
+            if (page === 'admin') {
+                if (adminScreen) adminScreen.classList.remove('hidden');
+                if (navAdminBtn) {
+                    navAdminBtn.classList.add('active');
+                    navAdminBtn.classList.remove('text-white/70');
+                }
+                if (typeof loadPendingPosts === 'function') loadPendingPosts();
+            }
+
             if (page === 'support') {
                 supportScreen.classList.remove('hidden');
                 navSupportBtn.classList.add('active');
                 navSupportBtn.classList.remove('text-white/70');
             }
         }
-
-
-
 
         const DVIZH_POST_COST = 5;
         let dvizhFilter = 'all';
@@ -3935,7 +3887,122 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
     setTimeout(hideAppLoader, 3200);
 })();
-    function setupAdminButton() {
+    async function loadPendingPosts() {
+    const feed = document.getElementById('adminPendingFeed');
+    if (!feed) return;
+
+    feed.innerHTML = `
+        <div class="glass-box p-5 rounded-[24px] text-center text-gray-400">
+            Загружаем посты...
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/dvizh/pending`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                initData: window.Telegram?.WebApp?.initData || ''
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+            throw new Error(data.message || 'Нет доступа');
+        }
+
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if (!items.length) {
+            feed.innerHTML = `
+                <div class="glass-box p-5 rounded-[24px] text-center text-gray-400">
+                    Нет постов на модерации
+                </div>
+            `;
+            return;
+        }
+
+        feed.innerHTML = items.map(renderPendingPostCard).join('');
+    } catch (error) {
+        console.error('Pending posts error:', error);
+        feed.innerHTML = `
+            <div class="glass-box p-5 rounded-[24px] text-center text-red-400">
+                ${escapeHtml(error.message || 'Ошибка загрузки')}
+            </div>
+        `;
+    }
+}
+
+function renderPendingPostCard(post) {
+    const images = Array.isArray(post.imageUrls || post.image_urls) ? (post.imageUrls || post.image_urls) : [];
+    const authorName = post.author?.name || post.first_name || 'Пользователь';
+    const username = post.author?.username || post.username || '';
+    const avatarUrl = post.author?.photoUrl || post.photo_url || '';
+
+    const avatarHtml = avatarUrl
+        ? `<img src="${avatarUrl}" class="h-12 w-12 rounded-full object-cover border border-white/10" alt="avatar">`
+        : `<div class="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center font-bold">${escapeHtml(authorName.charAt(0).toUpperCase())}</div>`;
+
+    const imagesHtml = images.map(url => `
+        <img src="${url}" class="w-full rounded-2xl border border-white/10 mt-3" alt="post image">
+    `).join('');
+
+    return `
+        <div class="glass-box p-5 rounded-[24px]">
+            <div class="flex items-center gap-3 mb-3">
+                ${avatarHtml}
+                <div>
+                    <div class="font-bold">${escapeHtml(authorName)}</div>
+                    <div class="text-xs text-gray-400">@${escapeHtml(username)}</div>
+                </div>
+            </div>
+
+            <div class="text-sm text-gray-200 mb-3">${escapeHtml(post.text || '')}</div>
+
+            ${imagesHtml}
+
+            <div class="flex gap-2 mt-4">
+                <button class="green-btn px-4 py-2 rounded-2xl font-semibold" onclick="moderatePost(${post.id}, 'approve')">
+                    Approve
+                </button>
+                <button class="secondary-btn px-4 py-2 rounded-2xl font-semibold" onclick="moderatePost(${post.id}, 'reject')">
+                    Reject
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+async function moderatePost(postId, action) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/dvizh/moderate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                initData: window.Telegram?.WebApp?.initData || '',
+                postId,
+                action
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+            throw new Error(data.message || 'Ошибка модерации');
+        }
+
+        safeAlert(action === 'approve' ? 'Пост одобрен' : 'Пост отклонён');
+
+        await loadPendingPosts();
+        await loadDvizhFeed();
+    } catch (error) {
+        console.error('Moderate post error:', error);
+        safeAlert(error.message || 'Ошибка модерации');
+    }
+}
+
+function setupAdminButton() {
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     const adminBtn = document.getElementById('navAdminBtn');
 
@@ -3948,6 +4015,8 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
     }
     }
 setupAdminButton();
+document.getElementById('refreshAdminBtn')?.addEventListener('click', loadPendingPosts);
+
 </script>
 
 </body>
