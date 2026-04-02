@@ -1078,6 +1078,58 @@ app.post('/cpa/postback/traforce', async (req, res) => {
   }
 });
 
+app.get('/cpa/postback/traforce', async (req, res) => {
+  try {
+    const payload = req.query || {};
+
+    await tryQuery(
+      `insert into cpa_postback_logs (payload) values ($1)`,
+      [JSON.stringify(payload)]
+    );
+
+    const sub1 = payload.sub1 || payload.aff_sub1 || payload.sub_id_1 || null;
+    const sub2 = payload.sub2 || payload.aff_sub2 || payload.sub_id_2 || null;
+    const offerId = payload.offer_id || payload.offer || payload.offerid || null;
+    const clickId = payload.clickid || payload.click_id || payload.aff_click_id || null;
+    const status = payload.status || payload.goal || 'approved';
+    const country = payload.country || payload.geo || null;
+    const apiPayout = safeNumber(payload.payout || payload.sum || payload.revenue || 0, 0);
+    const userPayout = Number((apiPayout * CPA_MARGIN).toFixed(2));
+    const serviceMargin = Number((apiPayout - userPayout).toFixed(2));
+
+    if (sub1) {
+      await tryQuery(
+        `insert into cpa_conversions
+           (telegram_id, offer_id, click_id, sub1, sub2, status, country, payout_api, payout_user, service_margin, raw_payload)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          Number(sub1),
+          offerId ? String(offerId) : null,
+          clickId ? String(clickId) : null,
+          String(sub1),
+          sub2 ? String(sub2) : null,
+          String(status),
+          country ? String(country) : null,
+          apiPayout,
+          userPayout,
+          serviceMargin,
+          JSON.stringify(payload)
+        ]
+      );
+
+      if (String(status).toLowerCase() !== 'rejected' && String(status).toLowerCase() !== 'declined') {
+        await updateUserUsdBalance(Number(sub1), userPayout);
+      }
+    }
+
+    res.send('ok');
+  } catch (error) {
+    console.error('CPA GET postback error:', error);
+    res.status(500).send('error');
+  }
+});
+
+
 // =======================
 // CPA MODULE END
 // =======================
