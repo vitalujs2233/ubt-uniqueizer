@@ -2526,7 +2526,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const targetEl = document.getElementById(targetId);
             if (targetEl) targetEl.classList.remove('hidden');
 
-            setDatingCpaHeaderMode(section === 'dating-cpa');
+            const isCpaSection = ['dating-cpa', 'cpa-stats', 'cpa-offer-details'].includes(section);
+            setDatingCpaHeaderMode(isCpaSection);
 
             if (section === 'link') {
                 closeSmartStatsView();
@@ -2544,10 +2545,21 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const topupBtn = document.getElementById('topupBtn');
             const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
 
-            if (userBalance) userBalance.classList.toggle('hidden', isCpa);
-            if (cpaBalanceBlock) cpaBalanceBlock.classList.toggle('hidden', !isCpa);
-            if (topupBtn) topupBtn.classList.toggle('hidden', isCpa);
-            if (cpaWithdrawBtn) cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
+            if (userBalance) {
+                userBalance.classList.toggle('hidden', !!isCpa);
+            }
+
+            if (cpaBalanceBlock) {
+                cpaBalanceBlock.classList.toggle('hidden', !isCpa);
+            }
+
+            if (topupBtn) {
+                topupBtn.classList.toggle('hidden', !!isCpa);
+            }
+
+            if (cpaWithdrawBtn) {
+                cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
+            }
         }
 
         function updateCpaUi(data = {}) {
