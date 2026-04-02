@@ -921,29 +921,53 @@ app.post('/cpa/statistics', async (req, res) => {
       return res.status(401).json({ message: 'Invalid user' });
     }
 
-    const { limit = 50, status = '', offer_id = '', sub2 = '' } = req.body || {};
+    const {
+      limit = 100,
+      status = '',
+      sub_type = '',
+      sub_value = '',
+      geo = '',
+      date_from = '',
+      date_to = ''
+    } = req.body || {};
+
     const values = [user.id];
     let where = 'where telegram_id = $1';
 
     if (status) {
-      values.push(String(status));
-      where += ` and status = $${values.length}`;
+      values.push(String(status).trim().toLowerCase());
+      where += ` and lower(status) = $${values.length}`;
     }
 
-    if (offer_id) {
-      values.push(String(offer_id));
-      where += ` and offer_id = $${values.length}`;
+    if (sub_type === 'sub1' && sub_value) {
+      values.push(String(sub_value).trim());
+      where += ` and sub1 = $${values.length}`;
     }
 
-    if (sub2) {
-      values.push(String(sub2));
+    if (sub_type === 'sub2' && sub_value) {
+      values.push(String(sub_value).trim());
       where += ` and sub2 = $${values.length}`;
     }
 
-    const summaryValues = values.slice();
-    values.push(Number(limit) > 0 ? Number(limit) : 50);
+    if (geo) {
+      values.push(String(geo).trim().toUpperCase());
+      where += ` and upper(country) = $${values.length}`;
+    }
 
-    const rowsResult = await tryQuery(
+    if (date_from) {
+      values.push(String(date_from));
+      where += ` and created_at::date >= $${values.length}::date`;
+    }
+
+    if (date_to) {
+      values.push(String(date_to));
+      where += ` and created_at::date <= $${values.length}::date`;
+    }
+
+    const summaryValues = values.slice();
+    values.push(Number(limit) > 0 ? Number(limit) : 100);
+
+    const itemsResult = await tryQuery(
       `select
           id,
           telegram_id,
@@ -975,16 +999,45 @@ app.post('/cpa/statistics', async (req, res) => {
       summaryValues
     );
 
+    const geoStatsResult = await tryQuery(
+      `select
+          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(*)::int as clicks,
+          count(distinct coalesce(nullif(click_id, ''), id::text))::int as unique_clicks,
+          count(*)::int as conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total
+       from cpa_conversions
+       ${where}
+       group by upper(coalesce(country, 'UNKNOWN'))
+       order by clicks desc, geo asc`,
+      summaryValues
+    );
+
+    const geo_stats = (geoStatsResult.rows || []).map((row) => {
+      const clicks = safeNumber(row.clicks, 0);
+      const conversions = safeNumber(row.conversions, 0);
+      const payoutApiTotal = safeNumber(row.payout_api_total, 0);
+      return {
+        geo: row.geo || 'UNKNOWN',
+        clicks,
+        unique_clicks: safeNumber(row.unique_clicks, 0),
+        conversions,
+        cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
+        epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
+      };
+    });
+
     res.json({
       ok: true,
       statistics: {
-        items: rowsResult.rows || [],
+        items: itemsResult.rows || [],
         summary: {
           total_conversions: safeNumber(summaryResult.rows?.[0]?.total_conversions, 0),
           payout_api_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_api_total, 0).toFixed(2)),
           payout_user_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_user_total, 0).toFixed(2)),
           service_margin_total: Number(safeNumber(summaryResult.rows?.[0]?.service_margin_total, 0).toFixed(2))
-        }
+        },
+        geo_stats
       }
     });
   } catch (error) {
