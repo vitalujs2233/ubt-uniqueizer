@@ -1443,7 +1443,9 @@ body::after {
                     <div class="text-white font-semibold text-lg mb-3">Фильтры</div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                        <input id="cpaStatsGeoFilter" type="text" class="neo-input" placeholder="GEO, например DE" />
+                        <select id="cpaStatsGeoFilter" class="neo-input">
+                            <option value="">Все GEO</option>
+                        </select>
                         <select id="cpaStatsStatusFilter" class="neo-input">
                             <option value="">Все статусы</option>
                             <option value="approved">Approved</option>
@@ -1451,7 +1453,6 @@ body::after {
                             <option value="rejected">Rejected</option>
                         </select>
                         <input id="cpaStatsSub2Filter" type="text" class="neo-input" placeholder="Поток / sub2, например tiktok1" />
-                        <input id="cpaStatsOfferFilter" type="text" class="neo-input" placeholder="Offer ID" />
                         <input id="cpaStatsDateFromFilter" type="date" class="neo-input" />
                         <input id="cpaStatsDateToFilter" type="date" class="neo-input" />
                     </div>
@@ -2635,6 +2636,25 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             });
         }
 
+        function fillCpaGeoFilter(items = []) {
+            const geoSelect = document.getElementById('cpaStatsGeoFilter');
+            if (!geoSelect) return;
+
+            const currentValue = geoSelect.value || '';
+            const geos = Array.from(new Set(
+                (Array.isArray(items) ? items : [])
+                    .map((item) => String(item.country || '').trim().toUpperCase())
+                    .filter(Boolean)
+            )).sort();
+
+            geoSelect.innerHTML = '<option value="">Все GEO</option>' +
+                geos.map((geo) => `<option value="${geo}">${geo}</option>`).join('');
+
+            if (currentValue && geos.includes(currentValue.toUpperCase())) {
+                geoSelect.value = currentValue.toUpperCase();
+            }
+        }
+
         function renderCpaStatistics(response = {}) {
             const payload = response?.statistics || response || {};
             const summary = payload.summary || {};
@@ -2653,10 +2673,12 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             if (!listEl) return;
 
-            const geoFilter = (document.getElementById('cpaStatsGeoFilter')?.value || '').trim().toLowerCase();
+            fillCpaGeoFilter(items);
+
+            const geoFilter = (document.getElementById('cpaStatsGeoFilter')?.value || '').trim().toUpperCase();
             const filtered = items.filter((item) => {
                 if (!geoFilter) return true;
-                return String(item.country || '').toLowerCase().includes(geoFilter);
+                return String(item.country || '').trim().toUpperCase() === geoFilter;
             });
 
             if (!filtered.length) {
@@ -2674,7 +2696,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div>
                             <div class="text-white font-bold text-[15px]">${formatCpaDate(item.created_at)}</div>
-                            <div class="text-sm text-gray-400 mt-1">Offer: ${item.offer_id || '—'} • GEO: ${item.country || '—'}</div>
+                            <div class="text-sm text-gray-400 mt-1">GEO: ${item.country || '—'} • Статистика по трафику</div>
                         </div>
                         <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">${String(item.status || 'approved').toUpperCase()}</div>
                     </div>
@@ -2719,7 +2741,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                         initData: tg?.initData || null,
                         telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
                         status: document.getElementById('cpaStatsStatusFilter')?.value || '',
-                        offer_id: document.getElementById('cpaStatsOfferFilter')?.value?.trim() || '',
                         sub2: document.getElementById('cpaStatsSub2Filter')?.value?.trim() || '',
                         date_from: document.getElementById('cpaStatsDateFromFilter')?.value || '',
                         date_to: document.getElementById('cpaStatsDateToFilter')?.value || '',
@@ -4567,7 +4588,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const cpaStatsGeoFilter = document.getElementById('cpaStatsGeoFilter');
         const cpaStatsStatusFilter = document.getElementById('cpaStatsStatusFilter');
         const cpaStatsSub2Filter = document.getElementById('cpaStatsSub2Filter');
-        const cpaStatsOfferFilter = document.getElementById('cpaStatsOfferFilter');
         const cpaStatsDateFromFilter = document.getElementById('cpaStatsDateFromFilter');
         const cpaStatsDateToFilter = document.getElementById('cpaStatsDateToFilter');
 
@@ -4634,10 +4654,8 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             });
         }
 
-        if (cpaStatsOfferFilter) {
-            cpaStatsOfferFilter.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') loadCpaStatistics();
-            });
+        if (cpaStatsGeoFilter) {
+            cpaStatsGeoFilter.addEventListener('change', loadCpaStatistics);
         }
 
         if (cpaStatsDateFromFilter) {
