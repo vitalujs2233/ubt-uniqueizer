@@ -2551,10 +2551,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function updateCpaUi(data = {}) {
-            const payload = data && typeof data === 'object' && data.dashboard ? data.dashboard : data || {};
-            const balanceData = (payload && payload.balance && typeof payload.balance === 'object') ? payload.balance : {};
-            const statsData = (payload && payload.stats && typeof payload.stats === 'object') ? payload.stats : {};
-            const userData = (payload && payload.user && typeof payload.user === 'object') ? payload.user : {};
+            const payload = data && typeof data === 'object' && data.dashboard ? data.dashboard : (data || {});
+            const balanceData = (payload && typeof payload.balance === 'object' && payload.balance) ? payload.balance : {};
+            const statsData = (payload && typeof payload.stats === 'object' && payload.stats) ? payload.stats : {};
+            const userData = (payload && typeof payload.user === 'object' && payload.user) ? payload.user : {};
 
             const safeNum = (value, fallback = 0) => {
                 if (value === null || value === undefined || value === '') return fallback;
@@ -2589,24 +2589,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 0
             );
 
-            const clicks = safeNum(
-                statsData.clicks ??
-                payload.clicks,
-                0
-            );
-
-            const conversions = safeNum(
-                statsData.conversions ??
-                payload.conversions,
-                0
-            );
-
-            const revenue = safeNum(
-                statsData.revenue ??
-                payload.revenue ??
-                payload.profit,
-                0
-            );
+            const clicks = safeNum(statsData.clicks ?? payload.clicks, 0);
+            const conversions = safeNum(statsData.conversions ?? payload.conversions, 0);
+            const revenue = safeNum(statsData.revenue ?? payload.revenue ?? payload.profit, 0);
 
             const crRaw = statsData.cr ?? payload.cr;
             const crValue = Number.isFinite(Number(crRaw))
@@ -2620,7 +2605,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             setText('cpaHeaderBalance', `Баланс: $${balance.toFixed(2)}`);
             setText('cpaHeaderHold', `Hold: $${hold.toFixed(2)}`);
-
             setText('cpaUsdBalance', `$${balance.toFixed(2)}`);
             setText('cpaUsdHold', `$${hold.toFixed(2)}`);
             setText('cpaTotalWithdrawn', `$${withdrawn.toFixed(2)}`);
@@ -2630,7 +2614,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             setText('cpaCr', `${crValue.toFixed(2)}%`);
             setText('cpaNetworkName', 'TrafForce');
 
-            if (userData.first_name) setText('cpaHeaderName', userData.first_name);
+            if (userData.first_name) {
+                setText('cpaHeaderName', userData.first_name);
+            }
         }
 
 
@@ -2818,7 +2804,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     url.searchParams.set('sub1', String(tgId));
                     url.searchParams.set('sub2', 'miniapp');
                     return url.toString();
-                } catch {
+                } catch (error) {
+                    console.error('Smartlink URL parse error:', error);
                     return `https://tone.affomelody.com/click?pid=12519&offer_id=25&sub1=${encodeURIComponent(String(tgId))}&sub2=miniapp`;
                 }
             };
@@ -2860,37 +2847,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 }
                 if (status) status.textContent = '⚠️ Показана smartlink-ссылка из TrafForce с sub1/sub2';
                 hapticError();
-            }
-        })
-                });
-
-                if (!response.ok) {
-                    throw new Error('CPA smartlink unavailable');
-                }
-
-                const data = await response.json();
-                const smartlink = data.smartlink || data.link || '';
-
-                if (!smartlink) {
-                    throw new Error('Пустой smartlink');
-                }
-
-                if (output) output.value = smartlink;
-                if (openBtn) {
-                    openBtn.href = smartlink;
-                    openBtn.classList.remove('hidden');
-                }
-                if (status) status.textContent = '✅ Smartlink создан';
-                hapticSuccess();
-            } catch (error) {
-                console.error('CPA smartlink error:', error);
-                const fallbackLink = `https://traforce.com/?sub1=${tg?.initDataUnsafe?.user?.id || 'telegram_user'}`;
-                if (output) output.value = fallbackLink;
-                if (openBtn) {
-                    openBtn.href = fallbackLink;
-                    openBtn.classList.remove('hidden');
-                }
-                if (status) status.textContent = 'Backend ещё не подключён. Сейчас показан временный fallback.';
             }
         }
 
