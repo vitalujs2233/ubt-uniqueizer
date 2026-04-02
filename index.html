@@ -1252,6 +1252,7 @@ body::after {
                 </div>
             </div>
 
+            
             <div id="dating-cpa-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
@@ -1264,6 +1265,9 @@ body::after {
                             <div class="text-white font-semibold text-lg">Dating CPA</div>
                             <div class="text-sm text-gray-400 mt-1">Полный раздел партнёрской программы с балансом в USD</div>
                         </div>
+                        <button id="openCpaStatsBtn" class="secondary-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap text-[14px]">
+                            📊 Статистика
+                        </button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -1320,96 +1324,91 @@ body::after {
                     </div>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4" id="cpaOffersCatalog">
+                <div class="glass-box p-4 rounded-[24px] mb-4">
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
                             <div class="text-white font-semibold text-lg">Офферы</div>
-                            <div class="text-sm text-gray-400 mt-1">Простой список офферов и отдельная страница деталей, как в кабинете партнёрки</div>
-                        </div>
-                        <button id="refreshCpaOffersBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
-                            Обновить
-                        </button>
-                    </div>
-
-                    <div id="cpaOffersListView">
-                        <div id="offersList" class="space-y-3">
-                            <div class="metric-tile">
-                                <div class="text-sm text-gray-400">Офферы загружаются...</div>
-                            </div>
+                            <div class="text-sm text-gray-400 mt-1">Отдельный блок офферов. Листай вправо и влево.</div>
                         </div>
                     </div>
 
-                    <div id="cpaOfferDetailsView" class="hidden">
-                        <button id="backToOffersBtn" class="text-blue-400 font-medium mb-4">← Назад к офферам</button>
-
-                        <div class="metric-tile mb-3">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <div id="cpaOfferTitle" class="text-white text-[20px] font-extrabold leading-tight">Оффер</div>
-                                    <div id="cpaOfferSubtitle" class="text-sm text-gray-400 mt-1">Подробная информация об оффере</div>
+                    <div class="overflow-x-auto pb-2 -mx-1 px-1">
+                        <div id="cpaOffersSlider" class="flex gap-3 snap-x snap-mandatory">
+                            <div class="metric-tile min-w-[88%] sm:min-w-[420px] snap-start">
+                                <div class="flex items-start justify-between gap-3 mb-3">
+                                    <div>
+                                        <div class="text-white font-bold text-[18px] leading-tight">Smartlink Adult Dating WW</div>
+                                        <div class="text-sm text-gray-400 mt-1">Adult / WW / Smartlink</div>
+                                    </div>
+                                    <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">$0.85</div>
                                 </div>
-                                <div class="text-right shrink-0">
-                                    <div id="cpaOfferWebRate" class="text-green-400 text-[20px] font-extrabold">$0.00</div>
-                                    <div id="cpaOfferApiRate" class="text-xs text-gray-400 mt-1">из $0.00</div>
+
+                                <div class="space-y-2 text-sm mb-4">
+                                    <div>
+                                        <div class="text-xs text-gray-400 mb-1">Кратко</div>
+                                        <div class="text-white">Глобальный adult dating smartlink. Ставка зависит от фактического payout по GEO.</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-gray-400 mb-1">SubID</div>
+                                        <div class="text-white">sub1 = Telegram ID, sub2 = поток вебмастера</div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="secondary-btn p-3 rounded-2xl font-bold" onclick="openOfferDetails('smartlink_adult_ww')">Подробнее</button>
+                                    <button class="primary-btn p-3 rounded-2xl font-bold" onclick="generateOfferLink('smartlink_adult_ww')">Взять ссылку</button>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Flow / Описание</div>
-                                <div id="cpaOfferDescription" class="text-white text-sm leading-relaxed">—</div>
+                            <div class="metric-tile min-w-[88%] sm:min-w-[420px] snap-start">
+                                <div class="flex items-start justify-between gap-3 mb-3">
+                                    <div>
+                                        <div class="text-white font-bold text-[18px] leading-tight">Mainstream Dating</div>
+                                        <div class="text-sm text-gray-400 mt-1">Mainstream / Dating / Multi GEO</div>
+                                    </div>
+                                    <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">$1.20</div>
+                                </div>
+
+                                <div class="space-y-2 text-sm mb-4">
+                                    <div>
+                                        <div class="text-xs text-gray-400 mb-1">Кратко</div>
+                                        <div class="text-white">Mainstream dating офферы с разными лендингами и payout по фактической сумме.</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-gray-400 mb-1">SubID</div>
+                                        <div class="text-white">sub1 = Telegram ID, sub2 = источник трафика</div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="secondary-btn p-3 rounded-2xl font-bold" onclick="openOfferDetails('mainstream_dating')">Подробнее</button>
+                                    <button class="primary-btn p-3 rounded-2xl font-bold" onclick="generateOfferLink('mainstream_dating')">Взять ссылку</button>
+                                </div>
                             </div>
-
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">GEO</div>
-                                <div id="cpaOfferGeo" class="text-white text-sm leading-relaxed">—</div>
-                            </div>
-
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Разрешённый трафик</div>
-                                <div id="cpaOfferAllowed" class="text-white text-sm leading-relaxed">—</div>
-                            </div>
-
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Запрещённый трафик</div>
-                                <div id="cpaOfferRestricted" class="text-white text-sm leading-relaxed">—</div>
-                            </div>
-
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Sub1</div>
-                                <div class="text-white text-sm leading-relaxed">Автоматически = Telegram ID</div>
-                            </div>
-
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Sub2</div>
-                                <input id="cpaOfferSub2Input" type="text" class="neo-input mt-2" placeholder="Например: tiktok1" />
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3 mt-4">
-                            <button id="generateOfferLinkBtn" class="primary-btn p-4 rounded-2xl font-bold">
-                                Взять ссылку
-                            </button>
-                            <button id="copyOfferLinkBtn" class="green-btn p-4 rounded-2xl font-bold">
-                                Скопировать ссылку
-                            </button>
-                        </div>
-
-                        <div id="offerGeneratedLinkBox" class="hidden mt-4 glass-box p-4 rounded-2xl">
-                            <p class="text-green-400 font-semibold mb-2">✅ Ссылка для оффера готова</p>
-                            <input id="offerGeneratedLinkOutput" type="text" readonly class="neo-input" placeholder="Тут появится ссылка" />
-                            <p id="offerGeneratedLinkStatus" class="mt-3 text-sm text-gray-300"></p>
                         </div>
                     </div>
                 </div>
 
+                <div class="glass-box p-4 rounded-[24px]">
+                    <div class="text-white font-semibold mb-2">Выплаты</div>
+                    <div class="text-sm text-gray-400 leading-relaxed">
+                        Нажми <span class="text-white font-semibold">Вывести</span>, укажи сумму и USDT-кошелёк.
+                        Заявка отправится в backend на обработку.
+                    </div>
+                </div>
+            </div>
+
+            <div id="cpa-stats-section" class="hidden">
+                <div class="flex items-center justify-between mb-4 gap-3">
+                    <button onclick="showSection('dating-cpa')" class="text-blue-400 font-medium">← Назад</button>
+                    <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">CPA • STATISTICS</div>
+                </div>
 
                 <div class="glass-box p-4 rounded-[24px] mb-4">
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
                             <div class="text-white font-semibold text-lg">Статистика</div>
-                            <div class="text-sm text-gray-400 mt-1">Данные тянутся через backend и API партнёрской сети</div>
+                            <div class="text-sm text-gray-400 mt-1">Вся статистика и основные параметры по трафику</div>
                         </div>
                         <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
                             Обновить
@@ -1439,11 +1438,96 @@ body::after {
                     </div>
                 </div>
 
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="text-white font-semibold text-lg mb-3">Параметры</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Источник</div>
+                            <div class="text-white text-sm">Traforce / Affise API</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Трекинг</div>
+                            <div class="text-white text-sm">sub1 = Telegram ID</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Поток веба</div>
+                            <div class="text-white text-sm">sub2 = ручной tag</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Маржа</div>
+                            <div class="text-white text-sm">От фактического payout</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-box p-4 rounded-[24px]">
-                    <div class="text-white font-semibold mb-2">Выплаты</div>
-                    <div class="text-sm text-gray-400 leading-relaxed">
-                        Нажми <span class="text-white font-semibold">Вывести</span>, укажи сумму и USDT-кошелёк.
-                        Заявка отправится в backend на обработку.
+                    <div class="text-white font-semibold text-lg mb-3">Разбивка</div>
+                    <div class="space-y-3">
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Статус</div>
+                            <div class="text-white text-sm">Hold / Approved / Rejected</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Что должно отображаться</div>
+                            <div class="text-white text-sm">Дата, клики, конверсии, payout, sub2 и статус лида</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cpa-offer-details-section" class="hidden">
+                <div class="flex items-center justify-between mb-4 gap-3">
+                    <button onclick="closeOfferDetails()" class="text-blue-400 font-medium">← Назад</button>
+                    <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">OFFER DETAILS</div>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div>
+                            <div id="cpaOfferTitle" class="text-white font-semibold text-lg">Оффер</div>
+                            <div id="cpaOfferSubtitle" class="text-sm text-gray-400 mt-1">Описание оффера</div>
+                        </div>
+                        <div id="cpaOfferRate" class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">$0.00</div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Flow / Условия</div>
+                            <div id="cpaOfferFlow" class="text-white text-sm leading-relaxed">—</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Разрешённый трафик</div>
+                            <div id="cpaOfferAllowed" class="text-white text-sm leading-relaxed">—</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Запрещённый трафик</div>
+                            <div id="cpaOfferRestricted" class="text-white text-sm leading-relaxed">—</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Sub1</div>
+                            <div id="cpaOfferSub1" class="text-white text-sm leading-relaxed">telegram_id</div>
+                        </div>
+
+                        <div class="metric-tile">
+                            <div class="text-xs text-gray-400 mb-1">Sub2</div>
+                            <input id="cpaOfferSub2Input" type="text" class="neo-input mt-2" placeholder="Например: tiktok1" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <button id="cpaOfferGenerateBtn" class="primary-btn p-4 rounded-2xl font-bold">
+                            Взять ссылку
+                        </button>
+                        <button id="cpaOfferCopyBtn" class="green-btn p-4 rounded-2xl font-bold">
+                            Скопировать ссылку
+                        </button>
+                    </div>
+
+                    <div id="cpaOfferLinkWrap" class="hidden mt-4">
+                        <input id="cpaOfferLinkOutput" type="text" readonly class="neo-input" placeholder="Тут появится ссылка" />
                     </div>
                 </div>
             </div>
@@ -2432,7 +2516,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         };
 
         function showSection(section) {
-            const sections = ['main-menu', 'dating-cpa-section', 'video-section', 'link-section', 'preland-section', 'spy-section'];
+            const sections = ['main-menu', 'dating-cpa-section', 'cpa-stats-section', 'cpa-offer-details-section', 'video-section', 'link-section', 'preland-section', 'spy-section'];
             sections.forEach((s) => {
                 const el = document.getElementById(s);
                 if (el) el.classList.add('hidden');
@@ -2449,10 +2533,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 loadSmartLinks();
             }
 
-            if (section === 'dating-cpa') {
+            if (section === 'dating-cpa' || section === 'cpa-stats') {
                 loadCpaDashboard();
-                loadCpaOffers();
-                closeOfferDetailsView();
             }
         }
 
@@ -2516,6 +2598,125 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 updateCpaUi({});
             }
         }
+
+        const cpaOfferLibrary = {
+            smartlink_adult_ww: {
+                id: 'smartlink_adult_ww',
+                title: 'Smartlink Adult Dating WW',
+                subtitle: 'Adult / WW / Smartlink',
+                rate: '$0.85',
+                flow: 'Глобальный adult dating smartlink. Итоговая сумма рассчитывается от фактического payout, который приходит по постбеку.',
+                allowed: 'FB, TikTok, Native, Push',
+                restricted: 'Brand bidding, Spam'
+            },
+            mainstream_dating: {
+                id: 'mainstream_dating',
+                title: 'Mainstream Dating',
+                subtitle: 'Mainstream / Dating / Multi GEO',
+                rate: '$1.20',
+                flow: 'Mainstream dating офферы с разными лендингами. Выплата для веба считается от фактической суммы конверсии.',
+                allowed: 'FB, TikTok, UAC, Native',
+                restricted: 'Spam, Incent, Brand bidding'
+            }
+        };
+
+        let currentCpaOfferId = null;
+
+        function openOfferDetails(offerId) {
+            const offer = cpaOfferLibrary[offerId];
+            if (!offer) return;
+
+            currentCpaOfferId = offerId;
+            const tgId = tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || 'telegram_id';
+
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+
+            setText('cpaOfferTitle', offer.title);
+            setText('cpaOfferSubtitle', offer.subtitle);
+            setText('cpaOfferRate', offer.rate);
+            setText('cpaOfferFlow', offer.flow);
+            setText('cpaOfferAllowed', offer.allowed);
+            setText('cpaOfferRestricted', offer.restricted);
+            setText('cpaOfferSub1', String(tgId));
+
+            const linkWrap = document.getElementById('cpaOfferLinkWrap');
+            const linkOutput = document.getElementById('cpaOfferLinkOutput');
+            if (linkWrap) linkWrap.classList.add('hidden');
+            if (linkOutput) linkOutput.value = '';
+
+            showSection('cpa-offer-details');
+        }
+
+        function closeOfferDetails() {
+            showSection('dating-cpa');
+        }
+
+        async function generateOfferLink(offerId) {
+            const selectedOfferId = offerId || currentCpaOfferId;
+            if (!selectedOfferId) return '';
+
+            const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
+            const tgId = tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || 'telegram_id';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        telegram_id: tgId,
+                        offer_id: selectedOfferId,
+                        sub2
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offer link unavailable');
+                }
+
+                const data = await response.json();
+                const link = data?.link || data?.smartlink || data?.url || '';
+                if (!link) throw new Error('Пустая ссылка');
+
+                const linkWrap = document.getElementById('cpaOfferLinkWrap');
+                const linkOutput = document.getElementById('cpaOfferLinkOutput');
+                if (linkWrap) linkWrap.classList.remove('hidden');
+                if (linkOutput) linkOutput.value = link;
+
+                return link;
+            } catch (error) {
+                console.error('CPA offer link error:', error);
+                const fallback = `https://traforce.com/?offer=${encodeURIComponent(selectedOfferId)}&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
+                const linkWrap = document.getElementById('cpaOfferLinkWrap');
+                const linkOutput = document.getElementById('cpaOfferLinkOutput');
+                if (linkWrap) linkWrap.classList.remove('hidden');
+                if (linkOutput) linkOutput.value = fallback;
+                return fallback;
+            }
+        }
+
+        async function copyCurrentOfferLink() {
+            let link = document.getElementById('cpaOfferLinkOutput')?.value?.trim() || '';
+            if (!link) {
+                link = await generateOfferLink();
+            }
+            if (!link) return;
+
+            try {
+                await navigator.clipboard.writeText(link);
+                hapticSuccess();
+                safeAlert('Ссылка скопирована');
+            } catch (error) {
+                console.error(error);
+                hapticError();
+                safeAlert('Не удалось скопировать ссылку');
+            }
+        }
+
 
         async function createCpaSmartlink() {
             const output = document.getElementById('cpaSmartlinkOutput');
@@ -2602,284 +2803,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 safeAlert('Backend вывода ещё не подключён. Подключи endpoint /cpa/withdraw.');
             }
         }
-
-        let cpaOffersCache = [];
-        let currentOfferDetails = null;
-
-        function cpaEscapeHtml(value) {
-            return String(value ?? '')
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;')
-                .replaceAll('"', '&quot;')
-                .replaceAll("'", '&#39;');
-        }
-
-        function cpaNormalizeList(value) {
-            if (Array.isArray(value)) {
-                return value.map((item) => String(item).trim()).filter(Boolean);
-            }
-            if (typeof value === 'string') {
-                return value.split(/[,|]/).map((item) => item.trim()).filter(Boolean);
-            }
-            return [];
-        }
-
-        function cpaFormatList(value, fallback = 'Не указано') {
-            const items = cpaNormalizeList(value);
-            return items.length ? items.map(cpaEscapeHtml).join(', ') : fallback;
-        }
-
-        function cpaGetPayouts(offer = {}) {
-            const apiPayout = Number(
-                offer.api_payout ??
-                offer.original_payout ??
-                offer.network_payout ??
-                offer.traforce_payout ??
-                offer.payout ??
-                0
-            );
-            const webPayout = Number(
-                offer.display_payout ??
-                offer.web_payout ??
-                offer.user_payout ??
-                (apiPayout * 0.85)
-            );
-            return {
-                api: apiPayout,
-                web: webPayout
-            };
-        }
-
-        function createCpaOfferCard(offer = {}) {
-            const offerId = cpaEscapeHtml(offer.id || offer.offer_id || offer.traforce_offer_id || '');
-            const title = cpaEscapeHtml(offer.title || offer.name || 'Offer');
-            const subtitle = cpaEscapeHtml(offer.short_description || offer.vertical || 'Нажми «Подробнее», чтобы открыть полные условия');
-            const geo = cpaFormatList(offer.countries || offer.geo || offer.geos || offer.country_codes, 'WW / Multi GEO');
-            const payouts = cpaGetPayouts(offer);
-
-            return `
-                <div class="metric-tile">
-                    <div class="flex items-start justify-between gap-3 mb-3">
-                        <div class="min-w-0">
-                            <div class="text-white text-[18px] font-bold leading-tight">${title}</div>
-                            <div class="text-sm text-gray-400 mt-1">${subtitle}</div>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <div class="text-green-400 text-[18px] font-extrabold">$${payouts.web.toFixed(2)}</div>
-                            <div class="text-[11px] text-gray-400">из $${payouts.api.toFixed(2)}</div>
-                        </div>
-                    </div>
-
-                    <div class="text-sm text-gray-300 mb-3">
-                        <span class="text-gray-400">GEO:</span> ${geo}
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="secondary-btn p-3 rounded-2xl font-bold" onclick="openOfferDetailsView('${offerId}')">
-                            Подробнее
-                        </button>
-                        <button class="primary-btn p-3 rounded-2xl font-bold" onclick="quickGenerateOfferLink('${offerId}')">
-                            Взять ссылку
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCpaOffers(offers = []) {
-            const offersList = document.getElementById('offersList');
-            if (!offersList) return;
-
-            if (!Array.isArray(offers) || !offers.length) {
-                offersList.innerHTML = `
-                    <div class="metric-tile">
-                        <div class="text-white font-semibold">Офферы пока не загружены</div>
-                        <div class="text-sm text-gray-400 mt-1">Подключи backend endpoint <span class="text-white">/cpa/offers</span> или дождись синхронизации.</div>
-                    </div>
-                `;
-                return;
-            }
-
-            offersList.innerHTML = offers.map(createCpaOfferCard).join('');
-        }
-
-        async function loadCpaOffers() {
-            const offersList = document.getElementById('offersList');
-            if (offersList) {
-                offersList.innerHTML = `
-                    <div class="metric-tile">
-                        <div class="text-sm text-gray-400">Загружаем офферы Traforce...</div>
-                    </div>
-                `;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/cpa/offers`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        source: 'traforce',
-                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('CPA offers unavailable');
-                }
-
-                const data = await response.json();
-                cpaOffersCache = Array.isArray(data?.offers) ? data.offers : Array.isArray(data?.items) ? data.items : [];
-                renderCpaOffers(cpaOffersCache);
-            } catch (error) {
-                console.error('CPA offers error:', error);
-                cpaOffersCache = [
-                    {
-                        id: '25',
-                        title: 'Smartlink Adult Dating - WW',
-                        short_description: 'Полная деталка оффера и быстрый доступ к ссылке',
-                        description: 'Adult dating smartlink. Выплата зависит от фактического GEO и конверсии. Маржа считается от реального payout.',
-                        countries: ['WW'],
-                        payout: 1.00,
-                        display_payout: 0.85,
-                        allowed_traffic: ['FB', 'TikTok', 'Native', 'Push'],
-                        restricted_traffic: ['Brand bidding', 'Spam']
-                    },
-                    {
-                        id: '88',
-                        title: 'Mainstream Dating - DE/PL',
-                        short_description: 'SOI flow, mobile friendly',
-                        description: 'Подходит для social и native трафика. Актуальные условия уточняются в деталке.',
-                        countries: ['DE', 'PL'],
-                        payout: 4.00,
-                        display_payout: 3.40,
-                        allowed_traffic: ['FB', 'Native', 'Google UAC'],
-                        restricted_traffic: ['Incent', 'Spam']
-                    }
-                ];
-                renderCpaOffers(cpaOffersCache);
-            }
-        }
-
-        function openOfferDetailsView(offerId) {
-            const detailsView = document.getElementById('cpaOfferDetailsView');
-            const listView = document.getElementById('cpaOffersListView');
-            const offer = cpaOffersCache.find((item) => String(item.id || item.offer_id || item.traforce_offer_id) === String(offerId));
-
-            if (!detailsView || !listView || !offer) return;
-
-            currentOfferDetails = offer;
-            const payouts = cpaGetPayouts(offer);
-
-            const setText = (id, value) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = value;
-            };
-
-            setText('cpaOfferTitle', String(offer.title || offer.name || 'Offer'));
-            setText('cpaOfferSubtitle', String(offer.short_description || offer.vertical || 'Подробная информация по офферу'));
-            setText('cpaOfferWebRate', `$${payouts.web.toFixed(2)}`);
-            setText('cpaOfferApiRate', `из $${payouts.api.toFixed(2)}`);
-            setText('cpaOfferDescription', String(offer.description || offer.flow || offer.conditions || 'Условия не указаны'));
-            setText('cpaOfferGeo', cpaNormalizeList(offer.countries || offer.geo || offer.geos || offer.country_codes).join(', ') || 'WW / Multi GEO');
-            setText('cpaOfferAllowed', cpaNormalizeList(offer.allowed_traffic || offer.allowedTraffic).join(', ') || 'Не указано');
-            setText('cpaOfferRestricted', cpaNormalizeList(offer.restricted_traffic || offer.restrictedTraffic).join(', ') || 'Не указано');
-
-            const generatedBox = document.getElementById('offerGeneratedLinkBox');
-            const generatedOutput = document.getElementById('offerGeneratedLinkOutput');
-            const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
-            if (generatedBox) generatedBox.classList.add('hidden');
-            if (generatedOutput) generatedOutput.value = '';
-            if (generatedStatus) generatedStatus.textContent = '';
-
-            listView.classList.add('hidden');
-            detailsView.classList.remove('hidden');
-        }
-
-        function closeOfferDetailsView() {
-            const detailsView = document.getElementById('cpaOfferDetailsView');
-            const listView = document.getElementById('cpaOffersListView');
-            if (detailsView) detailsView.classList.add('hidden');
-            if (listView) listView.classList.remove('hidden');
-            currentOfferDetails = null;
-        }
-
-        async function generateOfferLinkForCurrent() {
-            if (!currentOfferDetails) {
-                safeAlert('Сначала выбери оффер');
-                return '';
-            }
-
-            const generatedBox = document.getElementById('offerGeneratedLinkBox');
-            const generatedOutput = document.getElementById('offerGeneratedLinkOutput');
-            const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
-            const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
-
-            if (generatedBox) generatedBox.classList.remove('hidden');
-            if (generatedStatus) generatedStatus.textContent = 'Создаём ссылку...';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        source: 'traforce',
-                        offer_id: currentOfferDetails.id || currentOfferDetails.offer_id || currentOfferDetails.traforce_offer_id,
-                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
-                        sub2
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('CPA offer link unavailable');
-                }
-
-                const data = await response.json();
-                const link = data?.link || data?.smartlink || data?.url || '';
-
-                if (!link) {
-                    throw new Error('Пустая ссылка');
-                }
-
-                if (generatedOutput) generatedOutput.value = link;
-                if (generatedStatus) generatedStatus.textContent = '✅ Ссылка создана';
-                hapticSuccess();
-                return link;
-            } catch (error) {
-                console.error('CPA generate offer link error:', error);
-                const fallback = `https://affiliate.traforce.com/?offer=${encodeURIComponent(currentOfferDetails.id || 'demo')}&sub1=${encodeURIComponent(tg?.initDataUnsafe?.user?.id || 'telegram_user')}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
-                if (generatedOutput) generatedOutput.value = fallback;
-                if (generatedStatus) generatedStatus.textContent = 'Backend ещё не подключён. Сейчас показан временный fallback.';
-                return fallback;
-            }
-        }
-
-        async function copyCurrentOfferLink() {
-            let link = document.getElementById('offerGeneratedLinkOutput')?.value?.trim() || '';
-            if (!link) {
-                link = await generateOfferLinkForCurrent();
-            }
-            if (!link) return;
-
-            try {
-                await navigator.clipboard.writeText(link);
-                const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
-                if (generatedStatus) generatedStatus.textContent = '✅ Ссылка скопирована';
-                hapticSuccess();
-            } catch (error) {
-                console.error(error);
-                hapticError();
-            }
-        }
-
-        async function quickGenerateOfferLink(offerId) {
-            openOfferDetailsView(offerId);
-            const link = await generateOfferLinkForCurrent();
-            if (!link) return;
-        }
-
 
         function openTopupModal() {
             hapticMedium();
@@ -4448,10 +4371,9 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const copyCpaLinkBtn = document.getElementById('copyCpaLinkBtn');
         const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
         const refreshCpaDashboardBtn = document.getElementById('refreshCpaDashboardBtn');
-        const refreshCpaOffersBtn = document.getElementById('refreshCpaOffersBtn');
-        const backToOffersBtn = document.getElementById('backToOffersBtn');
-        const generateOfferLinkBtn = document.getElementById('generateOfferLinkBtn');
-        const copyOfferLinkBtn = document.getElementById('copyOfferLinkBtn');
+        const openCpaStatsBtn = document.getElementById('openCpaStatsBtn');
+        const cpaOfferGenerateBtn = document.getElementById('cpaOfferGenerateBtn');
+        const cpaOfferCopyBtn = document.getElementById('cpaOfferCopyBtn');
 
         if (createCpaSmartlinkBtn) {
             createCpaSmartlinkBtn.addEventListener('click', createCpaSmartlink);
@@ -4490,20 +4412,20 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             refreshCpaDashboardBtn.addEventListener('click', loadCpaDashboard);
         }
 
-        if (refreshCpaOffersBtn) {
-            refreshCpaOffersBtn.addEventListener('click', loadCpaOffers);
+        if (openCpaStatsBtn) {
+            openCpaStatsBtn.addEventListener('click', function () {
+                showSection('cpa-stats');
+            });
         }
 
-        if (backToOffersBtn) {
-            backToOffersBtn.addEventListener('click', closeOfferDetailsView);
+        if (cpaOfferGenerateBtn) {
+            cpaOfferGenerateBtn.addEventListener('click', function () {
+                generateOfferLink();
+            });
         }
 
-        if (generateOfferLinkBtn) {
-            generateOfferLinkBtn.addEventListener('click', generateOfferLinkForCurrent);
-        }
-
-        if (copyOfferLinkBtn) {
-            copyOfferLinkBtn.addEventListener('click', copyCurrentOfferLink);
+        if (cpaOfferCopyBtn) {
+            cpaOfferCopyBtn.addEventListener('click', copyCurrentOfferLink);
         }
 
         if (refreshLinksBtn) {
