@@ -2578,10 +2578,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const balance = safeNum(
                 balanceData.available ??
                 balanceData.usd_balance ??
-                payload.available_balance ??
-                payload.balance_amount ??
-                payload.balance ??
-                payload.usd_balance,
+                0,
                 0
             );
 
