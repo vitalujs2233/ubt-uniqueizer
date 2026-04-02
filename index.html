@@ -1320,75 +1320,86 @@ body::after {
                     </div>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="glass-box p-4 rounded-[24px] mb-4" id="cpaOffersCatalog">
+                    <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
-                            <div class="text-white font-semibold text-lg">Каталог офферов</div>
-                            <div class="text-sm text-gray-400 mt-1">Автоимпорт офферов Traforce, GEO, ставки для веба и быстрый доступ к ссылке</div>
+                            <div class="text-white font-semibold text-lg">Офферы</div>
+                            <div class="text-sm text-gray-400 mt-1">Простой список офферов и отдельная страница деталей, как в кабинете партнёрки</div>
                         </div>
                         <button id="refreshCpaOffersBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
                             Обновить
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                        <input id="cpaOfferSearchInput" type="text" class="neo-input" placeholder="Поиск по названию" />
-                        <input id="cpaOfferGeoInput" type="text" class="neo-input" placeholder="Фильтр GEO: DE, PL, UA" />
-                        <select id="cpaOfferCategoryInput" class="neo-input">
-                            <option value="">Все категории</option>
-                            <option value="dating">Dating</option>
-                            <option value="casino">Casino</option>
-                            <option value="sweepstakes">Sweepstakes</option>
-                        </select>
-                    </div>
-
-                    <div id="offersList" class="space-y-3">
-                        <div class="metric-tile">
-                            <div class="text-sm text-gray-400">Офферы загружаются...</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="cpaOfferDetailsModal" class="hidden fixed inset-0 z-[9998] bg-black/70 backdrop-blur-sm p-4">
-                    <div class="max-w-xl mx-auto mt-12 topup-modal-box border border-white/10 p-5">
-                        <div class="flex items-start justify-between gap-3 mb-4">
-                            <div>
-                                <div id="cpaOfferModalTitle" class="text-[22px] font-extrabold">Оффер</div>
-                                <div id="cpaOfferModalRate" class="text-sm text-green-400 mt-1">$0.00</div>
+                    <div id="cpaOffersListView">
+                        <div id="offersList" class="space-y-3">
+                            <div class="metric-tile">
+                                <div class="text-sm text-gray-400">Офферы загружаются...</div>
                             </div>
-                            <button id="closeCpaOfferDetailsBtn" class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">Закрыть</button>
+                        </div>
+                    </div>
+
+                    <div id="cpaOfferDetailsView" class="hidden">
+                        <button id="backToOffersBtn" class="text-blue-400 font-medium mb-4">← Назад к офферам</button>
+
+                        <div class="metric-tile mb-3">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <div id="cpaOfferTitle" class="text-white text-[20px] font-extrabold leading-tight">Оффер</div>
+                                    <div id="cpaOfferSubtitle" class="text-sm text-gray-400 mt-1">Подробная информация об оффере</div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div id="cpaOfferWebRate" class="text-green-400 text-[20px] font-extrabold">$0.00</div>
+                                    <div id="cpaOfferApiRate" class="text-xs text-gray-400 mt-1">из $0.00</div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="space-y-3">
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Flow / Описание</div>
+                                <div id="cpaOfferDescription" class="text-white text-sm leading-relaxed">—</div>
+                            </div>
+
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">GEO</div>
-                                <div id="cpaOfferModalGeo" class="text-white text-sm leading-relaxed">—</div>
+                                <div id="cpaOfferGeo" class="text-white text-sm leading-relaxed">—</div>
                             </div>
-                            <div class="metric-tile">
-                                <div class="text-xs text-gray-400 mb-1">Описание / Flow</div>
-                                <div id="cpaOfferModalDescription" class="text-white text-sm leading-relaxed">—</div>
-                            </div>
+
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Разрешённый трафик</div>
-                                <div id="cpaOfferModalAllowed" class="text-white text-sm leading-relaxed">—</div>
+                                <div id="cpaOfferAllowed" class="text-white text-sm leading-relaxed">—</div>
                             </div>
+
                             <div class="metric-tile">
                                 <div class="text-xs text-gray-400 mb-1">Запрещённый трафик</div>
-                                <div id="cpaOfferModalRestricted" class="text-white text-sm leading-relaxed">—</div>
+                                <div id="cpaOfferRestricted" class="text-white text-sm leading-relaxed">—</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Sub1</div>
+                                <div class="text-white text-sm leading-relaxed">Автоматически = Telegram ID</div>
+                            </div>
+
+                            <div class="metric-tile">
+                                <div class="text-xs text-gray-400 mb-1">Sub2</div>
+                                <input id="cpaOfferSub2Input" type="text" class="neo-input mt-2" placeholder="Например: tiktok1" />
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 mt-4">
-                            <button id="cpaOfferModalGenerateBtn" class="primary-btn p-4 rounded-2xl font-bold">
+                            <button id="generateOfferLinkBtn" class="primary-btn p-4 rounded-2xl font-bold">
                                 Взять ссылку
                             </button>
-                            <button id="cpaOfferModalCopyBtn" class="green-btn p-4 rounded-2xl font-bold">
+                            <button id="copyOfferLinkBtn" class="green-btn p-4 rounded-2xl font-bold">
                                 Скопировать ссылку
                             </button>
                         </div>
 
-                        <div id="cpaOfferModalLinkWrap" class="hidden mt-4">
-                            <input id="cpaOfferModalLink" type="text" readonly class="neo-input" placeholder="Тут появится ссылка" />
+                        <div id="offerGeneratedLinkBox" class="hidden mt-4 glass-box p-4 rounded-2xl">
+                            <p class="text-green-400 font-semibold mb-2">✅ Ссылка для оффера готова</p>
+                            <input id="offerGeneratedLinkOutput" type="text" readonly class="neo-input" placeholder="Тут появится ссылка" />
+                            <p id="offerGeneratedLinkStatus" class="mt-3 text-sm text-gray-300"></p>
                         </div>
                     </div>
                 </div>
@@ -2441,6 +2452,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (section === 'dating-cpa') {
                 loadCpaDashboard();
                 loadCpaOffers();
+                closeOfferDetailsView();
             }
         }
 
@@ -2504,310 +2516,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 updateCpaUi({});
             }
         }
-
-        let cpaOffersCache = [];
-        let cpaSelectedOfferId = null;
-
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;')
-                .replaceAll('"', '&quot;')
-                .replaceAll("'", '&#39;');
-        }
-
-        function normalizeArrayValue(value) {
-            if (Array.isArray(value)) return value.filter(Boolean).map((item) => String(item).trim()).filter(Boolean);
-            if (typeof value === 'string') {
-                return value
-                    .split(/[,\|/]/)
-                    .map((item) => item.trim())
-                    .filter(Boolean);
-            }
-            return [];
-        }
-
-        function formatOfferText(value, fallback = 'Не указано') {
-            const items = normalizeArrayValue(value);
-            if (!items.length) return fallback;
-            return items.map((item) => escapeHtml(item)).join(', ');
-        }
-
-        function getOfferDisplayPayout(offer = {}) {
-            const apiPayout = Number(
-                offer.api_payout ??
-                offer.original_payout ??
-                offer.network_payout ??
-                offer.traforce_payout ??
-                offer.payout ??
-                0
-            );
-
-            const displayPayoutRaw = offer.display_payout ?? offer.web_payout ?? offer.user_payout;
-            const displayPayout = Number(
-                displayPayoutRaw !== undefined && displayPayoutRaw !== null
-                    ? displayPayoutRaw
-                    : apiPayout * 0.85
-            );
-
-            return {
-                apiPayout,
-                displayPayout
-            };
-        }
-
-        function getOfferGeo(offer = {}) {
-            return normalizeArrayValue(offer.countries || offer.geo || offer.geos || offer.country_codes);
-        }
-
-        function offerMatchesFilters(offer = {}) {
-            const search = (document.getElementById('cpaOfferSearchInput')?.value || '').trim().toLowerCase();
-            const geoFilter = (document.getElementById('cpaOfferGeoInput')?.value || '').trim().toLowerCase();
-            const category = (document.getElementById('cpaOfferCategoryInput')?.value || '').trim().toLowerCase();
-
-            const title = String(offer.title || offer.name || '').toLowerCase();
-            const geo = getOfferGeo(offer).join(', ').toLowerCase();
-            const offerCategory = String(offer.category || offer.vertical || '').toLowerCase();
-
-            if (search && !title.includes(search)) return false;
-            if (geoFilter && !geo.includes(geoFilter)) return false;
-            if (category && offerCategory !== category) return false;
-            return true;
-        }
-
-        function createOfferCard(offer = {}) {
-            const offerId = String(offer.id || offer.offer_id || offer.traforce_offer_id || '');
-            const title = escapeHtml(offer.title || offer.name || 'Offer');
-            const geoList = getOfferGeo(offer);
-            const geo = geoList.length ? geoList.map((code) => escapeHtml(code)).join(', ') : 'All GEO';
-            const category = escapeHtml(offer.category || offer.vertical || 'Offer');
-            const flow = escapeHtml(offer.description || offer.flow || offer.conditions || 'Подробности доступны по кнопке "Подробнее".');
-            const payout = getOfferDisplayPayout(offer);
-
-            return `
-                <div class="metric-tile">
-                    <div class="flex items-start justify-between gap-3 mb-3">
-                        <div class="min-w-0">
-                            <div class="text-[18px] font-bold text-white leading-tight">${title}</div>
-                            <div class="text-sm text-gray-400 mt-1">${category}</div>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <div class="text-green-400 font-extrabold text-[18px]">$${payout.displayPayout.toFixed(2)}</div>
-                            <div class="text-[11px] text-gray-400">из $${payout.apiPayout.toFixed(2)}</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-2 mb-3">
-                        <div>
-                            <div class="text-xs text-gray-400 mb-1">GEO</div>
-                            <div class="text-white text-sm leading-relaxed">${geo}</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-gray-400 mb-1">Flow</div>
-                            <div class="text-white text-sm leading-relaxed">${flow}</div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3">
-                        <button class="secondary-btn w-1/2 p-3 rounded-2xl font-bold" onclick="openOfferDetails('${escapeHtml(offerId)}')">
-                            Подробнее
-                        </button>
-                        <button class="primary-btn w-1/2 p-3 rounded-2xl font-bold" onclick="generateOfferLink('${escapeHtml(offerId)}')">
-                            Взять ссылку
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderOffers(offers = []) {
-            const offersList = document.getElementById('offersList');
-            if (!offersList) return;
-
-            const filtered = (Array.isArray(offers) ? offers : []).filter(offerMatchesFilters);
-
-            if (!filtered.length) {
-                offersList.innerHTML = `
-                    <div class="metric-tile">
-                        <div class="text-white font-semibold">Офферы не найдены</div>
-                        <div class="text-sm text-gray-400 mt-1">Проверь фильтры или подключи backend endpoint <span class="text-white">/cpa/offers</span>.</div>
-                    </div>
-                `;
-                return;
-            }
-
-            offersList.innerHTML = filtered.map(createOfferCard).join('');
-        }
-
-        function updateOffersFromCache() {
-            renderOffers(cpaOffersCache);
-        }
-
-        async function loadCpaOffers() {
-            const offersList = document.getElementById('offersList');
-            if (offersList) {
-                offersList.innerHTML = `
-                    <div class="metric-tile">
-                        <div class="text-sm text-gray-400">Загружаем офферы Traforce...</div>
-                    </div>
-                `;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/cpa/offers`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        source: 'traforce',
-                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('CPA offers unavailable');
-                }
-
-                const data = await response.json();
-                cpaOffersCache = Array.isArray(data?.offers) ? data.offers : Array.isArray(data?.items) ? data.items : [];
-                renderOffers(cpaOffersCache);
-            } catch (error) {
-                console.error('CPA offers error:', error);
-                cpaOffersCache = [
-                    {
-                        id: 'offer-1',
-                        title: 'Vulkan Vegas - DE/PL',
-                        category: 'casino',
-                        payout: 4.00,
-                        countries: ['DE', 'PL'],
-                        description: 'Регистрация + первый депозит',
-                        allowed_traffic: ['FB', 'Google UAC', 'Native'],
-                        restricted_traffic: ['Brand bidding', 'Spam']
-                    },
-                    {
-                        id: 'offer-2',
-                        title: 'Mainstream Dating - DE/UA',
-                        category: 'dating',
-                        payout: 3.20,
-                        countries: ['DE', 'UA'],
-                        description: 'SOI flow, mobile friendly',
-                        allowed_traffic: ['TikTok', 'FB', 'Push'],
-                        restricted_traffic: ['Incent', 'Adult brand bidding']
-                    }
-                ];
-                renderOffers(cpaOffersCache);
-            }
-        }
-
-        function openOfferDetails(offerId) {
-            const modal = document.getElementById('cpaOfferDetailsModal');
-            const offer = cpaOffersCache.find((item) => String(item.id || item.offer_id || item.traforce_offer_id) === String(offerId));
-            if (!modal || !offer) return;
-
-            cpaSelectedOfferId = offerId;
-            const payout = getOfferDisplayPayout(offer);
-
-            const setText = (id, value) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = value;
-            };
-
-            setText('cpaOfferModalTitle', String(offer.title || offer.name || 'Offer'));
-            setText('cpaOfferModalRate', `$${payout.displayPayout.toFixed(2)} для веба (из $${payout.apiPayout.toFixed(2)})`);
-            setText('cpaOfferModalGeo', getOfferGeo(offer).join(', ') || 'All GEO');
-            setText('cpaOfferModalDescription', String(offer.description || offer.flow || offer.conditions || 'Условия не указаны'));
-            setText('cpaOfferModalAllowed', normalizeArrayValue(offer.allowed_traffic || offer.allowedTraffic).join(', ') || 'Не указано');
-            setText('cpaOfferModalRestricted', normalizeArrayValue(offer.restricted_traffic || offer.restrictedTraffic).join(', ') || 'Не указано');
-
-            const linkWrap = document.getElementById('cpaOfferModalLinkWrap');
-            const linkInput = document.getElementById('cpaOfferModalLink');
-            if (linkWrap) linkWrap.classList.add('hidden');
-            if (linkInput) linkInput.value = '';
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeOfferDetails() {
-            const modal = document.getElementById('cpaOfferDetailsModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        async function generateOfferLink(offerId) {
-            const targetOfferId = offerId || cpaSelectedOfferId;
-            if (!targetOfferId) {
-                safeAlert('Сначала выбери оффер');
-                return '';
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        source: 'traforce',
-                        offer_id: targetOfferId,
-                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('CPA offer link unavailable');
-                }
-
-                const data = await response.json();
-                const link = data?.link || data?.smartlink || data?.url || '';
-
-                if (!link) {
-                    throw new Error('Пустая ссылка');
-                }
-
-                const linkWrap = document.getElementById('cpaOfferModalLinkWrap');
-                const linkInput = document.getElementById('cpaOfferModalLink');
-                if (linkWrap) linkWrap.classList.remove('hidden');
-                if (linkInput) linkInput.value = link;
-
-                await navigator.clipboard.writeText(link);
-                hapticSuccess();
-                safeAlert('Ссылка создана и скопирована');
-                return link;
-            } catch (error) {
-                console.error('CPA generate offer link error:', error);
-                const fallback = `https://traforce.com/?offer=${encodeURIComponent(targetOfferId)}&sub1=${encodeURIComponent(tg?.initDataUnsafe?.user?.id || 'telegram_user')}`;
-                const linkWrap = document.getElementById('cpaOfferModalLinkWrap');
-                const linkInput = document.getElementById('cpaOfferModalLink');
-                if (linkWrap) linkWrap.classList.remove('hidden');
-                if (linkInput) linkInput.value = fallback;
-                try {
-                    await navigator.clipboard.writeText(fallback);
-                } catch (copyError) {
-                    console.error(copyError);
-                }
-                safeAlert('Backend ещё не подключён. Показана временная ссылка.');
-                return fallback;
-            }
-        }
-
-        async function copyOfferLinkFromModal() {
-            const linkInput = document.getElementById('cpaOfferModalLink');
-            let link = linkInput?.value?.trim() || '';
-            if (!link) {
-                link = await generateOfferLink(cpaSelectedOfferId);
-            }
-            if (!link) return;
-
-            try {
-                await navigator.clipboard.writeText(link);
-                hapticSuccess();
-                safeAlert('Ссылка скопирована');
-            } catch (error) {
-                console.error(error);
-                hapticError();
-                safeAlert('Не удалось скопировать ссылку');
-            }
-        }
-
 
         async function createCpaSmartlink() {
             const output = document.getElementById('cpaSmartlinkOutput');
@@ -2894,6 +2602,284 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 safeAlert('Backend вывода ещё не подключён. Подключи endpoint /cpa/withdraw.');
             }
         }
+
+        let cpaOffersCache = [];
+        let currentOfferDetails = null;
+
+        function cpaEscapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function cpaNormalizeList(value) {
+            if (Array.isArray(value)) {
+                return value.map((item) => String(item).trim()).filter(Boolean);
+            }
+            if (typeof value === 'string') {
+                return value.split(/[,|]/).map((item) => item.trim()).filter(Boolean);
+            }
+            return [];
+        }
+
+        function cpaFormatList(value, fallback = 'Не указано') {
+            const items = cpaNormalizeList(value);
+            return items.length ? items.map(cpaEscapeHtml).join(', ') : fallback;
+        }
+
+        function cpaGetPayouts(offer = {}) {
+            const apiPayout = Number(
+                offer.api_payout ??
+                offer.original_payout ??
+                offer.network_payout ??
+                offer.traforce_payout ??
+                offer.payout ??
+                0
+            );
+            const webPayout = Number(
+                offer.display_payout ??
+                offer.web_payout ??
+                offer.user_payout ??
+                (apiPayout * 0.85)
+            );
+            return {
+                api: apiPayout,
+                web: webPayout
+            };
+        }
+
+        function createCpaOfferCard(offer = {}) {
+            const offerId = cpaEscapeHtml(offer.id || offer.offer_id || offer.traforce_offer_id || '');
+            const title = cpaEscapeHtml(offer.title || offer.name || 'Offer');
+            const subtitle = cpaEscapeHtml(offer.short_description || offer.vertical || 'Нажми «Подробнее», чтобы открыть полные условия');
+            const geo = cpaFormatList(offer.countries || offer.geo || offer.geos || offer.country_codes, 'WW / Multi GEO');
+            const payouts = cpaGetPayouts(offer);
+
+            return `
+                <div class="metric-tile">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="min-w-0">
+                            <div class="text-white text-[18px] font-bold leading-tight">${title}</div>
+                            <div class="text-sm text-gray-400 mt-1">${subtitle}</div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="text-green-400 text-[18px] font-extrabold">$${payouts.web.toFixed(2)}</div>
+                            <div class="text-[11px] text-gray-400">из $${payouts.api.toFixed(2)}</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm text-gray-300 mb-3">
+                        <span class="text-gray-400">GEO:</span> ${geo}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="secondary-btn p-3 rounded-2xl font-bold" onclick="openOfferDetailsView('${offerId}')">
+                            Подробнее
+                        </button>
+                        <button class="primary-btn p-3 rounded-2xl font-bold" onclick="quickGenerateOfferLink('${offerId}')">
+                            Взять ссылку
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCpaOffers(offers = []) {
+            const offersList = document.getElementById('offersList');
+            if (!offersList) return;
+
+            if (!Array.isArray(offers) || !offers.length) {
+                offersList.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-white font-semibold">Офферы пока не загружены</div>
+                        <div class="text-sm text-gray-400 mt-1">Подключи backend endpoint <span class="text-white">/cpa/offers</span> или дождись синхронизации.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            offersList.innerHTML = offers.map(createCpaOfferCard).join('');
+        }
+
+        async function loadCpaOffers() {
+            const offersList = document.getElementById('offersList');
+            if (offersList) {
+                offersList.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-sm text-gray-400">Загружаем офферы Traforce...</div>
+                    </div>
+                `;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/offers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offers unavailable');
+                }
+
+                const data = await response.json();
+                cpaOffersCache = Array.isArray(data?.offers) ? data.offers : Array.isArray(data?.items) ? data.items : [];
+                renderCpaOffers(cpaOffersCache);
+            } catch (error) {
+                console.error('CPA offers error:', error);
+                cpaOffersCache = [
+                    {
+                        id: '25',
+                        title: 'Smartlink Adult Dating - WW',
+                        short_description: 'Полная деталка оффера и быстрый доступ к ссылке',
+                        description: 'Adult dating smartlink. Выплата зависит от фактического GEO и конверсии. Маржа считается от реального payout.',
+                        countries: ['WW'],
+                        payout: 1.00,
+                        display_payout: 0.85,
+                        allowed_traffic: ['FB', 'TikTok', 'Native', 'Push'],
+                        restricted_traffic: ['Brand bidding', 'Spam']
+                    },
+                    {
+                        id: '88',
+                        title: 'Mainstream Dating - DE/PL',
+                        short_description: 'SOI flow, mobile friendly',
+                        description: 'Подходит для social и native трафика. Актуальные условия уточняются в деталке.',
+                        countries: ['DE', 'PL'],
+                        payout: 4.00,
+                        display_payout: 3.40,
+                        allowed_traffic: ['FB', 'Native', 'Google UAC'],
+                        restricted_traffic: ['Incent', 'Spam']
+                    }
+                ];
+                renderCpaOffers(cpaOffersCache);
+            }
+        }
+
+        function openOfferDetailsView(offerId) {
+            const detailsView = document.getElementById('cpaOfferDetailsView');
+            const listView = document.getElementById('cpaOffersListView');
+            const offer = cpaOffersCache.find((item) => String(item.id || item.offer_id || item.traforce_offer_id) === String(offerId));
+
+            if (!detailsView || !listView || !offer) return;
+
+            currentOfferDetails = offer;
+            const payouts = cpaGetPayouts(offer);
+
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+
+            setText('cpaOfferTitle', String(offer.title || offer.name || 'Offer'));
+            setText('cpaOfferSubtitle', String(offer.short_description || offer.vertical || 'Подробная информация по офферу'));
+            setText('cpaOfferWebRate', `$${payouts.web.toFixed(2)}`);
+            setText('cpaOfferApiRate', `из $${payouts.api.toFixed(2)}`);
+            setText('cpaOfferDescription', String(offer.description || offer.flow || offer.conditions || 'Условия не указаны'));
+            setText('cpaOfferGeo', cpaNormalizeList(offer.countries || offer.geo || offer.geos || offer.country_codes).join(', ') || 'WW / Multi GEO');
+            setText('cpaOfferAllowed', cpaNormalizeList(offer.allowed_traffic || offer.allowedTraffic).join(', ') || 'Не указано');
+            setText('cpaOfferRestricted', cpaNormalizeList(offer.restricted_traffic || offer.restrictedTraffic).join(', ') || 'Не указано');
+
+            const generatedBox = document.getElementById('offerGeneratedLinkBox');
+            const generatedOutput = document.getElementById('offerGeneratedLinkOutput');
+            const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
+            if (generatedBox) generatedBox.classList.add('hidden');
+            if (generatedOutput) generatedOutput.value = '';
+            if (generatedStatus) generatedStatus.textContent = '';
+
+            listView.classList.add('hidden');
+            detailsView.classList.remove('hidden');
+        }
+
+        function closeOfferDetailsView() {
+            const detailsView = document.getElementById('cpaOfferDetailsView');
+            const listView = document.getElementById('cpaOffersListView');
+            if (detailsView) detailsView.classList.add('hidden');
+            if (listView) listView.classList.remove('hidden');
+            currentOfferDetails = null;
+        }
+
+        async function generateOfferLinkForCurrent() {
+            if (!currentOfferDetails) {
+                safeAlert('Сначала выбери оффер');
+                return '';
+            }
+
+            const generatedBox = document.getElementById('offerGeneratedLinkBox');
+            const generatedOutput = document.getElementById('offerGeneratedLinkOutput');
+            const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
+            const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
+
+            if (generatedBox) generatedBox.classList.remove('hidden');
+            if (generatedStatus) generatedStatus.textContent = 'Создаём ссылку...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        source: 'traforce',
+                        offer_id: currentOfferDetails.id || currentOfferDetails.offer_id || currentOfferDetails.traforce_offer_id,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
+                        sub2
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA offer link unavailable');
+                }
+
+                const data = await response.json();
+                const link = data?.link || data?.smartlink || data?.url || '';
+
+                if (!link) {
+                    throw new Error('Пустая ссылка');
+                }
+
+                if (generatedOutput) generatedOutput.value = link;
+                if (generatedStatus) generatedStatus.textContent = '✅ Ссылка создана';
+                hapticSuccess();
+                return link;
+            } catch (error) {
+                console.error('CPA generate offer link error:', error);
+                const fallback = `https://affiliate.traforce.com/?offer=${encodeURIComponent(currentOfferDetails.id || 'demo')}&sub1=${encodeURIComponent(tg?.initDataUnsafe?.user?.id || 'telegram_user')}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
+                if (generatedOutput) generatedOutput.value = fallback;
+                if (generatedStatus) generatedStatus.textContent = 'Backend ещё не подключён. Сейчас показан временный fallback.';
+                return fallback;
+            }
+        }
+
+        async function copyCurrentOfferLink() {
+            let link = document.getElementById('offerGeneratedLinkOutput')?.value?.trim() || '';
+            if (!link) {
+                link = await generateOfferLinkForCurrent();
+            }
+            if (!link) return;
+
+            try {
+                await navigator.clipboard.writeText(link);
+                const generatedStatus = document.getElementById('offerGeneratedLinkStatus');
+                if (generatedStatus) generatedStatus.textContent = '✅ Ссылка скопирована';
+                hapticSuccess();
+            } catch (error) {
+                console.error(error);
+                hapticError();
+            }
+        }
+
+        async function quickGenerateOfferLink(offerId) {
+            openOfferDetailsView(offerId);
+            const link = await generateOfferLinkForCurrent();
+            if (!link) return;
+        }
+
 
         function openTopupModal() {
             hapticMedium();
@@ -4463,12 +4449,9 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
         const refreshCpaDashboardBtn = document.getElementById('refreshCpaDashboardBtn');
         const refreshCpaOffersBtn = document.getElementById('refreshCpaOffersBtn');
-        const cpaOfferSearchInput = document.getElementById('cpaOfferSearchInput');
-        const cpaOfferGeoInput = document.getElementById('cpaOfferGeoInput');
-        const cpaOfferCategoryInput = document.getElementById('cpaOfferCategoryInput');
-        const closeCpaOfferDetailsBtn = document.getElementById('closeCpaOfferDetailsBtn');
-        const cpaOfferModalGenerateBtn = document.getElementById('cpaOfferModalGenerateBtn');
-        const cpaOfferModalCopyBtn = document.getElementById('cpaOfferModalCopyBtn');
+        const backToOffersBtn = document.getElementById('backToOffersBtn');
+        const generateOfferLinkBtn = document.getElementById('generateOfferLinkBtn');
+        const copyOfferLinkBtn = document.getElementById('copyOfferLinkBtn');
 
         if (createCpaSmartlinkBtn) {
             createCpaSmartlinkBtn.addEventListener('click', createCpaSmartlink);
@@ -4511,30 +4494,16 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             refreshCpaOffersBtn.addEventListener('click', loadCpaOffers);
         }
 
-        if (cpaOfferSearchInput) {
-            cpaOfferSearchInput.addEventListener('input', updateOffersFromCache);
+        if (backToOffersBtn) {
+            backToOffersBtn.addEventListener('click', closeOfferDetailsView);
         }
 
-        if (cpaOfferGeoInput) {
-            cpaOfferGeoInput.addEventListener('input', updateOffersFromCache);
+        if (generateOfferLinkBtn) {
+            generateOfferLinkBtn.addEventListener('click', generateOfferLinkForCurrent);
         }
 
-        if (cpaOfferCategoryInput) {
-            cpaOfferCategoryInput.addEventListener('change', updateOffersFromCache);
-        }
-
-        if (closeCpaOfferDetailsBtn) {
-            closeCpaOfferDetailsBtn.addEventListener('click', closeOfferDetails);
-        }
-
-        if (cpaOfferModalGenerateBtn) {
-            cpaOfferModalGenerateBtn.addEventListener('click', function () {
-                generateOfferLink(cpaSelectedOfferId);
-            });
-        }
-
-        if (cpaOfferModalCopyBtn) {
-            cpaOfferModalCopyBtn.addEventListener('click', copyOfferLinkFromModal);
+        if (copyOfferLinkBtn) {
+            copyOfferLinkBtn.addEventListener('click', copyCurrentOfferLink);
         }
 
         if (refreshLinksBtn) {
