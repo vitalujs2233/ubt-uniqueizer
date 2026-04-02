@@ -913,6 +913,86 @@ app.post('/cpa/dashboard', async (req, res) => {
   }
 });
 
+
+app.post('/cpa/statistics', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const { limit = 50, status = '', offer_id = '', sub2 = '' } = req.body || {};
+    const values = [user.id];
+    let where = 'where telegram_id = $1';
+
+    if (status) {
+      values.push(String(status));
+      where += ` and status = $${values.length}`;
+    }
+
+    if (offer_id) {
+      values.push(String(offer_id));
+      where += ` and offer_id = $${values.length}`;
+    }
+
+    if (sub2) {
+      values.push(String(sub2));
+      where += ` and sub2 = $${values.length}`;
+    }
+
+    const summaryValues = values.slice();
+    values.push(Number(limit) > 0 ? Number(limit) : 50);
+
+    const rowsResult = await tryQuery(
+      `select
+          id,
+          telegram_id,
+          offer_id,
+          click_id,
+          sub1,
+          sub2,
+          status,
+          country,
+          payout_api,
+          payout_user,
+          service_margin,
+          created_at
+       from cpa_conversions
+       ${where}
+       order by created_at desc
+       limit $${values.length}`,
+      values
+    );
+
+    const summaryResult = await tryQuery(
+      `select
+          count(*)::int as total_conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total,
+          coalesce(sum(payout_user), 0) as payout_user_total,
+          coalesce(sum(service_margin), 0) as service_margin_total
+       from cpa_conversions
+       ${where}`,
+      summaryValues
+    );
+
+    res.json({
+      ok: true,
+      statistics: {
+        items: rowsResult.rows || [],
+        summary: {
+          total_conversions: safeNumber(summaryResult.rows?.[0]?.total_conversions, 0),
+          payout_api_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_api_total, 0).toFixed(2)),
+          payout_user_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_user_total, 0).toFixed(2)),
+          service_margin_total: Number(safeNumber(summaryResult.rows?.[0]?.service_margin_total, 0).toFixed(2))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('CPA statistics error:', error);
+    res.status(500).json({ message: error.message || 'CPA statistics error' });
+  }
+});
+
 app.post('/cpa/generate-link', async (req, res) => {
   try {
     const user = getUserIdentityFromBody(req);
