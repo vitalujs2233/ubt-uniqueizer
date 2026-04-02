@@ -2551,14 +2551,59 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function updateCpaUi(data = {}) {
-            const balance = Number(data.available_balance ?? data.balance ?? data.usd_balance ?? 0);
-            const hold = Number(data.hold_balance ?? data.usd_hold ?? 0);
-            const withdrawn = Number(data.total_withdrawn ?? 0);
-            const clicks = Number(data.clicks ?? 0);
-            const conversions = Number(data.conversions ?? 0);
-            const revenue = Number(data.revenue ?? data.profit ?? 0);
-            const crValue = data.cr !== undefined && data.cr !== null
-                ? Number(data.cr)
+            const payload = data?.dashboard ? data.dashboard : data;
+            const balanceData = payload?.balance || {};
+            const statsData = payload?.stats || {};
+            const userData = payload?.user || {};
+
+            const safeNum = (value, fallback = 0) => {
+                const num = Number(value);
+                return Number.isFinite(num) ? num : fallback;
+            };
+
+            const balance = safeNum(
+                balanceData.available ??
+                payload.available_balance ??
+                payload.balance ??
+                payload.usd_balance ??
+                0
+            );
+
+            const hold = safeNum(
+                balanceData.hold ??
+                payload.hold_balance ??
+                payload.usd_hold ??
+                0
+            );
+
+            const withdrawn = safeNum(
+                balanceData.total_withdrawn ??
+                payload.total_withdrawn ??
+                0
+            );
+
+            const clicks = safeNum(
+                statsData.clicks ??
+                payload.clicks ??
+                0
+            );
+
+            const conversions = safeNum(
+                statsData.conversions ??
+                payload.conversions ??
+                0
+            );
+
+            const revenue = safeNum(
+                statsData.revenue ??
+                payload.revenue ??
+                payload.profit ??
+                0
+            );
+
+            const crRaw = statsData.cr ?? payload.cr;
+            const crValue = crRaw !== undefined && crRaw !== null
+                ? safeNum(crRaw, 0)
                 : (clicks > 0 ? (conversions / clicks) * 100 : 0);
 
             const byId = (id) => document.getElementById(id);
@@ -2573,6 +2618,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (byId('cpaConversions')) byId('cpaConversions').textContent = String(conversions);
             if (byId('cpaRevenue')) byId('cpaRevenue').textContent = `$${revenue.toFixed(2)}`;
             if (byId('cpaCr')) byId('cpaCr').textContent = `${crValue.toFixed(2)}%`;
+
+            if (byId('cpaNetworkName')) byId('cpaNetworkName').textContent = 'TrafForce';
+            if (userData?.first_name && byId('cpaHeaderName')) byId('cpaHeaderName').textContent = userData.first_name;
         }
 
         async function loadCpaDashboard() {
