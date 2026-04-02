@@ -2551,59 +2551,14 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function updateCpaUi(data = {}) {
-            const payload = data?.dashboard ? data.dashboard : data;
-            const balanceData = payload?.balance || {};
-            const statsData = payload?.stats || {};
-            const userData = payload?.user || {};
-
-            const safeNum = (value, fallback = 0) => {
-                const num = Number(value);
-                return Number.isFinite(num) ? num : fallback;
-            };
-
-            const balance = safeNum(
-                balanceData.available ??
-                payload.available_balance ??
-                payload.balance ??
-                payload.usd_balance ??
-                0
-            );
-
-            const hold = safeNum(
-                balanceData.hold ??
-                payload.hold_balance ??
-                payload.usd_hold ??
-                0
-            );
-
-            const withdrawn = safeNum(
-                balanceData.total_withdrawn ??
-                payload.total_withdrawn ??
-                0
-            );
-
-            const clicks = safeNum(
-                statsData.clicks ??
-                payload.clicks ??
-                0
-            );
-
-            const conversions = safeNum(
-                statsData.conversions ??
-                payload.conversions ??
-                0
-            );
-
-            const revenue = safeNum(
-                statsData.revenue ??
-                payload.revenue ??
-                payload.profit ??
-                0
-            );
-
-            const crRaw = statsData.cr ?? payload.cr;
-            const crValue = crRaw !== undefined && crRaw !== null
-                ? safeNum(crRaw, 0)
+            const balance = Number(data.available_balance ?? data.balance ?? data.usd_balance ?? 0);
+            const hold = Number(data.hold_balance ?? data.usd_hold ?? 0);
+            const withdrawn = Number(data.total_withdrawn ?? 0);
+            const clicks = Number(data.clicks ?? 0);
+            const conversions = Number(data.conversions ?? 0);
+            const revenue = Number(data.revenue ?? data.profit ?? 0);
+            const crValue = data.cr !== undefined && data.cr !== null
+                ? Number(data.cr)
                 : (clicks > 0 ? (conversions / clicks) * 100 : 0);
 
             const byId = (id) => document.getElementById(id);
@@ -2618,9 +2573,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (byId('cpaConversions')) byId('cpaConversions').textContent = String(conversions);
             if (byId('cpaRevenue')) byId('cpaRevenue').textContent = `$${revenue.toFixed(2)}`;
             if (byId('cpaCr')) byId('cpaCr').textContent = `${crValue.toFixed(2)}%`;
-
-            if (byId('cpaNetworkName')) byId('cpaNetworkName').textContent = 'TrafForce';
-            if (userData?.first_name && byId('cpaHeaderName')) byId('cpaHeaderName').textContent = userData.first_name;
         }
 
         async function loadCpaDashboard() {
@@ -2709,6 +2661,19 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
             const tgId = tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || 'telegram_id';
 
+            const applyTrackingParams = (rawLink) => {
+                try {
+                    const url = new URL(rawLink);
+                    url.searchParams.set('sub1', String(tgId));
+                    if (sub2) {
+                        url.searchParams.set('sub2', String(sub2));
+                    }
+                    return url.toString();
+                } catch {
+                    return rawLink;
+                }
+            };
+
             try {
                 const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
                     method: 'POST',
@@ -2727,8 +2692,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 }
 
                 const data = await response.json();
-                const link = data?.link || data?.smartlink || data?.url || '';
+                let link = data?.link || data?.smartlink || data?.url || '';
                 if (!link) throw new Error('Пустая ссылка');
+
+                link = applyTrackingParams(link);
 
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
@@ -2738,7 +2705,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return link;
             } catch (error) {
                 console.error('CPA offer link error:', error);
-                const fallback = `https://traforce.com/?offer=${encodeURIComponent(selectedOfferId)}&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
+                const fallback = `https://tone.affomelody.com/click?pid=12519&offer_id=25&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
                 if (linkWrap) linkWrap.classList.remove('hidden');
@@ -2746,6 +2713,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return fallback;
             }
         }
+
 
         async function copyCurrentOfferLink() {
             let link = document.getElementById('cpaOfferLinkOutput')?.value?.trim() || '';
