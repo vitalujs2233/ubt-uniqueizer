@@ -1265,7 +1265,7 @@ body::after {
                             <div class="text-white font-semibold text-lg">Dating CPA</div>
                             <div class="text-sm text-gray-400 mt-1">Полный раздел партнёрской программы с балансом в USD</div>
                         </div>
-                        <button id="openCpaStatsBtn" class="secondary-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap text-[14px]">
+                        <button id="openCpaStatsBtn" onclick="showSection('cpa-stats'); loadCpaDashboard(); loadCpaStatistics();" class="secondary-btn px-4 py-3 rounded-2xl font-bold whitespace-nowrap text-[14px]">
                             📊 Статистика
                         </button>
                     </div>
@@ -1411,7 +1411,7 @@ body::after {
                             <div class="text-white font-semibold text-lg">Statistic by Geos</div>
                             <div class="text-sm text-gray-400 mt-1">ГЕО, клики, уники, конверсии, CR и EPC. Можно выбрать Sub1 или Sub2.</div>
                         </div>
-                        <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
+                        <button id="refreshCpaDashboardBtn" onclick="loadCpaDashboard(); loadCpaStatistics();" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
                             Обновить
                         </button>
                     </div>
@@ -1440,7 +1440,7 @@ body::after {
                         <input id="cpaStatsDateToFilter" type="date" class="neo-input" />
                     </div>
 
-                    <button id="applyCpaStatsFiltersBtn" class="primary-btn w-full p-3 rounded-2xl font-bold">
+                    <button id="applyCpaStatsFiltersBtn" onclick="loadCpaStatistics()" class="primary-btn w-full p-3 rounded-2xl font-bold">
                         Применить фильтры
                     </button>
                 </div>
