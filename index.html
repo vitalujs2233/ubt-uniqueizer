@@ -1399,7 +1399,6 @@ body::after {
             </div>
 
             
-            
             <div id="cpa-stats-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('dating-cpa')" class="text-blue-400 font-medium">← Назад</button>
@@ -1409,7 +1408,7 @@ body::after {
                 <div class="glass-box p-4 rounded-[24px] mb-4">
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
-                            <div class="text-white font-semibold text-lg">Карточка статистики</div>
+                            <div class="text-white font-semibold text-lg">Statistic by Geos</div>
                             <div class="text-sm text-gray-400 mt-1">ГЕО, клики, уники, конверсии, CR и EPC. Можно выбрать Sub1 или Sub2.</div>
                         </div>
                         <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
@@ -1419,8 +1418,9 @@ body::after {
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                         <select id="cpaStatsSubTypeFilter" class="neo-input">
-                            <option value="sub1">Статистика по Sub1</option>
-                            <option value="sub2">Статистика по Sub2</option>
+                            <option value="">Все потоки</option>
+                            <option value="sub1">Фильтр по Sub1</option>
+                            <option value="sub2">Фильтр по Sub2</option>
                         </select>
 
                         <input id="cpaStatsSubValueFilter" type="text" class="neo-input" placeholder="Значение потока, например tiktok1" />
@@ -1468,13 +1468,6 @@ body::after {
                 </div>
 
                 <div class="glass-box p-4 rounded-[24px]">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Statistic by Geos</div>
-                            <div class="text-sm text-gray-400 mt-1">Показывает агрегированную статистику по странам трафика</div>
-                        </div>
-                    </div>
-
                     <div id="cpaGeoStatsList" class="space-y-3">
                         <div class="metric-tile">
                             <div class="text-sm text-gray-400">Статистика загружается...</div>
@@ -2557,10 +2550,21 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const topupBtn = document.getElementById('topupBtn');
             const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
 
-            if (userBalance) userBalance.classList.toggle('hidden', isCpa);
-            if (cpaBalanceBlock) cpaBalanceBlock.classList.toggle('hidden', !isCpa);
-            if (topupBtn) topupBtn.classList.toggle('hidden', isCpa);
-            if (cpaWithdrawBtn) cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
+            if (userBalance) {
+                userBalance.classList.toggle('hidden', !!isCpa);
+            }
+
+            if (cpaBalanceBlock) {
+                cpaBalanceBlock.classList.toggle('hidden', !isCpa);
+            }
+
+            if (topupBtn) {
+                topupBtn.classList.toggle('hidden', !!isCpa);
+            }
+
+            if (cpaWithdrawBtn) {
+                cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
+            }
         }
 
         function updateCpaUi(data = {}) {
@@ -2578,12 +2582,11 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             const balance = safeNum(balanceData.available ?? balanceData.usd_balance ?? 0, 0);
             const hold = safeNum(balanceData.hold ?? balanceData.usd_hold ?? 0, 0);
-            const withdrawn = safeNum(balanceData.total_withdrawn ?? payload.total_withdrawn ?? 0, 0);
-            const clicks = safeNum(statsData.clicks ?? payload.clicks, 0);
-            const conversions = safeNum(statsData.conversions ?? payload.conversions, 0);
-            const revenue = safeNum(statsData.revenue ?? payload.revenue ?? payload.profit, 0);
-            const crRaw = statsData.cr ?? payload.cr;
-            const crValue = Number.isFinite(Number(crRaw)) ? safeNum(crRaw, 0) : (clicks > 0 ? (conversions / clicks) * 100 : 0);
+            const withdrawn = safeNum(balanceData.total_withdrawn ?? 0, 0);
+            const clicks = safeNum(statsData.clicks ?? 0, 0);
+            const conversions = safeNum(statsData.conversions ?? 0, 0);
+            const revenue = safeNum(statsData.revenue ?? 0, 0);
+            const crValue = clicks > 0 ? (conversions / clicks) * 100 : 0;
 
             const setText = (id, value) => {
                 const el = document.getElementById(id);
@@ -2606,75 +2609,20 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
         }
 
-        function formatCpaDate(value) {
-            if (!value) return '—';
-            const date = new Date(value);
-            if (Number.isNaN(date.getTime())) return String(value);
-            return date.toLocaleString('ru-RU', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function fillCpaGeoFilter(items = []) {
+        function fillCpaGeoFilter(geoStats = []) {
             const geoSelect = document.getElementById('cpaStatsGeoFilter');
             if (!geoSelect) return;
-
             const currentValue = geoSelect.value || '';
             const geos = Array.from(new Set(
-                (Array.isArray(items) ? items : [])
-                    .map((item) => String(item.country || '').trim().toUpperCase())
+                (Array.isArray(geoStats) ? geoStats : [])
+                    .map((row) => String(row.geo || '').trim().toUpperCase())
                     .filter(Boolean)
             )).sort();
-
             geoSelect.innerHTML = '<option value="">Все GEO</option>' +
                 geos.map((geo) => `<option value="${geo}">${geo}</option>`).join('');
-
             if (currentValue && geos.includes(currentValue.toUpperCase())) {
                 geoSelect.value = currentValue.toUpperCase();
             }
-        }
-
-        function aggregateGeoStats(items = []) {
-            const map = new Map();
-
-            (Array.isArray(items) ? items : []).forEach((item) => {
-                const geo = String(item.country || 'Unknown').trim().toUpperCase() || 'UNKNOWN';
-                const clickId = String(item.click_id || '');
-                const payoutApi = Number(item.payout_api || 0);
-                const bucket = map.get(geo) || {
-                    geo,
-                    clicks: 0,
-                    uniqueClickIds: new Set(),
-                    conversions: 0,
-                    payoutApi: 0
-                };
-
-                bucket.clicks += 1;
-                if (clickId) bucket.uniqueClickIds.add(clickId);
-                bucket.conversions += 1;
-                bucket.payoutApi += payoutApi;
-
-                map.set(geo, bucket);
-            });
-
-            return Array.from(map.values()).map((item) => {
-                const uniques = item.uniqueClickIds.size || item.clicks;
-                const cr = item.clicks > 0 ? (item.conversions / item.clicks) * 100 : 0;
-                const epc = item.clicks > 0 ? item.payoutApi / item.clicks : 0;
-
-                return {
-                    geo: item.geo,
-                    clicks: item.clicks,
-                    uniques,
-                    conversions: item.conversions,
-                    cr,
-                    epc
-                };
-            }).sort((a, b) => b.clicks - a.clicks);
         }
 
         function renderGeoStatsCards(rows = []) {
@@ -2698,32 +2646,32 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                             <div class="text-white font-bold text-[18px]">${row.geo}</div>
                             <div class="text-sm text-gray-400 mt-1">Статистика по GEO</div>
                         </div>
-                        <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">${row.cr.toFixed(2)}% CR</div>
+                        <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">${Number(row.cr || 0).toFixed(2)}% CR</div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-3 mb-3">
                         <div>
                             <div class="text-xs text-gray-400 mb-1">Клики</div>
-                            <div class="text-white font-bold text-[16px]">${row.clicks}</div>
+                            <div class="text-white font-bold text-[16px]">${Number(row.clicks || 0)}</div>
                         </div>
                         <div>
                             <div class="text-xs text-gray-400 mb-1">Уники</div>
-                            <div class="text-white font-bold text-[16px]">${row.uniques}</div>
+                            <div class="text-white font-bold text-[16px]">${Number(row.unique_clicks || 0)}</div>
                         </div>
                         <div>
                             <div class="text-xs text-gray-400 mb-1">Конверсии</div>
-                            <div class="text-white font-bold text-[16px]">${row.conversions}</div>
+                            <div class="text-white font-bold text-[16px]">${Number(row.conversions || 0)}</div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <div class="text-xs text-gray-400 mb-1">CR</div>
-                            <div class="text-white font-semibold">${row.cr.toFixed(2)}%</div>
+                            <div class="text-white font-semibold">${Number(row.cr || 0).toFixed(2)}%</div>
                         </div>
                         <div>
                             <div class="text-xs text-gray-400 mb-1">EPC</div>
-                            <div class="text-white font-semibold">$${row.epc.toFixed(4)}</div>
+                            <div class="text-white font-semibold">$${Number(row.epc || 0).toFixed(4)}</div>
                         </div>
                     </div>
                 </div>
@@ -2733,28 +2681,26 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         function renderCpaStatistics(response = {}) {
             const payload = response?.statistics || response || {};
             const summary = payload.summary || {};
-            const items = Array.isArray(payload.items) ? payload.items : [];
-            const geoFilter = (document.getElementById('cpaStatsGeoFilter')?.value || '').trim().toUpperCase();
+            const geoStats = Array.isArray(payload.geo_stats) ? payload.geo_stats : [];
 
-            fillCpaGeoFilter(items);
+            fillCpaGeoFilter(geoStats);
 
-            const filteredItems = items.filter((item) => {
-                if (!geoFilter) return true;
-                return String(item.country || '').trim().toUpperCase() === geoFilter;
-            });
+            const selectedGeo = (document.getElementById('cpaStatsGeoFilter')?.value || '').trim().toUpperCase();
+            const filteredGeoStats = selectedGeo
+                ? geoStats.filter((row) => String(row.geo || '').trim().toUpperCase() === selectedGeo)
+                : geoStats;
 
             const setText = (id, value) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = value;
             };
 
-            setText('cpaStatsTotalConversions', String(summary.total_conversions || filteredItems.length || 0));
+            setText('cpaStatsTotalConversions', String(summary.total_conversions || 0));
             setText('cpaStatsUserTotal', `$${Number(summary.payout_user_total || 0).toFixed(2)}`);
             setText('cpaStatsApiTotal', `$${Number(summary.payout_api_total || 0).toFixed(2)}`);
             setText('cpaStatsMarginTotal', `$${Number(summary.service_margin_total || 0).toFixed(2)}`);
 
-            const geoRows = aggregateGeoStats(filteredItems);
-            renderGeoStatsCards(geoRows);
+            renderGeoStatsCards(filteredGeoStats);
         }
 
         async function loadCpaStatistics() {
@@ -2768,22 +2714,20 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             try {
-                const subType = document.getElementById('cpaStatsSubTypeFilter')?.value || 'sub1';
-                const subValue = document.getElementById('cpaStatsSubValueFilter')?.value?.trim() || '';
-                const body = {
-                    initData: tg?.initData || null,
-                    telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
-                    status: document.getElementById('cpaStatsStatusFilter')?.value || '',
-                    sub2: subType === 'sub2' ? subValue : '',
-                    date_from: document.getElementById('cpaStatsDateFromFilter')?.value || '',
-                    date_to: document.getElementById('cpaStatsDateToFilter')?.value || '',
-                    limit: 100
-                };
-
                 const response = await fetch(`${API_BASE_URL}/cpa/statistics`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
+                        status: document.getElementById('cpaStatsStatusFilter')?.value || '',
+                        sub_type: document.getElementById('cpaStatsSubTypeFilter')?.value || '',
+                        sub_value: document.getElementById('cpaStatsSubValueFilter')?.value?.trim() || '',
+                        geo: document.getElementById('cpaStatsGeoFilter')?.value || '',
+                        date_from: document.getElementById('cpaStatsDateFromFilter')?.value || '',
+                        date_to: document.getElementById('cpaStatsDateToFilter')?.value || '',
+                        limit: 100
+                    })
                 });
 
                 if (!response.ok) {
@@ -2791,19 +2735,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 }
 
                 const data = await response.json();
-                let payload = data?.statistics || {};
-                let items = Array.isArray(payload.items) ? payload.items : [];
-
-                if (subType === 'sub1' && subValue) {
-                    items = items.filter((item) => String(item.sub1 || '').trim() === subValue);
-                }
-
-                renderCpaStatistics({
-                    statistics: {
-                        ...payload,
-                        items
-                    }
-                });
+                renderCpaStatistics(data || {});
             } catch (error) {
                 console.error('CPA statistics error:', error);
                 if (listEl) {
@@ -2903,6 +2835,19 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
             const tgId = tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || 'telegram_id';
 
+            const applyTrackingParams = (rawLink) => {
+                try {
+                    const url = new URL(rawLink);
+                    url.searchParams.set('sub1', String(tgId));
+                    if (sub2) {
+                        url.searchParams.set('sub2', String(sub2));
+                    }
+                    return url.toString();
+                } catch {
+                    return rawLink;
+                }
+            };
+
             try {
                 const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
                     method: 'POST',
@@ -2921,8 +2866,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 }
 
                 const data = await response.json();
-                const link = data?.link || data?.smartlink || data?.url || '';
+                let link = data?.link || data?.smartlink || data?.url || '';
                 if (!link) throw new Error('Пустая ссылка');
+
+                link = applyTrackingParams(link);
 
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
@@ -2932,7 +2879,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return link;
             } catch (error) {
                 console.error('CPA offer link error:', error);
-                const fallback = `https://traforce.com/?offer=${encodeURIComponent(selectedOfferId)}&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
+                const fallback = `https://tone.affomelody.com/click?pid=12519&offer_id=25&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
                 if (linkWrap) linkWrap.classList.remove('hidden');
@@ -2940,6 +2887,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return fallback;
             }
         }
+
 
         async function copyCurrentOfferLink() {
             let link = document.getElementById('cpaOfferLinkOutput')?.value?.trim() || '';
@@ -4635,9 +4583,10 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const cpaOfferGenerateBtn = document.getElementById('cpaOfferGenerateBtn');
         const cpaOfferCopyBtn = document.getElementById('cpaOfferCopyBtn');
         const applyCpaStatsFiltersBtn = document.getElementById('applyCpaStatsFiltersBtn');
+        const cpaStatsSubTypeFilter = document.getElementById('cpaStatsSubTypeFilter');
+        const cpaStatsSubValueFilter = document.getElementById('cpaStatsSubValueFilter');
         const cpaStatsGeoFilter = document.getElementById('cpaStatsGeoFilter');
         const cpaStatsStatusFilter = document.getElementById('cpaStatsStatusFilter');
-        const cpaStatsSub2Filter = document.getElementById('cpaStatsSub2Filter');
         const cpaStatsDateFromFilter = document.getElementById('cpaStatsDateFromFilter');
         const cpaStatsDateToFilter = document.getElementById('cpaStatsDateToFilter');
 
@@ -4685,25 +4634,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             applyCpaStatsFiltersBtn.addEventListener('click', loadCpaStatistics);
         }
 
-        if (cpaStatsGeoFilter) {
-            cpaStatsGeoFilter.addEventListener('input', function () {
-                const list = document.getElementById('cpaStatsList');
-                if (list && list.children.length) {
-                    // re-run render from backend response by reloading
-                }
-            });
-        }
-
-        if (cpaStatsStatusFilter) {
-            cpaStatsStatusFilter.addEventListener('change', loadCpaStatistics);
-        }
-
-        if (cpaStatsSub2Filter) {
-            cpaStatsSub2Filter.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') loadCpaStatistics();
-            });
-        }
-
         if (cpaStatsSubTypeFilter) {
             cpaStatsSubTypeFilter.addEventListener('change', loadCpaStatistics);
         }
@@ -4716,6 +4646,10 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 
         if (cpaStatsGeoFilter) {
             cpaStatsGeoFilter.addEventListener('change', loadCpaStatistics);
+        }
+
+        if (cpaStatsStatusFilter) {
+            cpaStatsStatusFilter.addEventListener('change', loadCpaStatistics);
         }
 
         if (cpaStatsDateFromFilter) {
