@@ -1398,6 +1398,7 @@ body::after {
                 </div>
             </div>
 
+            
             <div id="cpa-stats-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('dating-cpa')" class="text-blue-400 font-medium">← Назад</button>
@@ -1408,7 +1409,7 @@ body::after {
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
                             <div class="text-white font-semibold text-lg">Статистика</div>
-                            <div class="text-sm text-gray-400 mt-1">Вся статистика и основные параметры по трафику</div>
+                            <div class="text-sm text-gray-400 mt-1">Фильтруй по GEO, статусу, потоку и офферу. Здесь видны все лиды и суммы.</div>
                         </div>
                         <button id="refreshCpaDashboardBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">
                             Обновить
@@ -1427,7 +1428,7 @@ body::after {
                         </div>
 
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Профит</div>
+                            <div class="text-xs text-gray-400 mb-1">Профит веба</div>
                             <div id="cpaRevenue" class="text-white text-[18px] font-bold">$0.00</div>
                         </div>
 
@@ -1439,43 +1440,64 @@ body::after {
                 </div>
 
                 <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="text-white font-semibold text-lg mb-3">Параметры</div>
+                    <div class="text-white font-semibold text-lg mb-3">Фильтры</div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                        <input id="cpaStatsGeoFilter" type="text" class="neo-input" placeholder="GEO, например DE" />
+                        <select id="cpaStatsStatusFilter" class="neo-input">
+                            <option value="">Все статусы</option>
+                            <option value="approved">Approved</option>
+                            <option value="hold">Hold</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input id="cpaStatsSub2Filter" type="text" class="neo-input" placeholder="Поток / sub2, например tiktok1" />
+                        <input id="cpaStatsOfferFilter" type="text" class="neo-input" placeholder="Offer ID" />
+                    </div>
+
+                    <button id="applyCpaStatsFiltersBtn" class="primary-btn w-full p-3 rounded-2xl font-bold">
+                        Применить фильтры
+                    </button>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="text-white font-semibold text-lg mb-3">Сводка</div>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Источник</div>
-                            <div class="text-white text-sm">Traforce / Affise API</div>
+                            <div class="text-xs text-gray-400 mb-1">Всего лидов</div>
+                            <div id="cpaStatsTotalConversions" class="text-white text-[20px] font-extrabold">0</div>
                         </div>
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Трекинг</div>
-                            <div class="text-white text-sm">sub1 = Telegram ID</div>
+                            <div class="text-xs text-gray-400 mb-1">Всего вебу</div>
+                            <div id="cpaStatsUserTotal" class="text-white text-[18px] font-bold">$0.00</div>
                         </div>
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Поток веба</div>
-                            <div class="text-white text-sm">sub2 = ручной tag</div>
+                            <div class="text-xs text-gray-400 mb-1">Всего API</div>
+                            <div id="cpaStatsApiTotal" class="text-white text-[18px] font-bold">$0.00</div>
                         </div>
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Маржа</div>
-                            <div class="text-white text-sm">От фактического payout</div>
+                            <div class="text-xs text-gray-400 mb-1">Маржа сервиса</div>
+                            <div id="cpaStatsMarginTotal" class="text-white text-[18px] font-bold">$0.00</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-box p-4 rounded-[24px]">
-                    <div class="text-white font-semibold text-lg mb-3">Разбивка</div>
-                    <div class="space-y-3">
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Статус</div>
-                            <div class="text-white text-sm">Hold / Approved / Rejected</div>
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Лиды и конверсии</div>
+                            <div class="text-sm text-gray-400 mt-1">Дата, GEO, статус, поток, offer id, click id и суммы</div>
                         </div>
+                    </div>
+
+                    <div id="cpaStatsList" class="space-y-3">
                         <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Что должно отображаться</div>
-                            <div class="text-white text-sm">Дата, клики, конверсии, payout, sub2 и статус лида</div>
+                            <div class="text-sm text-gray-400">Статистика загружается...</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="cpa-offer-details-section" class="hidden">
+<div id="cpa-offer-details-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="closeOfferDetails()" class="text-blue-400 font-medium">← Назад</button>
                     <div class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">OFFER DETAILS</div>
@@ -2537,6 +2559,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (section === 'dating-cpa' || section === 'cpa-stats') {
                 loadCpaDashboard();
             }
+
+            if (section === 'cpa-stats') {
+                loadCpaStatistics();
+            }
         }
 
         function setDatingCpaHeaderMode(isCpa) {
@@ -2545,21 +2571,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const topupBtn = document.getElementById('topupBtn');
             const cpaWithdrawBtn = document.getElementById('cpaWithdrawBtn');
 
-            if (userBalance) {
-                userBalance.classList.toggle('hidden', !!isCpa);
-            }
-
-            if (cpaBalanceBlock) {
-                cpaBalanceBlock.classList.toggle('hidden', !isCpa);
-            }
-
-            if (topupBtn) {
-                topupBtn.classList.toggle('hidden', !!isCpa);
-            }
-
-            if (cpaWithdrawBtn) {
-                cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
-            }
+            if (userBalance) userBalance.classList.toggle('hidden', isCpa);
+            if (cpaBalanceBlock) cpaBalanceBlock.classList.toggle('hidden', !isCpa);
+            if (topupBtn) topupBtn.classList.toggle('hidden', isCpa);
+            if (cpaWithdrawBtn) cpaWithdrawBtn.classList.toggle('hidden', !isCpa);
         }
 
         function updateCpaUi(data = {}) {
@@ -2575,37 +2590,14 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return Number.isFinite(num) ? num : fallback;
             };
 
-            const balance = safeNum(
-                balanceData.available ??
-                balanceData.usd_balance ??
-                0,
-                0
-            );
-
-            const hold = safeNum(
-                balanceData.hold ??
-                balanceData.usd_hold ??
-                payload.hold_balance ??
-                payload.hold ??
-                payload.usd_hold,
-                0
-            );
-
-            const withdrawn = safeNum(
-                balanceData.total_withdrawn ??
-                payload.total_withdrawn ??
-                payload.withdrawn,
-                0
-            );
-
+            const balance = safeNum(balanceData.available ?? balanceData.usd_balance ?? 0, 0);
+            const hold = safeNum(balanceData.hold ?? balanceData.usd_hold ?? 0, 0);
+            const withdrawn = safeNum(balanceData.total_withdrawn ?? payload.total_withdrawn ?? 0, 0);
             const clicks = safeNum(statsData.clicks ?? payload.clicks, 0);
             const conversions = safeNum(statsData.conversions ?? payload.conversions, 0);
             const revenue = safeNum(statsData.revenue ?? payload.revenue ?? payload.profit, 0);
-
             const crRaw = statsData.cr ?? payload.cr;
-            const crValue = Number.isFinite(Number(crRaw))
-                ? safeNum(crRaw, 0)
-                : (clicks > 0 ? (conversions / clicks) * 100 : 0);
+            const crValue = Number.isFinite(Number(crRaw)) ? safeNum(crRaw, 0) : (clicks > 0 ? (conversions / clicks) * 100 : 0);
 
             const setText = (id, value) => {
                 const el = document.getElementById(id);
@@ -2628,6 +2620,127 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
         }
 
+        function formatCpaDate(value) {
+            if (!value) return '—';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleString('ru-RU', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderCpaStatistics(response = {}) {
+            const payload = response?.statistics || response || {};
+            const summary = payload.summary || {};
+            const items = Array.isArray(payload.items) ? payload.items : [];
+            const listEl = document.getElementById('cpaStatsList');
+
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+
+            setText('cpaStatsTotalConversions', String(summary.total_conversions || 0));
+            setText('cpaStatsUserTotal', `$${Number(summary.payout_user_total || 0).toFixed(2)}`);
+            setText('cpaStatsApiTotal', `$${Number(summary.payout_api_total || 0).toFixed(2)}`);
+            setText('cpaStatsMarginTotal', `$${Number(summary.service_margin_total || 0).toFixed(2)}`);
+
+            if (!listEl) return;
+
+            const geoFilter = (document.getElementById('cpaStatsGeoFilter')?.value || '').trim().toLowerCase();
+            const filtered = items.filter((item) => {
+                if (!geoFilter) return true;
+                return String(item.country || '').toLowerCase().includes(geoFilter);
+            });
+
+            if (!filtered.length) {
+                listEl.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-white font-semibold">Данных нет</div>
+                        <div class="text-sm text-gray-400 mt-1">Пока нет конверсий по выбранным фильтрам.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map((item) => `
+                <div class="metric-tile">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-bold text-[15px]">${formatCpaDate(item.created_at)}</div>
+                            <div class="text-sm text-gray-400 mt-1">Offer: ${item.offer_id || '—'} • GEO: ${item.country || '—'}</div>
+                        </div>
+                        <div class="glow-badge px-3 py-1 rounded-full text-xs font-semibold">${String(item.status || 'approved').toUpperCase()}</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Sub2</div>
+                            <div class="text-white">${item.sub2 || '—'}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Click ID</div>
+                            <div class="text-white break-all">${item.click_id || '—'}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Вебу</div>
+                            <div class="text-white">$${Number(item.payout_user || 0).toFixed(2)}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 mb-1">Из API</div>
+                            <div class="text-white">$${Number(item.payout_api || 0).toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadCpaStatistics() {
+            const listEl = document.getElementById('cpaStatsList');
+            if (listEl) {
+                listEl.innerHTML = `
+                    <div class="metric-tile">
+                        <div class="text-sm text-gray-400">Загружаем статистику...</div>
+                    </div>
+                `;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cpa/statistics`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || null,
+                        status: document.getElementById('cpaStatsStatusFilter')?.value || '',
+                        offer_id: document.getElementById('cpaStatsOfferFilter')?.value?.trim() || '',
+                        sub2: document.getElementById('cpaStatsSub2Filter')?.value?.trim() || '',
+                        limit: 100
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('CPA statistics unavailable');
+                }
+
+                const data = await response.json();
+                renderCpaStatistics(data || {});
+            } catch (error) {
+                console.error('CPA statistics error:', error);
+                if (listEl) {
+                    listEl.innerHTML = `
+                        <div class="metric-tile">
+                            <div class="text-white font-semibold">Не удалось загрузить статистику</div>
+                            <div class="text-sm text-gray-400 mt-1">Проверь backend endpoint /cpa/statistics.</div>
+                        </div>
+                    `;
+                }
+            }
+        }
 
         async function loadCpaDashboard() {
             try {
@@ -2715,19 +2828,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const sub2 = document.getElementById('cpaOfferSub2Input')?.value?.trim() || '';
             const tgId = tg?.initDataUnsafe?.user?.id || appState.user?.telegram_id || 'telegram_id';
 
-            const applyTrackingParams = (rawLink) => {
-                try {
-                    const url = new URL(rawLink);
-                    url.searchParams.set('sub1', String(tgId));
-                    if (sub2) {
-                        url.searchParams.set('sub2', String(sub2));
-                    }
-                    return url.toString();
-                } catch {
-                    return rawLink;
-                }
-            };
-
             try {
                 const response = await fetch(`${API_BASE_URL}/cpa/generate-link`, {
                     method: 'POST',
@@ -2746,10 +2846,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 }
 
                 const data = await response.json();
-                let link = data?.link || data?.smartlink || data?.url || '';
+                const link = data?.link || data?.smartlink || data?.url || '';
                 if (!link) throw new Error('Пустая ссылка');
-
-                link = applyTrackingParams(link);
 
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
@@ -2759,7 +2857,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return link;
             } catch (error) {
                 console.error('CPA offer link error:', error);
-                const fallback = `https://tone.affomelody.com/click?pid=12519&offer_id=25&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
+                const fallback = `https://traforce.com/?offer=${encodeURIComponent(selectedOfferId)}&sub1=${encodeURIComponent(tgId)}${sub2 ? `&sub2=${encodeURIComponent(sub2)}` : ''}`;
                 const linkWrap = document.getElementById('cpaOfferLinkWrap');
                 const linkOutput = document.getElementById('cpaOfferLinkOutput');
                 if (linkWrap) linkWrap.classList.remove('hidden');
@@ -2767,7 +2865,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return fallback;
             }
         }
-
 
         async function copyCurrentOfferLink() {
             let link = document.getElementById('cpaOfferLinkOutput')?.value?.trim() || '';
@@ -2825,7 +2922,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         initData: tg?.initData || null,
-                        source: 'traforce',
                         telegram_id: tgId,
                         offer_id: 'smartlink_adult_ww',
                         sub2: 'miniapp'
@@ -4463,6 +4559,11 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const openCpaStatsBtn = document.getElementById('openCpaStatsBtn');
         const cpaOfferGenerateBtn = document.getElementById('cpaOfferGenerateBtn');
         const cpaOfferCopyBtn = document.getElementById('cpaOfferCopyBtn');
+        const applyCpaStatsFiltersBtn = document.getElementById('applyCpaStatsFiltersBtn');
+        const cpaStatsGeoFilter = document.getElementById('cpaStatsGeoFilter');
+        const cpaStatsStatusFilter = document.getElementById('cpaStatsStatusFilter');
+        const cpaStatsSub2Filter = document.getElementById('cpaStatsSub2Filter');
+        const cpaStatsOfferFilter = document.getElementById('cpaStatsOfferFilter');
 
         if (createCpaSmartlinkBtn) {
             createCpaSmartlinkBtn.addEventListener('click', createCpaSmartlink);
@@ -4498,7 +4599,39 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         }
 
         if (refreshCpaDashboardBtn) {
-            refreshCpaDashboardBtn.addEventListener('click', loadCpaDashboard);
+            refreshCpaDashboardBtn.addEventListener('click', function () {
+                loadCpaDashboard();
+                loadCpaStatistics();
+            });
+        }
+
+        if (applyCpaStatsFiltersBtn) {
+            applyCpaStatsFiltersBtn.addEventListener('click', loadCpaStatistics);
+        }
+
+        if (cpaStatsGeoFilter) {
+            cpaStatsGeoFilter.addEventListener('input', function () {
+                const list = document.getElementById('cpaStatsList');
+                if (list && list.children.length) {
+                    // re-run render from backend response by reloading
+                }
+            });
+        }
+
+        if (cpaStatsStatusFilter) {
+            cpaStatsStatusFilter.addEventListener('change', loadCpaStatistics);
+        }
+
+        if (cpaStatsSub2Filter) {
+            cpaStatsSub2Filter.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') loadCpaStatistics();
+            });
+        }
+
+        if (cpaStatsOfferFilter) {
+            cpaStatsOfferFilter.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') loadCpaStatistics();
+            });
         }
 
         if (openCpaStatsBtn) {
