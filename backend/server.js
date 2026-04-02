@@ -363,6 +363,20 @@ async function ensureCpaTables() {
       raw_payload jsonb
     )
   `);
+
+  await tryQuery(`
+    create table if not exists cpa_clicks (
+      id serial primary key,
+      telegram_id bigint,
+      offer_id text,
+      sub1 text,
+      sub2 text,
+      country text,
+      ip_hash text,
+      user_agent text,
+      created_at timestamptz default now()
+    )
+  `);
 }
 
 async function updateUserUsdBalance(telegramId, delta) {
@@ -882,7 +896,7 @@ app.post('/cpa/dashboard', async (req, res) => {
 
     const clicksResult = await tryQuery(
       `select count(*)::int as clicks
-       from cpa_offer_links
+       from cpa_clicks
        where telegram_id = $1`,
       [user.id]
     );
@@ -914,6 +928,7 @@ app.post('/cpa/dashboard', async (req, res) => {
 });
 
 
+
 app.post('/cpa/statistics', async (req, res) => {
   try {
     const user = getUserIdentityFromBody(req);
@@ -921,51 +936,57 @@ app.post('/cpa/statistics', async (req, res) => {
       return res.status(401).json({ message: 'Invalid user' });
     }
 
-    const {
-      limit = 100,
-      status = '',
-      sub_type = '',
-      sub_value = '',
-      geo = '',
-      date_from = '',
-      date_to = ''
-    } = req.body || {};
+    const { limit = 100, status = '', sub_type = '', sub_value = '', geo = '', date_from = '', date_to = '' } = req.body || {};
 
-    const values = [user.id];
-    let where = 'where telegram_id = $1';
+    const clickValues = [user.id];
+    let clickWhere = 'where telegram_id = $1';
 
-    if (status) {
-      values.push(String(status).trim().toLowerCase());
-      where += ` and lower(status) = $${values.length}`;
-    }
+    const conversionValues = [user.id];
+    let conversionWhere = 'where telegram_id = $1';
 
     if (sub_type === 'sub1' && sub_value) {
-      values.push(String(sub_value).trim());
-      where += ` and sub1 = $${values.length}`;
+      clickValues.push(String(sub_value).trim());
+      clickWhere += ` and sub1 = $${clickValues.length}`;
+      conversionValues.push(String(sub_value).trim());
+      conversionWhere += ` and sub1 = $${conversionValues.length}`;
     }
 
     if (sub_type === 'sub2' && sub_value) {
-      values.push(String(sub_value).trim());
-      where += ` and sub2 = $${values.length}`;
+      clickValues.push(String(sub_value).trim());
+      clickWhere += ` and sub2 = $${clickValues.length}`;
+      conversionValues.push(String(sub_value).trim());
+      conversionWhere += ` and sub2 = $${conversionValues.length}`;
     }
 
     if (geo) {
-      values.push(String(geo).trim().toUpperCase());
-      where += ` and upper(country) = $${values.length}`;
+      clickValues.push(String(geo).trim().toUpperCase());
+      clickWhere += ` and upper(country) = $${clickValues.length}`;
+      conversionValues.push(String(geo).trim().toUpperCase());
+      conversionWhere += ` and upper(country) = $${conversionValues.length}`;
     }
 
     if (date_from) {
-      values.push(String(date_from));
-      where += ` and created_at::date >= $${values.length}::date`;
+      clickValues.push(String(date_from));
+      clickWhere += ` and created_at::date >= $${clickValues.length}::date`;
+      conversionValues.push(String(date_from));
+      conversionWhere += ` and created_at::date >= $${conversionValues.length}::date`;
     }
 
     if (date_to) {
-      values.push(String(date_to));
-      where += ` and created_at::date <= $${values.length}::date`;
+      clickValues.push(String(date_to));
+      clickWhere += ` and created_at::date <= $${clickValues.length}::date`;
+      conversionValues.push(String(date_to));
+      conversionWhere += ` and created_at::date <= $${conversionValues.length}::date`;
     }
 
-    const summaryValues = values.slice();
-    values.push(Number(limit) > 0 ? Number(limit) : 100);
+    if (status) {
+      conversionValues.push(String(status).trim().toLowerCase());
+      conversionWhere += ` and lower(status) = $${conversionValues.length}`;
+    }
+
+    const conversionSummaryValues = conversionValues.slice();
+    const conversionItemsValues = conversionValues.slice();
+    conversionItemsValues.push(Number(limit) > 0 ? Number(limit) : 100);
 
     const itemsResult = await tryQuery(
       `select
@@ -982,10 +1003,10 @@ app.post('/cpa/statistics', async (req, res) => {
           service_margin,
           created_at
        from cpa_conversions
-       ${where}
+       ${conversionWhere}
        order by created_at desc
-       limit $${values.length}`,
-      values
+       limit $${conversionItemsValues.length}`,
+      conversionItemsValues
     );
 
     const summaryResult = await tryQuery(
@@ -995,37 +1016,65 @@ app.post('/cpa/statistics', async (req, res) => {
           coalesce(sum(payout_user), 0) as payout_user_total,
           coalesce(sum(service_margin), 0) as service_margin_total
        from cpa_conversions
-       ${where}`,
-      summaryValues
+       ${conversionWhere}`,
+      conversionSummaryValues
     );
 
-    const geoStatsResult = await tryQuery(
+    const clickGeoResult = await tryQuery(
       `select
           upper(coalesce(country, 'UNKNOWN')) as geo,
           count(*)::int as clicks,
-          count(distinct coalesce(nullif(click_id, ''), id::text))::int as unique_clicks,
+          count(distinct coalesce(nullif(ip_hash, ''), id::text))::int as unique_clicks
+       from cpa_clicks
+       ${clickWhere}
+       group by upper(coalesce(country, 'UNKNOWN'))`,
+      clickValues
+    );
+
+    const conversionGeoResult = await tryQuery(
+      `select
+          upper(coalesce(country, 'UNKNOWN')) as geo,
           count(*)::int as conversions,
           coalesce(sum(payout_api), 0) as payout_api_total
        from cpa_conversions
-       ${where}
-       group by upper(coalesce(country, 'UNKNOWN'))
-       order by clicks desc, geo asc`,
-      summaryValues
+       ${conversionWhere}
+       group by upper(coalesce(country, 'UNKNOWN'))`,
+      conversionValues
     );
 
-    const geo_stats = (geoStatsResult.rows || []).map((row) => {
-      const clicks = safeNumber(row.clicks, 0);
-      const conversions = safeNumber(row.conversions, 0);
-      const payoutApiTotal = safeNumber(row.payout_api_total, 0);
+    const clickMap = new Map();
+    for (const row of clickGeoResult.rows || []) {
+      clickMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
+        clicks: safeNumber(row.clicks, 0),
+        unique_clicks: safeNumber(row.unique_clicks, 0)
+      });
+    }
+
+    const conversionMap = new Map();
+    for (const row of conversionGeoResult.rows || []) {
+      conversionMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
+        conversions: safeNumber(row.conversions, 0),
+        payout_api_total: safeNumber(row.payout_api_total, 0)
+      });
+    }
+
+    const geos = Array.from(new Set([...clickMap.keys(), ...conversionMap.keys()])).sort();
+    const geo_stats = geos.map((geoKey) => {
+      const clickData = clickMap.get(geoKey) || { clicks: 0, unique_clicks: 0 };
+      const conversionData = conversionMap.get(geoKey) || { conversions: 0, payout_api_total: 0 };
+      const clicks = safeNumber(clickData.clicks, 0);
+      const conversions = safeNumber(conversionData.conversions, 0);
+      const payoutApiTotal = safeNumber(conversionData.payout_api_total, 0);
+
       return {
-        geo: row.geo || 'UNKNOWN',
+        geo: geoKey || 'UNKNOWN',
         clicks,
-        unique_clicks: safeNumber(row.unique_clicks, 0),
+        unique_clicks: safeNumber(clickData.unique_clicks, 0),
         conversions,
         cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
         epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
       };
-    });
+    }).sort((a, b) => b.clicks - a.clicks);
 
     res.json({
       ok: true,
@@ -1043,6 +1092,178 @@ app.post('/cpa/statistics', async (req, res) => {
   } catch (error) {
     console.error('CPA statistics error:', error);
     res.status(500).json({ message: error.message || 'CPA statistics error' });
+  }
+});
+
+
+
+app.get('/cpa/statistics', async (req, res) => {
+  try {
+    const { telegram_id, limit = 100, status = '', sub_type = '', sub_value = '', geo = '', date_from = '', date_to = '' } = req.query || {};
+
+    if (!telegram_id) {
+      return res.status(400).json({ message: 'telegram_id required' });
+    }
+
+    const userId = Number(telegram_id);
+    if (!Number.isFinite(userId)) {
+      return res.status(400).json({ message: 'invalid telegram_id' });
+    }
+
+    const clickValues = [userId];
+    let clickWhere = 'where telegram_id = $1';
+
+    const conversionValues = [userId];
+    let conversionWhere = 'where telegram_id = $1';
+
+    if (sub_type === 'sub1' && sub_value) {
+      clickValues.push(String(sub_value).trim());
+      clickWhere += ` and sub1 = $${clickValues.length}`;
+      conversionValues.push(String(sub_value).trim());
+      conversionWhere += ` and sub1 = $${conversionValues.length}`;
+    }
+
+    if (sub_type === 'sub2' && sub_value) {
+      clickValues.push(String(sub_value).trim());
+      clickWhere += ` and sub2 = $${clickValues.length}`;
+      conversionValues.push(String(sub_value).trim());
+      conversionWhere += ` and sub2 = $${conversionValues.length}`;
+    }
+
+    if (geo) {
+      clickValues.push(String(geo).trim().toUpperCase());
+      clickWhere += ` and upper(country) = $${clickValues.length}`;
+      conversionValues.push(String(geo).trim().toUpperCase());
+      conversionWhere += ` and upper(country) = $${conversionValues.length}`;
+    }
+
+    if (date_from) {
+      clickValues.push(String(date_from));
+      clickWhere += ` and created_at::date >= $${clickValues.length}::date`;
+      conversionValues.push(String(date_from));
+      conversionWhere += ` and created_at::date >= $${conversionValues.length}::date`;
+    }
+
+    if (date_to) {
+      clickValues.push(String(date_to));
+      clickWhere += ` and created_at::date <= $${clickValues.length}::date`;
+      conversionValues.push(String(date_to));
+      conversionWhere += ` and created_at::date <= $${conversionValues.length}::date`;
+    }
+
+    if (status) {
+      conversionValues.push(String(status).trim().toLowerCase());
+      conversionWhere += ` and lower(status) = $${conversionValues.length}`;
+    }
+
+    const conversionSummaryValues = conversionValues.slice();
+    const conversionItemsValues = conversionValues.slice();
+    conversionItemsValues.push(Number(limit) > 0 ? Number(limit) : 100);
+
+    const itemsResult = await tryQuery(
+      `select
+          id,
+          telegram_id,
+          offer_id,
+          click_id,
+          sub1,
+          sub2,
+          status,
+          country,
+          payout_api,
+          payout_user,
+          service_margin,
+          created_at
+       from cpa_conversions
+       ${conversionWhere}
+       order by created_at desc
+       limit $${conversionItemsValues.length}`,
+      conversionItemsValues
+    );
+
+    const summaryResult = await tryQuery(
+      `select
+          count(*)::int as total_conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total,
+          coalesce(sum(payout_user), 0) as payout_user_total,
+          coalesce(sum(service_margin), 0) as service_margin_total
+       from cpa_conversions
+       ${conversionWhere}`,
+      conversionSummaryValues
+    );
+
+    const clickGeoResult = await tryQuery(
+      `select
+          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(*)::int as clicks,
+          count(distinct coalesce(nullif(ip_hash, ''), id::text))::int as unique_clicks
+       from cpa_clicks
+       ${clickWhere}
+       group by upper(coalesce(country, 'UNKNOWN'))`,
+      clickValues
+    );
+
+    const conversionGeoResult = await tryQuery(
+      `select
+          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(*)::int as conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total
+       from cpa_conversions
+       ${conversionWhere}
+       group by upper(coalesce(country, 'UNKNOWN'))`,
+      conversionValues
+    );
+
+    const clickMap = new Map();
+    for (const row of clickGeoResult.rows || []) {
+      clickMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
+        clicks: safeNumber(row.clicks, 0),
+        unique_clicks: safeNumber(row.unique_clicks, 0)
+      });
+    }
+
+    const conversionMap = new Map();
+    for (const row of conversionGeoResult.rows || []) {
+      conversionMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
+        conversions: safeNumber(row.conversions, 0),
+        payout_api_total: safeNumber(row.payout_api_total, 0)
+      });
+    }
+
+    const geos = Array.from(new Set([...clickMap.keys(), ...conversionMap.keys()])).sort();
+    const geo_stats = geos.map((geoKey) => {
+      const clickData = clickMap.get(geoKey) || { clicks: 0, unique_clicks: 0 };
+      const conversionData = conversionMap.get(geoKey) || { conversions: 0, payout_api_total: 0 };
+      const clicks = safeNumber(clickData.clicks, 0);
+      const conversions = safeNumber(conversionData.conversions, 0);
+      const payoutApiTotal = safeNumber(conversionData.payout_api_total, 0);
+
+      return {
+        geo: geoKey || 'UNKNOWN',
+        clicks,
+        unique_clicks: safeNumber(clickData.unique_clicks, 0),
+        conversions,
+        cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
+        epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
+      };
+    }).sort((a, b) => b.clicks - a.clicks);
+
+    res.json({
+      ok: true,
+      statistics: {
+        items: itemsResult.rows || [],
+        summary: {
+          total_conversions: safeNumber(summaryResult.rows?.[0]?.total_conversions, 0),
+          payout_api_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_api_total, 0).toFixed(2)),
+          payout_user_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_user_total, 0).toFixed(2)),
+          service_margin_total: Number(safeNumber(summaryResult.rows?.[0]?.service_margin_total, 0).toFixed(2))
+        },
+        geo_stats
+      }
+    });
+  } catch (error) {
+    console.error('CPA GET statistics error:', error);
+    res.status(500).json({ message: error.message || 'CPA GET statistics error' });
   }
 });
 
@@ -1088,26 +1309,27 @@ app.post('/cpa/generate-link', async (req, res) => {
     const sub1 = tgId;
     const offer = cached?.parsed || {};
 
-    let directTarget = offer.link || '';
+    let baseLink = offer.link || '';
 
-    if (!directTarget && String(offer_id) === 'smartlink_adult_ww') {
-      directTarget = TRAFORCE_SMARTLINK_ADULT_WW;
+    if (!baseLink && String(offer_id) === 'smartlink_adult_ww') {
+      baseLink = TRAFORCE_SMARTLINK_ADULT_WW;
     }
 
-    if (!directTarget && String(offer_id) === 'mainstream_dating') {
-      directTarget = TRAFORCE_MAINSTREAM_LINK;
+    if (!baseLink && String(offer_id) === 'mainstream_dating') {
+      baseLink = TRAFORCE_MAINSTREAM_LINK;
     }
 
-    const trackingUrl = new URL(`${PUBLIC_BASE_URL}/cpa/go/${encodeURIComponent(String(offer_id))}`);
-    trackingUrl.searchParams.set('sub1', sub1);
+    if (!baseLink) {
+      baseLink = `${PUBLIC_BASE_URL}/cpa/go/${encodeURIComponent(String(offer_id))}`;
+    }
+
+    const url = new URL(baseLink);
+    url.searchParams.set('sub1', sub1);
     if (sub2) {
-      trackingUrl.searchParams.set('sub2', String(sub2));
-    }
-    if (directTarget) {
-      trackingUrl.searchParams.set('target', directTarget);
+      url.searchParams.set('sub2', String(sub2));
     }
 
-    const generatedUrl = trackingUrl.toString();
+    const generatedUrl = url.toString();
 
     await tryQuery(
       `insert into cpa_offer_links (telegram_id, offer_id, sub1, sub2, generated_url)
@@ -1138,12 +1360,10 @@ app.post('/cpa/generate-link', async (req, res) => {
 app.get('/cpa/go/:offerId', async (req, res) => {
   try {
     const { offerId } = req.params;
-    const { sub1 = '', sub2 = '', target = '' } = req.query || {};
+    const { sub1 = '', sub2 = '' } = req.query || {};
 
     let baseLink = '';
-    if (target) {
-      baseLink = String(target);
-    } else if (String(offerId) === 'smartlink_adult_ww' && TRAFORCE_SMARTLINK_ADULT_WW) {
+    if (String(offerId) === 'smartlink_adult_ww' && TRAFORCE_SMARTLINK_ADULT_WW) {
       baseLink = TRAFORCE_SMARTLINK_ADULT_WW;
     } else if (String(offerId) === 'mainstream_dating' && TRAFORCE_MAINSTREAM_LINK) {
       baseLink = TRAFORCE_MAINSTREAM_LINK;
