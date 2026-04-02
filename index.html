@@ -1452,6 +1452,8 @@ body::after {
                         </select>
                         <input id="cpaStatsSub2Filter" type="text" class="neo-input" placeholder="Поток / sub2, например tiktok1" />
                         <input id="cpaStatsOfferFilter" type="text" class="neo-input" placeholder="Offer ID" />
+                        <input id="cpaStatsDateFromFilter" type="date" class="neo-input" />
+                        <input id="cpaStatsDateToFilter" type="date" class="neo-input" />
                     </div>
 
                     <button id="applyCpaStatsFiltersBtn" class="primary-btn w-full p-3 rounded-2xl font-bold">
@@ -2719,6 +2721,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                         status: document.getElementById('cpaStatsStatusFilter')?.value || '',
                         offer_id: document.getElementById('cpaStatsOfferFilter')?.value?.trim() || '',
                         sub2: document.getElementById('cpaStatsSub2Filter')?.value?.trim() || '',
+                        date_from: document.getElementById('cpaStatsDateFromFilter')?.value || '',
+                        date_to: document.getElementById('cpaStatsDateToFilter')?.value || '',
                         limit: 100
                     })
                 });
@@ -4564,6 +4568,8 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
         const cpaStatsStatusFilter = document.getElementById('cpaStatsStatusFilter');
         const cpaStatsSub2Filter = document.getElementById('cpaStatsSub2Filter');
         const cpaStatsOfferFilter = document.getElementById('cpaStatsOfferFilter');
+        const cpaStatsDateFromFilter = document.getElementById('cpaStatsDateFromFilter');
+        const cpaStatsDateToFilter = document.getElementById('cpaStatsDateToFilter');
 
         if (createCpaSmartlinkBtn) {
             createCpaSmartlinkBtn.addEventListener('click', createCpaSmartlink);
@@ -4632,6 +4638,14 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             cpaStatsOfferFilter.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') loadCpaStatistics();
             });
+        }
+
+        if (cpaStatsDateFromFilter) {
+            cpaStatsDateFromFilter.addEventListener('change', loadCpaStatistics);
+        }
+
+        if (cpaStatsDateToFilter) {
+            cpaStatsDateToFilter.addEventListener('change', loadCpaStatistics);
         }
 
         if (openCpaStatsBtn) {
