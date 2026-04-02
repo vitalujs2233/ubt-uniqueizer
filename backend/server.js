@@ -11,6 +11,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 const ADMIN_ID = 232682307;
+const TRAFORCE_API_BASE = (process.env.TRAFORCE_API_BASE || 'https://api-victoriya.affise.com/3.0').replace(/\/$/, '');
+const TRAFORCE_API_KEY = process.env.TRAFORCE_API_KEY || '';
+const CPA_MARGIN = Number(process.env.CPA_MARGIN || 0.80);
+const cpaOffersCache = new Map();
 
 app.use(cors());
 app.use(express.json());
@@ -194,6 +198,179 @@ async function spendUserCredits(telegramId, amount, description = 'Создан�
     status: 'completed',
     description
   });
+}
+
+
+function safeNumber(value, fallback = 0) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
+function getUserIdentityFromBody(req) {
+  const { initData, telegram_id } = req.body || {};
+
+  if (initData) {
+    const tgUser = validateTelegramInitData(initData, process.env.BOT_TOKEN);
+    if (tgUser) return tgUser;
+  }
+
+  if (telegram_id) {
+    return { id: Number(telegram_id) };
+  }
+
+  return null;
+}
+
+function parseTraforceOffer(raw = {}) {
+  const payments = Array.isArray(raw.payments) ? raw.payments : [];
+  const payment = payments[0] || {};
+  const apiPayout =
+    safeNumber(payment.total, NaN) ||
+    safeNumber(payment.amount, NaN) ||
+    safeNumber(raw.payout, NaN) ||
+    safeNumber(raw.pay, 0);
+
+  const displayPayout = Number((apiPayout * CPA_MARGIN).toFixed(2));
+  const countries = Array.isArray(payment.countries)
+    ? payment.countries
+    : Array.isArray(raw.countries)
+      ? raw.countries
+      : [];
+
+  const allowedTraffic = Array.isArray(raw.allowed_traffic_types)
+    ? raw.allowed_traffic_types
+    : Array.isArray(raw.allowed_traffic)
+      ? raw.allowed_traffic
+      : [];
+
+  const restrictedTraffic = Array.isArray(raw.restricted_traffic_types)
+    ? raw.restricted_traffic_types
+    : Array.isArray(raw.restricted_traffic)
+      ? raw.restricted_traffic
+      : [];
+
+  const categories = Array.isArray(raw.categories)
+    ? raw.categories.map((item) => item?.title || item?.name || item).filter(Boolean)
+    : [];
+
+  const description =
+    raw.description_lang?.en ||
+    raw.description_lang?.ru ||
+    raw.description ||
+    raw.preview_url ||
+    '';
+
+  const link =
+    raw.link ||
+    raw.url ||
+    raw.tracking_url ||
+    raw.preview_url ||
+    raw.offer_url ||
+    raw.lp_url ||
+    null;
+
+  return {
+    id: String(raw.id || raw.offer_id || ''),
+    title: raw.title || raw.name || `Offer ${raw.id || ''}`,
+    category: categories[0] || raw.vertical || 'Dating',
+    countries,
+    api_payout: Number(apiPayout.toFixed ? apiPayout.toFixed(2) : apiPayout || 0),
+    display_payout: displayPayout,
+    currency: payment.currency || raw.currency || 'USD',
+    description,
+    flow: raw.flow || description,
+    allowed_traffic: allowedTraffic,
+    restricted_traffic: restrictedTraffic,
+    preview_url: raw.preview_url || null,
+    link
+  };
+}
+
+async function fetchTraforce(path, params = {}) {
+  if (!TRAFORCE_API_KEY) {
+    throw new Error('TRAFORCE_API_KEY is missing');
+  }
+
+  const url = new URL(`${TRAFORCE_API_BASE}${path}`);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'API-Key': TRAFORCE_API_KEY,
+      'Accept': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    const raw = await response.text();
+    throw new Error(`Traforce API ${response.status}: ${raw}`);
+  }
+
+  return response.json();
+}
+
+async function tryQuery(sql, params = []) {
+  try {
+    return await pool.query(sql, params);
+  } catch (error) {
+    console.error('Optional query failed:', error.message);
+    return { rows: [] };
+  }
+}
+
+async function ensureCpaTables() {
+  await tryQuery(`
+    create table if not exists cpa_offer_links (
+      id serial primary key,
+      telegram_id bigint not null,
+      offer_id text not null,
+      sub1 text,
+      sub2 text,
+      generated_url text,
+      created_at timestamptz default now()
+    )
+  `);
+
+  await tryQuery(`
+    create table if not exists cpa_postback_logs (
+      id serial primary key,
+      payload jsonb,
+      created_at timestamptz default now()
+    )
+  `);
+
+  await tryQuery(`
+    create table if not exists cpa_conversions (
+      id serial primary key,
+      telegram_id bigint,
+      offer_id text,
+      click_id text,
+      sub1 text,
+      sub2 text,
+      status text,
+      country text,
+      payout_api numeric default 0,
+      payout_user numeric default 0,
+      service_margin numeric default 0,
+      created_at timestamptz default now(),
+      raw_payload jsonb
+    )
+  `);
+}
+
+async function updateUserUsdBalance(telegramId, delta) {
+  const amount = safeNumber(delta, 0);
+  await tryQuery(
+    `update users
+     set usd_balance = coalesce(usd_balance, 0) + $2
+     where telegram_id = $1`,
+    [telegramId, amount]
+  );
 }
 
 app.post('/register', async (req, res) => {
@@ -623,6 +800,256 @@ app.get('/r/:code', async (req, res) => {
     return res.status(500).send('Internal server error');
   }
 });
+
+// =======================
+// CPA MODULE START
+// =======================
+
+app.post('/cpa/offers', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const data = await fetchTraforce('/offers', {
+      limit: 50,
+      page: 1,
+      status: 'active'
+    });
+
+    const items = Array.isArray(data?.offers)
+      ? data.offers
+      : Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data)
+          ? data
+          : [];
+
+    const offers = items
+      .map((rawOffer) => {
+        const parsed = parseTraforceOffer(rawOffer);
+        if (parsed.id) {
+          cpaOffersCache.set(parsed.id, { parsed, raw: rawOffer });
+        }
+        return parsed;
+      })
+      .filter((offer) => offer.id);
+
+    res.json({ ok: true, offers });
+  } catch (error) {
+    console.error('CPA offers error:', error);
+    res.status(500).json({ message: error.message || 'CPA offers error' });
+  }
+});
+
+app.post('/cpa/dashboard', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const userResult = await pool.query(
+      `select telegram_id,
+              coalesce(username, '') as username,
+              coalesce(first_name, '') as first_name,
+              coalesce(photo_url, '') as photo_url,
+              coalesce(usd_balance, 0) as usd_balance,
+              coalesce(usd_hold, 0) as usd_hold,
+              coalesce(total_withdrawn, 0) as total_withdrawn
+       from users
+       where telegram_id = $1
+       limit 1`,
+      [user.id]
+    );
+
+    if (!userResult.rows.length) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    const statsResult = await tryQuery(
+      `select
+          count(*)::int as conversions,
+          coalesce(sum(payout_user), 0) as revenue,
+          coalesce(sum(case when status = 'approved' then payout_user else 0 end), 0) as approved_revenue
+       from cpa_conversions
+       where telegram_id = $1`,
+      [user.id]
+    );
+
+    const clicksResult = await tryQuery(
+      `select count(*)::int as clicks
+       from cpa_offer_links
+       where telegram_id = $1`,
+      [user.id]
+    );
+
+    const conversions = statsResult.rows[0] || {};
+    const clicks = clicksResult.rows[0] || {};
+
+    res.json({
+      ok: true,
+      dashboard: {
+        user: userResult.rows[0],
+        balance: {
+          available: safeNumber(userResult.rows[0].usd_balance, 0),
+          hold: safeNumber(userResult.rows[0].usd_hold, 0),
+          total_withdrawn: safeNumber(userResult.rows[0].total_withdrawn, 0)
+        },
+        stats: {
+          clicks: safeNumber(clicks.clicks, 0),
+          conversions: safeNumber(conversions.conversions, 0),
+          revenue: Number(safeNumber(conversions.revenue, 0).toFixed(2)),
+          approved_revenue: Number(safeNumber(conversions.approved_revenue, 0).toFixed(2))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('CPA dashboard error:', error);
+    res.status(500).json({ message: error.message || 'CPA dashboard error' });
+  }
+});
+
+app.post('/cpa/generate-link', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid user' });
+    }
+
+    const { offer_id, sub2 = '' } = req.body || {};
+    if (!offer_id) {
+      return res.status(400).json({ message: 'offer_id required' });
+    }
+
+    let cached = cpaOffersCache.get(String(offer_id));
+
+    if (!cached) {
+      try {
+        const fresh = await fetchTraforce('/offers', {
+          limit: 100,
+          page: 1,
+          status: 'active'
+        });
+        const items = Array.isArray(fresh?.offers)
+          ? fresh.offers
+          : Array.isArray(fresh?.data)
+            ? fresh.data
+            : [];
+        for (const rawOffer of items) {
+          const parsed = parseTraforceOffer(rawOffer);
+          if (parsed.id) {
+            cpaOffersCache.set(parsed.id, { parsed, raw: rawOffer });
+          }
+        }
+        cached = cpaOffersCache.get(String(offer_id));
+      } catch (e) {
+        console.error('Refresh offers before link generation failed:', e);
+      }
+    }
+
+    const tgId = String(user.id);
+    const sub1 = tgId;
+    const offer = cached?.parsed || {};
+    const baseLink =
+      offer.link ||
+      `${PUBLIC_BASE_URL}/cpa/go/${encodeURIComponent(String(offer_id))}`;
+
+    const url = new URL(baseLink);
+    url.searchParams.set('sub1', sub1);
+    if (sub2) {
+      url.searchParams.set('sub2', String(sub2));
+    }
+
+    const generatedUrl = url.toString();
+
+    await tryQuery(
+      `insert into cpa_offer_links (telegram_id, offer_id, sub1, sub2, generated_url)
+       values ($1, $2, $3, $4, $5)`,
+      [user.id, String(offer_id), sub1, String(sub2 || ''), generatedUrl]
+    );
+
+    res.json({
+      ok: true,
+      link: generatedUrl,
+      offer: {
+        id: String(offer_id),
+        title: offer.title || `Offer ${offer_id}`
+      }
+    });
+  } catch (error) {
+    console.error('CPA generate-link error:', error);
+    res.status(500).json({ message: error.message || 'CPA generate-link error' });
+  }
+});
+
+app.get('/cpa/go/:offerId', async (req, res) => {
+  try {
+    const { offerId } = req.params;
+    const { sub1 = '', sub2 = '' } = req.query || {};
+    const redirectTarget = `https://affiliate.traforce.com/v2/offer/${encodeURIComponent(String(offerId))}?sub1=${encodeURIComponent(String(sub1))}${sub2 ? `&sub2=${encodeURIComponent(String(sub2))}` : ''}`;
+    return res.redirect(redirectTarget);
+  } catch (error) {
+    console.error('CPA redirect error:', error);
+    return res.status(500).send('CPA redirect error');
+  }
+});
+
+app.post('/cpa/postback/traforce', async (req, res) => {
+  try {
+    const payload = req.body || {};
+    await tryQuery(
+      `insert into cpa_postback_logs (payload) values ($1)`,
+      [JSON.stringify(payload)]
+    );
+
+    const sub1 = payload.sub1 || payload.aff_sub1 || payload.sub_id_1 || null;
+    const sub2 = payload.sub2 || payload.aff_sub2 || payload.sub_id_2 || null;
+    const offerId = payload.offer_id || payload.offer || payload.offerid || null;
+    const clickId = payload.clickid || payload.click_id || payload.aff_click_id || null;
+    const status = payload.status || payload.goal || 'approved';
+    const country = payload.country || payload.geo || null;
+    const apiPayout = safeNumber(payload.payout || payload.sum || payload.revenue || 0, 0);
+    const userPayout = Number((apiPayout * CPA_MARGIN).toFixed(2));
+    const serviceMargin = Number((apiPayout - userPayout).toFixed(2));
+
+    if (sub1) {
+      await tryQuery(
+        `insert into cpa_conversions
+           (telegram_id, offer_id, click_id, sub1, sub2, status, country, payout_api, payout_user, service_margin, raw_payload)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          Number(sub1),
+          offerId ? String(offerId) : null,
+          clickId ? String(clickId) : null,
+          String(sub1),
+          sub2 ? String(sub2) : null,
+          String(status),
+          country ? String(country) : null,
+          apiPayout,
+          userPayout,
+          serviceMargin,
+          JSON.stringify(payload)
+        ]
+      );
+
+      if (status !== 'rejected') {
+        await updateUserUsdBalance(Number(sub1), userPayout);
+      }
+    }
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('CPA postback error:', error);
+    res.status(500).json({ message: error.message || 'CPA postback error' });
+  }
+});
+
+// =======================
+// CPA MODULE END
+// =======================
+
 // =======================
 // DVIZH MODULE START
 // =======================
@@ -885,6 +1312,8 @@ app.post('/dvizh/moderate', async (req, res) => {
 // =======================
 // DVIZH MODULE END
 // =======================
-app.listen(port, () => {
-  console.log('Server running on port ' + port);
+ensureCpaTables().finally(() => {
+  app.listen(port, () => {
+    console.log('Server running on port ' + port);
+  });
 });
