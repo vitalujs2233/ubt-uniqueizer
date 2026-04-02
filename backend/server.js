@@ -1046,6 +1046,144 @@ app.post('/cpa/statistics', async (req, res) => {
   }
 });
 
+
+app.get('/cpa/statistics', async (req, res) => {
+  try {
+    const {
+      telegram_id,
+      limit = 100,
+      status = '',
+      sub_type = '',
+      sub_value = '',
+      geo = '',
+      date_from = '',
+      date_to = ''
+    } = req.query || {};
+
+    if (!telegram_id) {
+      return res.status(400).json({ message: 'telegram_id required' });
+    }
+
+    const userId = Number(telegram_id);
+    if (!Number.isFinite(userId)) {
+      return res.status(400).json({ message: 'invalid telegram_id' });
+    }
+
+    const values = [userId];
+    let where = 'where telegram_id = $1';
+
+    if (status) {
+      values.push(String(status).trim().toLowerCase());
+      where += ` and lower(status) = $${values.length}`;
+    }
+
+    if (sub_type === 'sub1' && sub_value) {
+      values.push(String(sub_value).trim());
+      where += ` and sub1 = $${values.length}`;
+    }
+
+    if (sub_type === 'sub2' && sub_value) {
+      values.push(String(sub_value).trim());
+      where += ` and sub2 = $${values.length}`;
+    }
+
+    if (geo) {
+      values.push(String(geo).trim().toUpperCase());
+      where += ` and upper(country) = $${values.length}`;
+    }
+
+    if (date_from) {
+      values.push(String(date_from));
+      where += ` and created_at::date >= $${values.length}::date`;
+    }
+
+    if (date_to) {
+      values.push(String(date_to));
+      where += ` and created_at::date <= $${values.length}::date`;
+    }
+
+    const summaryValues = values.slice();
+    values.push(Number(limit) > 0 ? Number(limit) : 100);
+
+    const itemsResult = await tryQuery(
+      `select
+          id,
+          telegram_id,
+          offer_id,
+          click_id,
+          sub1,
+          sub2,
+          status,
+          country,
+          payout_api,
+          payout_user,
+          service_margin,
+          created_at
+       from cpa_conversions
+       ${where}
+       order by created_at desc
+       limit $${values.length}`,
+      values
+    );
+
+    const summaryResult = await tryQuery(
+      `select
+          count(*)::int as total_conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total,
+          coalesce(sum(payout_user), 0) as payout_user_total,
+          coalesce(sum(service_margin), 0) as service_margin_total
+       from cpa_conversions
+       ${where}`,
+      summaryValues
+    );
+
+    const geoStatsResult = await tryQuery(
+      `select
+          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(*)::int as clicks,
+          count(distinct coalesce(nullif(click_id, ''), id::text))::int as unique_clicks,
+          count(*)::int as conversions,
+          coalesce(sum(payout_api), 0) as payout_api_total
+       from cpa_conversions
+       ${where}
+       group by upper(coalesce(country, 'UNKNOWN'))
+       order by clicks desc, geo asc`,
+      summaryValues
+    );
+
+    const geo_stats = (geoStatsResult.rows || []).map((row) => {
+      const clicks = safeNumber(row.clicks, 0);
+      const conversions = safeNumber(row.conversions, 0);
+      const payoutApiTotal = safeNumber(row.payout_api_total, 0);
+      return {
+        geo: row.geo || 'UNKNOWN',
+        clicks,
+        unique_clicks: safeNumber(row.unique_clicks, 0),
+        conversions,
+        cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
+        epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
+      };
+    });
+
+    res.json({
+      ok: true,
+      statistics: {
+        items: itemsResult.rows || [],
+        summary: {
+          total_conversions: safeNumber(summaryResult.rows?.[0]?.total_conversions, 0),
+          payout_api_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_api_total, 0).toFixed(2)),
+          payout_user_total: Number(safeNumber(summaryResult.rows?.[0]?.payout_user_total, 0).toFixed(2)),
+          service_margin_total: Number(safeNumber(summaryResult.rows?.[0]?.service_margin_total, 0).toFixed(2))
+        },
+        geo_stats
+      }
+    });
+  } catch (error) {
+    console.error('CPA GET statistics error:', error);
+    res.status(500).json({ message: error.message || 'CPA GET statistics error' });
+  }
+});
+
 app.post('/cpa/generate-link', async (req, res) => {
   try {
     const user = getUserIdentityFromBody(req);
