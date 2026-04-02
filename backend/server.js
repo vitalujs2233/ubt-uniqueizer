@@ -14,6 +14,8 @@ const ADMIN_ID = 232682307;
 const TRAFORCE_API_BASE = (process.env.TRAFORCE_API_BASE || 'https://api-victoriya.affise.com/3.0').replace(/\/$/, '');
 const TRAFORCE_API_KEY = process.env.TRAFORCE_API_KEY || '';
 const CPA_MARGIN = Number(process.env.CPA_MARGIN || 0.80);
+const TRAFORCE_SMARTLINK_ADULT_WW = process.env.TRAFORCE_SMARTLINK_ADULT_WW || '';
+const TRAFORCE_MAINSTREAM_LINK = process.env.TRAFORCE_MAINSTREAM_LINK || '';
 const cpaOffersCache = new Map();
 
 app.use(cors());
@@ -952,9 +954,20 @@ app.post('/cpa/generate-link', async (req, res) => {
     const tgId = String(user.id);
     const sub1 = tgId;
     const offer = cached?.parsed || {};
-    const baseLink =
-      offer.link ||
-      `${PUBLIC_BASE_URL}/cpa/go/${encodeURIComponent(String(offer_id))}`;
+
+    let baseLink = offer.link || '';
+
+    if (!baseLink && String(offer_id) === 'smartlink_adult_ww') {
+      baseLink = TRAFORCE_SMARTLINK_ADULT_WW;
+    }
+
+    if (!baseLink && String(offer_id) === 'mainstream_dating') {
+      baseLink = TRAFORCE_MAINSTREAM_LINK;
+    }
+
+    if (!baseLink) {
+      baseLink = `${PUBLIC_BASE_URL}/cpa/go/${encodeURIComponent(String(offer_id))}`;
+    }
 
     const url = new URL(baseLink);
     url.searchParams.set('sub1', sub1);
@@ -975,7 +988,13 @@ app.post('/cpa/generate-link', async (req, res) => {
       link: generatedUrl,
       offer: {
         id: String(offer_id),
-        title: offer.title || `Offer ${offer_id}`
+        title:
+          offer.title ||
+          (String(offer_id) === 'smartlink_adult_ww'
+            ? 'Smartlink Adult Dating WW'
+            : String(offer_id) === 'mainstream_dating'
+              ? 'Mainstream Dating'
+              : `Offer ${offer_id}`)
       }
     });
   } catch (error) {
@@ -988,8 +1007,21 @@ app.get('/cpa/go/:offerId', async (req, res) => {
   try {
     const { offerId } = req.params;
     const { sub1 = '', sub2 = '' } = req.query || {};
-    const redirectTarget = `https://affiliate.traforce.com/v2/offer/${encodeURIComponent(String(offerId))}?sub1=${encodeURIComponent(String(sub1))}${sub2 ? `&sub2=${encodeURIComponent(String(sub2))}` : ''}`;
-    return res.redirect(redirectTarget);
+
+    let baseLink = '';
+    if (String(offerId) === 'smartlink_adult_ww' && TRAFORCE_SMARTLINK_ADULT_WW) {
+      baseLink = TRAFORCE_SMARTLINK_ADULT_WW;
+    } else if (String(offerId) === 'mainstream_dating' && TRAFORCE_MAINSTREAM_LINK) {
+      baseLink = TRAFORCE_MAINSTREAM_LINK;
+    } else {
+      baseLink = `https://affiliate.traforce.com/v2/offer/${encodeURIComponent(String(offerId))}`;
+    }
+
+    const url = new URL(baseLink);
+    if (sub1) url.searchParams.set('sub1', String(sub1));
+    if (sub2) url.searchParams.set('sub2', String(sub2));
+
+    return res.redirect(url.toString());
   } catch (error) {
     console.error('CPA redirect error:', error);
     return res.status(500).send('CPA redirect error');
