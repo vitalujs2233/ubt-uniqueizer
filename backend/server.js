@@ -363,20 +363,6 @@ async function ensureCpaTables() {
       raw_payload jsonb
     )
   `);
-
-  await tryQuery(`
-    create table if not exists cpa_clicks (
-      id serial primary key,
-      telegram_id bigint,
-      offer_id text,
-      sub1 text,
-      sub2 text,
-      country text,
-      ip_hash text,
-      user_agent text,
-      created_at timestamptz default now()
-    )
-  `);
 }
 
 async function updateUserUsdBalance(telegramId, delta) {
@@ -831,7 +817,7 @@ app.post('/cpa/offers', async (req, res) => {
     const data = await fetchTraforce('/offers', {
       limit: 50,
       page: 1,
-      status: 'active'
+      
     });
 
     const items = Array.isArray(data?.offers)
@@ -896,7 +882,7 @@ app.post('/cpa/dashboard', async (req, res) => {
 
     const clicksResult = await tryQuery(
       `select count(*)::int as clicks
-       from cpa_clicks
+       from cpa_offer_links
        where telegram_id = $1`,
       [user.id]
     );
@@ -928,7 +914,6 @@ app.post('/cpa/dashboard', async (req, res) => {
 });
 
 
-
 app.post('/cpa/statistics', async (req, res) => {
   try {
     const user = getUserIdentityFromBody(req);
@@ -936,57 +921,51 @@ app.post('/cpa/statistics', async (req, res) => {
       return res.status(401).json({ message: 'Invalid user' });
     }
 
-    const { limit = 100, status = '', sub_type = '', sub_value = '', geo = '', date_from = '', date_to = '' } = req.body || {};
+    const {
+      limit = 100,
+      status = '',
+      sub_type = '',
+      sub_value = '',
+      geo = '',
+      date_from = '',
+      date_to = ''
+    } = req.body || {};
 
-    const clickValues = [user.id];
-    let clickWhere = 'where telegram_id = $1';
+    const values = [user.id];
+    let where = 'where telegram_id = $1';
 
-    const conversionValues = [user.id];
-    let conversionWhere = 'where telegram_id = $1';
+    if (status) {
+      values.push(String(status).trim().toLowerCase());
+      where += ` and lower(status) = $${values.length}`;
+    }
 
     if (sub_type === 'sub1' && sub_value) {
-      clickValues.push(String(sub_value).trim());
-      clickWhere += ` and sub1 = $${clickValues.length}`;
-      conversionValues.push(String(sub_value).trim());
-      conversionWhere += ` and sub1 = $${conversionValues.length}`;
+      values.push(String(sub_value).trim());
+      where += ` and sub1 = $${values.length}`;
     }
 
     if (sub_type === 'sub2' && sub_value) {
-      clickValues.push(String(sub_value).trim());
-      clickWhere += ` and sub2 = $${clickValues.length}`;
-      conversionValues.push(String(sub_value).trim());
-      conversionWhere += ` and sub2 = $${conversionValues.length}`;
+      values.push(String(sub_value).trim());
+      where += ` and sub2 = $${values.length}`;
     }
 
     if (geo) {
-      clickValues.push(String(geo).trim().toUpperCase());
-      clickWhere += ` and upper(country) = $${clickValues.length}`;
-      conversionValues.push(String(geo).trim().toUpperCase());
-      conversionWhere += ` and upper(country) = $${conversionValues.length}`;
+      values.push(String(geo).trim().toUpperCase());
+      where += ` and upper(country) = $${values.length}`;
     }
 
     if (date_from) {
-      clickValues.push(String(date_from));
-      clickWhere += ` and created_at::date >= $${clickValues.length}::date`;
-      conversionValues.push(String(date_from));
-      conversionWhere += ` and created_at::date >= $${conversionValues.length}::date`;
+      values.push(String(date_from));
+      where += ` and created_at::date >= $${values.length}::date`;
     }
 
     if (date_to) {
-      clickValues.push(String(date_to));
-      clickWhere += ` and created_at::date <= $${clickValues.length}::date`;
-      conversionValues.push(String(date_to));
-      conversionWhere += ` and created_at::date <= $${conversionValues.length}::date`;
+      values.push(String(date_to));
+      where += ` and created_at::date <= $${values.length}::date`;
     }
 
-    if (status) {
-      conversionValues.push(String(status).trim().toLowerCase());
-      conversionWhere += ` and lower(status) = $${conversionValues.length}`;
-    }
-
-    const conversionSummaryValues = conversionValues.slice();
-    const conversionItemsValues = conversionValues.slice();
-    conversionItemsValues.push(Number(limit) > 0 ? Number(limit) : 100);
+    const summaryValues = values.slice();
+    values.push(Number(limit) > 0 ? Number(limit) : 100);
 
     const itemsResult = await tryQuery(
       `select
@@ -1003,10 +982,10 @@ app.post('/cpa/statistics', async (req, res) => {
           service_margin,
           created_at
        from cpa_conversions
-       ${conversionWhere}
+       ${where}
        order by created_at desc
-       limit $${conversionItemsValues.length}`,
-      conversionItemsValues
+       limit $${values.length}`,
+      values
     );
 
     const summaryResult = await tryQuery(
@@ -1016,65 +995,37 @@ app.post('/cpa/statistics', async (req, res) => {
           coalesce(sum(payout_user), 0) as payout_user_total,
           coalesce(sum(service_margin), 0) as service_margin_total
        from cpa_conversions
-       ${conversionWhere}`,
-      conversionSummaryValues
+       ${where}`,
+      summaryValues
     );
 
-    const clickGeoResult = await tryQuery(
+    const geoStatsResult = await tryQuery(
       `select
           upper(coalesce(country, 'UNKNOWN')) as geo,
           count(*)::int as clicks,
-          count(distinct coalesce(nullif(ip_hash, ''), id::text))::int as unique_clicks
-       from cpa_clicks
-       ${clickWhere}
-       group by upper(coalesce(country, 'UNKNOWN'))`,
-      clickValues
-    );
-
-    const conversionGeoResult = await tryQuery(
-      `select
-          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(distinct coalesce(nullif(click_id, ''), id::text))::int as unique_clicks,
           count(*)::int as conversions,
           coalesce(sum(payout_api), 0) as payout_api_total
        from cpa_conversions
-       ${conversionWhere}
-       group by upper(coalesce(country, 'UNKNOWN'))`,
-      conversionValues
+       ${where}
+       group by upper(coalesce(country, 'UNKNOWN'))
+       order by clicks desc, geo asc`,
+      summaryValues
     );
 
-    const clickMap = new Map();
-    for (const row of clickGeoResult.rows || []) {
-      clickMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
-        clicks: safeNumber(row.clicks, 0),
-        unique_clicks: safeNumber(row.unique_clicks, 0)
-      });
-    }
-
-    const conversionMap = new Map();
-    for (const row of conversionGeoResult.rows || []) {
-      conversionMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
-        conversions: safeNumber(row.conversions, 0),
-        payout_api_total: safeNumber(row.payout_api_total, 0)
-      });
-    }
-
-    const geos = Array.from(new Set([...clickMap.keys(), ...conversionMap.keys()])).sort();
-    const geo_stats = geos.map((geoKey) => {
-      const clickData = clickMap.get(geoKey) || { clicks: 0, unique_clicks: 0 };
-      const conversionData = conversionMap.get(geoKey) || { conversions: 0, payout_api_total: 0 };
-      const clicks = safeNumber(clickData.clicks, 0);
-      const conversions = safeNumber(conversionData.conversions, 0);
-      const payoutApiTotal = safeNumber(conversionData.payout_api_total, 0);
-
+    const geo_stats = (geoStatsResult.rows || []).map((row) => {
+      const clicks = safeNumber(row.clicks, 0);
+      const conversions = safeNumber(row.conversions, 0);
+      const payoutApiTotal = safeNumber(row.payout_api_total, 0);
       return {
-        geo: geoKey || 'UNKNOWN',
+        geo: row.geo || 'UNKNOWN',
         clicks,
-        unique_clicks: safeNumber(clickData.unique_clicks, 0),
+        unique_clicks: safeNumber(row.unique_clicks, 0),
         conversions,
         cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
         epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
       };
-    }).sort((a, b) => b.clicks - a.clicks);
+    });
 
     res.json({
       ok: true,
@@ -1096,10 +1047,18 @@ app.post('/cpa/statistics', async (req, res) => {
 });
 
 
-
 app.get('/cpa/statistics', async (req, res) => {
   try {
-    const { telegram_id, limit = 100, status = '', sub_type = '', sub_value = '', geo = '', date_from = '', date_to = '' } = req.query || {};
+    const {
+      telegram_id,
+      limit = 100,
+      status = '',
+      sub_type = '',
+      sub_value = '',
+      geo = '',
+      date_from = '',
+      date_to = ''
+    } = req.query || {};
 
     if (!telegram_id) {
       return res.status(400).json({ message: 'telegram_id required' });
@@ -1110,55 +1069,41 @@ app.get('/cpa/statistics', async (req, res) => {
       return res.status(400).json({ message: 'invalid telegram_id' });
     }
 
-    const clickValues = [userId];
-    let clickWhere = 'where telegram_id = $1';
+    const values = [userId];
+    let where = 'where telegram_id = $1';
 
-    const conversionValues = [userId];
-    let conversionWhere = 'where telegram_id = $1';
+    if (status) {
+      values.push(String(status).trim().toLowerCase());
+      where += ` and lower(status) = $${values.length}`;
+    }
 
     if (sub_type === 'sub1' && sub_value) {
-      clickValues.push(String(sub_value).trim());
-      clickWhere += ` and sub1 = $${clickValues.length}`;
-      conversionValues.push(String(sub_value).trim());
-      conversionWhere += ` and sub1 = $${conversionValues.length}`;
+      values.push(String(sub_value).trim());
+      where += ` and sub1 = $${values.length}`;
     }
 
     if (sub_type === 'sub2' && sub_value) {
-      clickValues.push(String(sub_value).trim());
-      clickWhere += ` and sub2 = $${clickValues.length}`;
-      conversionValues.push(String(sub_value).trim());
-      conversionWhere += ` and sub2 = $${conversionValues.length}`;
+      values.push(String(sub_value).trim());
+      where += ` and sub2 = $${values.length}`;
     }
 
     if (geo) {
-      clickValues.push(String(geo).trim().toUpperCase());
-      clickWhere += ` and upper(country) = $${clickValues.length}`;
-      conversionValues.push(String(geo).trim().toUpperCase());
-      conversionWhere += ` and upper(country) = $${conversionValues.length}`;
+      values.push(String(geo).trim().toUpperCase());
+      where += ` and upper(country) = $${values.length}`;
     }
 
     if (date_from) {
-      clickValues.push(String(date_from));
-      clickWhere += ` and created_at::date >= $${clickValues.length}::date`;
-      conversionValues.push(String(date_from));
-      conversionWhere += ` and created_at::date >= $${conversionValues.length}::date`;
+      values.push(String(date_from));
+      where += ` and created_at::date >= $${values.length}::date`;
     }
 
     if (date_to) {
-      clickValues.push(String(date_to));
-      clickWhere += ` and created_at::date <= $${clickValues.length}::date`;
-      conversionValues.push(String(date_to));
-      conversionWhere += ` and created_at::date <= $${conversionValues.length}::date`;
+      values.push(String(date_to));
+      where += ` and created_at::date <= $${values.length}::date`;
     }
 
-    if (status) {
-      conversionValues.push(String(status).trim().toLowerCase());
-      conversionWhere += ` and lower(status) = $${conversionValues.length}`;
-    }
-
-    const conversionSummaryValues = conversionValues.slice();
-    const conversionItemsValues = conversionValues.slice();
-    conversionItemsValues.push(Number(limit) > 0 ? Number(limit) : 100);
+    const summaryValues = values.slice();
+    values.push(Number(limit) > 0 ? Number(limit) : 100);
 
     const itemsResult = await tryQuery(
       `select
@@ -1175,10 +1120,10 @@ app.get('/cpa/statistics', async (req, res) => {
           service_margin,
           created_at
        from cpa_conversions
-       ${conversionWhere}
+       ${where}
        order by created_at desc
-       limit $${conversionItemsValues.length}`,
-      conversionItemsValues
+       limit $${values.length}`,
+      values
     );
 
     const summaryResult = await tryQuery(
@@ -1188,65 +1133,37 @@ app.get('/cpa/statistics', async (req, res) => {
           coalesce(sum(payout_user), 0) as payout_user_total,
           coalesce(sum(service_margin), 0) as service_margin_total
        from cpa_conversions
-       ${conversionWhere}`,
-      conversionSummaryValues
+       ${where}`,
+      summaryValues
     );
 
-    const clickGeoResult = await tryQuery(
+    const geoStatsResult = await tryQuery(
       `select
           upper(coalesce(country, 'UNKNOWN')) as geo,
           count(*)::int as clicks,
-          count(distinct coalesce(nullif(ip_hash, ''), id::text))::int as unique_clicks
-       from cpa_clicks
-       ${clickWhere}
-       group by upper(coalesce(country, 'UNKNOWN'))`,
-      clickValues
-    );
-
-    const conversionGeoResult = await tryQuery(
-      `select
-          upper(coalesce(country, 'UNKNOWN')) as geo,
+          count(distinct coalesce(nullif(click_id, ''), id::text))::int as unique_clicks,
           count(*)::int as conversions,
           coalesce(sum(payout_api), 0) as payout_api_total
        from cpa_conversions
-       ${conversionWhere}
-       group by upper(coalesce(country, 'UNKNOWN'))`,
-      conversionValues
+       ${where}
+       group by upper(coalesce(country, 'UNKNOWN'))
+       order by clicks desc, geo asc`,
+      summaryValues
     );
 
-    const clickMap = new Map();
-    for (const row of clickGeoResult.rows || []) {
-      clickMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
-        clicks: safeNumber(row.clicks, 0),
-        unique_clicks: safeNumber(row.unique_clicks, 0)
-      });
-    }
-
-    const conversionMap = new Map();
-    for (const row of conversionGeoResult.rows || []) {
-      conversionMap.set(String(row.geo || 'UNKNOWN').toUpperCase(), {
-        conversions: safeNumber(row.conversions, 0),
-        payout_api_total: safeNumber(row.payout_api_total, 0)
-      });
-    }
-
-    const geos = Array.from(new Set([...clickMap.keys(), ...conversionMap.keys()])).sort();
-    const geo_stats = geos.map((geoKey) => {
-      const clickData = clickMap.get(geoKey) || { clicks: 0, unique_clicks: 0 };
-      const conversionData = conversionMap.get(geoKey) || { conversions: 0, payout_api_total: 0 };
-      const clicks = safeNumber(clickData.clicks, 0);
-      const conversions = safeNumber(conversionData.conversions, 0);
-      const payoutApiTotal = safeNumber(conversionData.payout_api_total, 0);
-
+    const geo_stats = (geoStatsResult.rows || []).map((row) => {
+      const clicks = safeNumber(row.clicks, 0);
+      const conversions = safeNumber(row.conversions, 0);
+      const payoutApiTotal = safeNumber(row.payout_api_total, 0);
       return {
-        geo: geoKey || 'UNKNOWN',
+        geo: row.geo || 'UNKNOWN',
         clicks,
-        unique_clicks: safeNumber(clickData.unique_clicks, 0),
+        unique_clicks: safeNumber(row.unique_clicks, 0),
         conversions,
         cr: clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0,
         epc: clicks > 0 ? Number((payoutApiTotal / clicks).toFixed(4)) : 0
       };
-    }).sort((a, b) => b.clicks - a.clicks);
+    });
 
     res.json({
       ok: true,
@@ -1286,7 +1203,7 @@ app.post('/cpa/generate-link', async (req, res) => {
         const fresh = await fetchTraforce('/offers', {
           limit: 100,
           page: 1,
-          status: 'active'
+          
         });
         const items = Array.isArray(fresh?.offers)
           ? fresh.offers
@@ -1370,26 +1287,6 @@ app.get('/cpa/go/:offerId', async (req, res) => {
     } else {
       baseLink = `https://affiliate.traforce.com/v2/offer/${encodeURIComponent(String(offerId))}`;
     }
-
-    const ip = getClientIp(req);
-    const ipHash = hashIp(ip);
-    const userAgent = req.headers['user-agent'] || '';
-    const geo = geoip.lookup(ip);
-    const country = geo?.country || 'UNKNOWN';
-
-    await tryQuery(
-      `insert into cpa_clicks (telegram_id, offer_id, sub1, sub2, country, ip_hash, user_agent)
-       values ($1, $2, $3, $4, $5, $6, $7)`,
-      [
-        sub1 ? Number(sub1) : null,
-        String(offerId),
-        String(sub1 || ''),
-        String(sub2 || ''),
-        String(country || 'UNKNOWN'),
-        ipHash,
-        userAgent
-      ]
-    );
 
     const url = new URL(baseLink);
     if (sub1) url.searchParams.set('sub1', String(sub1));
