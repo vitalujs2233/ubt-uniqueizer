@@ -2551,29 +2551,88 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function updateCpaUi(data = {}) {
-            const balance = Number(data.available_balance ?? data.balance ?? data.usd_balance ?? 0);
-            const hold = Number(data.hold_balance ?? data.usd_hold ?? 0);
-            const withdrawn = Number(data.total_withdrawn ?? 0);
-            const clicks = Number(data.clicks ?? 0);
-            const conversions = Number(data.conversions ?? 0);
-            const revenue = Number(data.revenue ?? data.profit ?? 0);
-            const crValue = data.cr !== undefined && data.cr !== null
-                ? Number(data.cr)
+            const payload = data && typeof data === 'object' && data.dashboard ? data.dashboard : data || {};
+            const balanceData = (payload && payload.balance && typeof payload.balance === 'object') ? payload.balance : {};
+            const statsData = (payload && payload.stats && typeof payload.stats === 'object') ? payload.stats : {};
+            const userData = (payload && payload.user && typeof payload.user === 'object') ? payload.user : {};
+
+            const safeNum = (value, fallback = 0) => {
+                if (value === null || value === undefined || value === '') return fallback;
+                const normalized = typeof value === 'string' ? value.replace(',', '.') : value;
+                const num = Number(normalized);
+                return Number.isFinite(num) ? num : fallback;
+            };
+
+            const balance = safeNum(
+                balanceData.available ??
+                balanceData.usd_balance ??
+                payload.available_balance ??
+                payload.balance_amount ??
+                payload.balance ??
+                payload.usd_balance,
+                0
+            );
+
+            const hold = safeNum(
+                balanceData.hold ??
+                balanceData.usd_hold ??
+                payload.hold_balance ??
+                payload.hold ??
+                payload.usd_hold,
+                0
+            );
+
+            const withdrawn = safeNum(
+                balanceData.total_withdrawn ??
+                payload.total_withdrawn ??
+                payload.withdrawn,
+                0
+            );
+
+            const clicks = safeNum(
+                statsData.clicks ??
+                payload.clicks,
+                0
+            );
+
+            const conversions = safeNum(
+                statsData.conversions ??
+                payload.conversions,
+                0
+            );
+
+            const revenue = safeNum(
+                statsData.revenue ??
+                payload.revenue ??
+                payload.profit,
+                0
+            );
+
+            const crRaw = statsData.cr ?? payload.cr;
+            const crValue = Number.isFinite(Number(crRaw))
+                ? safeNum(crRaw, 0)
                 : (clicks > 0 ? (conversions / clicks) * 100 : 0);
 
-            const byId = (id) => document.getElementById(id);
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
 
-            if (byId('cpaHeaderBalance')) byId('cpaHeaderBalance').textContent = `Баланс: $${balance.toFixed(2)}`;
-            if (byId('cpaHeaderHold')) byId('cpaHeaderHold').textContent = `Hold: $${hold.toFixed(2)}`;
+            setText('cpaHeaderBalance', `Баланс: $${balance.toFixed(2)}`);
+            setText('cpaHeaderHold', `Hold: $${hold.toFixed(2)}`);
 
-            if (byId('cpaUsdBalance')) byId('cpaUsdBalance').textContent = `$${balance.toFixed(2)}`;
-            if (byId('cpaUsdHold')) byId('cpaUsdHold').textContent = `$${hold.toFixed(2)}`;
-            if (byId('cpaTotalWithdrawn')) byId('cpaTotalWithdrawn').textContent = `$${withdrawn.toFixed(2)}`;
-            if (byId('cpaClicks')) byId('cpaClicks').textContent = String(clicks);
-            if (byId('cpaConversions')) byId('cpaConversions').textContent = String(conversions);
-            if (byId('cpaRevenue')) byId('cpaRevenue').textContent = `$${revenue.toFixed(2)}`;
-            if (byId('cpaCr')) byId('cpaCr').textContent = `${crValue.toFixed(2)}%`;
+            setText('cpaUsdBalance', `$${balance.toFixed(2)}`);
+            setText('cpaUsdHold', `$${hold.toFixed(2)}`);
+            setText('cpaTotalWithdrawn', `$${withdrawn.toFixed(2)}`);
+            setText('cpaClicks', String(clicks));
+            setText('cpaConversions', String(conversions));
+            setText('cpaRevenue', `$${revenue.toFixed(2)}`);
+            setText('cpaCr', `${crValue.toFixed(2)}%`);
+            setText('cpaNetworkName', 'TrafForce');
+
+            if (userData.first_name) setText('cpaHeaderName', userData.first_name);
         }
+
 
         async function loadCpaDashboard() {
             try {
