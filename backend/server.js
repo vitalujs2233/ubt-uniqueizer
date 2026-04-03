@@ -184,7 +184,7 @@ async function spendUserCredits(telegramId, amount, description = 'Создан�
   const dbUser = result.rows[0];
 
   if (Number(dbUser.balance) < Number(amount)) {
-    throw new Error('Недостаточно средств');
+    throw new Error('Недостаточно кредитов. Нужно 100 кредитов.');
   }
 
   await pool.query(
@@ -1781,7 +1781,7 @@ app.post('/api/multilink/delete', async (req, res) => {
     await pool.query(`delete from multilink_items where page_id = $1`, [pageId]);
     await pool.query(`delete from multilink_pages where id = $1`, [pageId]);
 
-    return res.json({ ok: true, deleted: true, message: 'Мультиссылка удалена' });
+    return res.json({ ok: true, deleted: true, message: 'Страница удалена' });
   } catch (error) {
     console.error('Delete multilink error:', error);
     return res.status(500).json({ ok: false, message: 'Server error' });
