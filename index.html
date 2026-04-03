@@ -1229,6 +1229,25 @@ body::after {
                         </div>
                     </div>
 
+                    <div class="bento-card cursor-pointer" onclick="showSection('multilink')">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <div class="text-[15px] font-bold">Мультиссылка</div>
+                                    <div class="text-xs text-gray-400 mt-1">Страница как lite.link</div>
+                                </div>
+                                <div class="h-12 w-12 rounded-[18px] bg-cyan-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
+                            </div>
+
+                            <div class="mt-3 inner-panel">
+                                <div class="text-xs text-gray-400 mb-1">Bio Link Page</div>
+                                <div class="text-[15px] text-white leading-relaxed">Аватар, описание и кнопки ссылок в одном месте</div>
+                            </div>
+
+                            <div class="text-xs text-cyan-300 mt-3 tracking-wide">BIO • SOCIAL • TRAFFIC • BRAND</div>
+                        </div>
+                    </div>
+
                     <div class="bento-card bento-tall cursor-pointer" onclick="showSection('spy')">
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
@@ -1749,6 +1768,67 @@ body::after {
                     </div>
 
                     <div id="prelandHistoryList" class="space-y-3 text-sm text-gray-300"></div>
+                </div>
+            </div>
+
+            <div id="multilink-section" class="hidden">
+                <div class="flex items-center justify-between mb-4 gap-3">
+                    <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
+                    <h2 class="section-title text-xl font-extrabold">🔗 Мультиссылка</h2>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px] mb-4">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div>
+                            <div class="text-white font-semibold text-lg">Multilink Builder</div>
+                            <div class="text-sm text-gray-400 mt-1">Собери страницу со всеми ссылками в стиле lite.link</div>
+                        </div>
+                        <div class="h-14 w-14 rounded-[20px] bg-cyan-500/15 flex items-center justify-center text-3xl shrink-0">🔗</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3 mb-4">
+                        <input id="multilinkTitle" type="text" class="neo-input" placeholder="Название профиля" value="UBT ToolKit" />
+                        <input id="multilinkUsername" type="text" class="neo-input" placeholder="username" value="ubttoolkit" />
+                        <input id="multilinkAvatar" type="text" class="neo-input" placeholder="Ссылка на аватар" value="https://placehold.co/160x160/png" />
+                        <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
+                    </div>
+
+                    <div class="inner-panel mb-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold">Кнопки</div>
+                                <div class="text-xs text-gray-400 mt-1">Добавь ссылки для Telegram, оффера, канала или сайта</div>
+                            </div>
+                            <button id="addMultilinkItemBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">+ Добавить</button>
+                        </div>
+                        <div id="multilinkItems" class="space-y-3"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Сохранить</button>
+                        <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить</button>
+                    </div>
+                    <p id="multilinkStatus" class="mt-3 text-sm text-gray-300"></p>
+                </div>
+
+                <div class="glass-box p-4 rounded-[24px]">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <div class="text-white font-semibold">👁️ Превью страницы</div>
+                            <div class="text-sm text-gray-400">Как будет выглядеть публичная мультиссылка</div>
+                        </div>
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LITE STYLE</span>
+                    </div>
+
+                    <div id="multilinkPreview" class="inner-panel overflow-hidden">
+                        <div class="max-w-md mx-auto text-center py-4">
+                            <img id="multilinkPreviewAvatar" src="https://placehold.co/160x160/png" alt="avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border border-white/10" />
+                            <div id="multilinkPreviewTitle" class="text-white text-2xl font-extrabold">UBT ToolKit</div>
+                            <div id="multilinkPreviewHandle" class="text-cyan-300 text-sm mt-1">@ubttoolkit</div>
+                            <div id="multilinkPreviewBio" class="text-sm text-gray-300 mt-3 mb-6 leading-relaxed">Весь мой трафик, каналы и полезные ссылки в одном месте.</div>
+                            <div id="multilinkPreviewLinks" class="space-y-3"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2516,8 +2596,149 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
         };
 
+        const MULTILINK_STORAGE_KEY = 'ubt_multilink_draft';
+        const defaultMultilinkItems = [
+            { title: 'Telegram канал', url: 'https://t.me/ubttoolkit' },
+            { title: 'Smart Link', url: 'https://example.com/smart' },
+            { title: 'Оффер / Сайт', url: 'https://example.com' }
+        ];
+
+        function createMultilinkItem(item = {}) {
+            const wrap = document.getElementById('multilinkItems');
+            if (!wrap) return;
+
+            const row = document.createElement('div');
+            row.className = 'inner-panel';
+            row.innerHTML = `
+                <div class="grid grid-cols-1 gap-3">
+                    <input type="text" class="neo-input multilink-item-title" placeholder="Название кнопки" value="${escapeHtml(item.title || '')}">
+                    <input type="text" class="neo-input multilink-item-url" placeholder="https://..." value="${escapeHtml(item.url || '')}">
+                    <button type="button" class="secondary-btn px-3 py-3 rounded-2xl text-sm font-semibold remove-multilink-item-btn">Удалить</button>
+                </div>
+            `;
+
+            row.querySelector('.remove-multilink-item-btn')?.addEventListener('click', () => {
+                row.remove();
+                renderMultilinkPreview();
+            });
+
+            row.querySelectorAll('input').forEach((input) => {
+                input.addEventListener('input', renderMultilinkPreview);
+            });
+
+            wrap.appendChild(row);
+        }
+
+        function getMultilinkDraft() {
+            return {
+                title: document.getElementById('multilinkTitle')?.value?.trim() || '',
+                username: document.getElementById('multilinkUsername')?.value?.trim().replace(/^@/, '') || '',
+                avatar: document.getElementById('multilinkAvatar')?.value?.trim() || '',
+                bio: document.getElementById('multilinkBio')?.value?.trim() || '',
+                links: Array.from(document.querySelectorAll('#multilinkItems .inner-panel')).map((row) => ({
+                    title: row.querySelector('.multilink-item-title')?.value?.trim() || '',
+                    url: row.querySelector('.multilink-item-url')?.value?.trim() || ''
+                })).filter((item) => item.title && item.url)
+            };
+        }
+
+        function renderMultilinkPreview() {
+            const draft = getMultilinkDraft();
+            const previewTitle = document.getElementById('multilinkPreviewTitle');
+            const previewHandle = document.getElementById('multilinkPreviewHandle');
+            const previewBio = document.getElementById('multilinkPreviewBio');
+            const previewAvatar = document.getElementById('multilinkPreviewAvatar');
+            const previewLinks = document.getElementById('multilinkPreviewLinks');
+
+            if (previewTitle) previewTitle.textContent = draft.title || 'Название профиля';
+            if (previewHandle) previewHandle.textContent = draft.username ? `@${draft.username}` : '@username';
+            if (previewBio) previewBio.textContent = draft.bio || 'Короткое описание страницы';
+            if (previewAvatar) previewAvatar.src = draft.avatar || 'https://placehold.co/160x160/png';
+
+            if (previewLinks) {
+                previewLinks.innerHTML = '';
+                const links = draft.links.length ? draft.links : defaultMultilinkItems;
+                links.forEach((item) => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.className = 'block w-full rounded-2xl px-4 py-4 font-semibold primary-btn';
+                    link.textContent = item.title;
+                    previewLinks.appendChild(link);
+                });
+            }
+        }
+
+        function saveMultilinkDraft() {
+            const draft = getMultilinkDraft();
+            localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(draft));
+            const status = document.getElementById('multilinkStatus');
+            if (status) status.textContent = 'Черновик мультиссылки сохранён локально в браузере.';
+            renderMultilinkPreview();
+            tg?.HapticFeedback?.notificationOccurred?.('success');
+        }
+
+        function loadMultilinkDraft() {
+            const titleInput = document.getElementById('multilinkTitle');
+            const usernameInput = document.getElementById('multilinkUsername');
+            const avatarInput = document.getElementById('multilinkAvatar');
+            const bioInput = document.getElementById('multilinkBio');
+            const itemsWrap = document.getElementById('multilinkItems');
+            if (!titleInput || !usernameInput || !avatarInput || !bioInput || !itemsWrap) return;
+
+            let draft = null;
+            try {
+                draft = JSON.parse(localStorage.getItem(MULTILINK_STORAGE_KEY) || 'null');
+            } catch (error) {
+                draft = null;
+            }
+
+            if (draft?.title) titleInput.value = draft.title;
+            if (draft?.username) usernameInput.value = draft.username;
+            if (draft?.avatar) avatarInput.value = draft.avatar;
+            if (draft?.bio) bioInput.value = draft.bio;
+
+            itemsWrap.innerHTML = '';
+            const items = Array.isArray(draft?.links) && draft.links.length ? draft.links : defaultMultilinkItems;
+            items.forEach((item) => createMultilinkItem(item));
+            renderMultilinkPreview();
+        }
+
+        function resetMultilinkDraft() {
+            localStorage.removeItem(MULTILINK_STORAGE_KEY);
+            document.getElementById('multilinkTitle').value = 'UBT ToolKit';
+            document.getElementById('multilinkUsername').value = 'ubttoolkit';
+            document.getElementById('multilinkAvatar').value = 'https://placehold.co/160x160/png';
+            document.getElementById('multilinkBio').value = 'Весь мой трафик, каналы и полезные ссылки в одном месте.';
+            document.getElementById('multilinkItems').innerHTML = '';
+            defaultMultilinkItems.forEach((item) => createMultilinkItem(item));
+            const status = document.getElementById('multilinkStatus');
+            if (status) status.textContent = 'Форма мультиссылки сброшена.';
+            renderMultilinkPreview();
+        }
+
+        function initMultilinkSection() {
+            const addBtn = document.getElementById('addMultilinkItemBtn');
+            const saveBtn = document.getElementById('saveMultilinkBtn');
+            const resetBtn = document.getElementById('resetMultilinkBtn');
+            if (!addBtn || !saveBtn || !resetBtn) return;
+            if (addBtn.dataset.bound === '1') return;
+            addBtn.dataset.bound = '1';
+
+            addBtn.addEventListener('click', () => createMultilinkItem());
+            saveBtn.addEventListener('click', saveMultilinkDraft);
+            resetBtn.addEventListener('click', resetMultilinkDraft);
+
+            ['multilinkTitle', 'multilinkUsername', 'multilinkAvatar', 'multilinkBio'].forEach((id) => {
+                document.getElementById(id)?.addEventListener('input', renderMultilinkPreview);
+            });
+
+            loadMultilinkDraft();
+        }
+
         function showSection(section) {
-            const sections = ['main-menu', 'dating-cpa-section', 'cpa-stats-section', 'cpa-offer-details-section', 'video-section', 'link-section', 'preland-section', 'spy-section'];
+            const sections = ['main-menu', 'dating-cpa-section', 'cpa-stats-section', 'cpa-offer-details-section', 'video-section', 'link-section', 'preland-section', 'multilink-section', 'spy-section'];
             sections.forEach((s) => {
                 const el = document.getElementById(s);
                 if (el) el.classList.add('hidden');
@@ -2537,6 +2758,11 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             if (section === 'dating-cpa' || section === 'cpa-stats') {
                 loadCpaDashboard();
+            }
+
+            if (section === 'multilink') {
+                initMultilinkSection();
+                renderMultilinkPreview();
             }
 
             if (section === 'cpa-stats') {
