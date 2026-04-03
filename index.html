@@ -1826,19 +1826,12 @@ body::after {
                     <div class="inner-panel mt-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div>
-                                <div class="text-white font-semibold">Публичная ссылка</div>
-                                <div class="text-xs text-gray-400 mt-1">После сохранения пользователь получает ссылку на свою страницу</div>
+                                <div class="text-white font-semibold">Как это работает</div>
+                                <div class="text-xs text-gray-400 mt-1">После нажатия на кнопку страница создаётся и сразу открывается</div>
                             </div>
-                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">SHARE</span>
+                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">AUTO OPEN</span>
                         </div>
-                        <div class="grid grid-cols-1 gap-3">
-                            <input id="multilinkPublicUrl" type="text" class="neo-input" placeholder="Ссылка появится после сохранения" readonly />
-                            <div class="grid grid-cols-2 gap-3">
-                                <button id="copyMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Копировать ссылку</button>
-                                <button id="openMultilinkBtn" class="green-btn p-4 rounded-2xl font-bold">Открыть страницу</button>
-                            </div>
-                            <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">При первом создании спишется 100 кредитов. Дальше страницу можно редактировать бесплатно. После удаления можно создать новую заново.</div>
-                        </div>
+                        <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">При первом создании спишется 100 кредитов. После этого страница сразу откроется. Редактирование бесплатно. После удаления можно создать новую заново.</div>
                     </div>
 
                     <p id="multilinkStatus" class="mt-3 text-sm text-gray-300"></p>
@@ -2769,43 +2762,25 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             return `${window.location.origin}${window.location.pathname}?multilink_demo=${encodeURIComponent(slug)}`;
         }
 
-        function setMultilinkPublicUrl(url, hintText = '') {
-            const input = document.getElementById('multilinkPublicUrl');
+        function setMultilinkHint(hintText = '') {
             const hint = document.getElementById('multilinkLinkHint');
-            if (input) input.value = url || '';
             if (hint && hintText) hint.textContent = hintText;
         }
 
-        async function copyMultilinkUrl() {
-            const input = document.getElementById('multilinkPublicUrl');
-            const value = input?.value?.trim();
-            const status = document.getElementById('multilinkStatus');
-            if (!value) {
-                if (status) status.textContent = 'Сначала сохрани мультиссылку, чтобы появилась ссылка.';
-                return;
-            }
-
+        function getStoredMultilinkPublicUrl() {
             try {
-                if (navigator.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(value);
-                } else {
-                    input.removeAttribute('readonly');
-                    input.select();
-                    document.execCommand('copy');
-                    input.setAttribute('readonly', 'readonly');
-                }
-                if (status) status.textContent = 'Ссылка скопирована.';
-                tg?.HapticFeedback?.notificationOccurred?.('success');
+                const draft = JSON.parse(localStorage.getItem(MULTILINK_STORAGE_KEY) || 'null');
+                return draft?.publicUrl || '';
             } catch (error) {
-                if (status) status.textContent = 'Не удалось скопировать ссылку автоматически.';
+                return '';
             }
         }
 
-        function openMultilinkUrl() {
-            const value = document.getElementById('multilinkPublicUrl')?.value?.trim();
+        function openMultilinkUrl(url = '') {
+            const value = (url || getStoredMultilinkPublicUrl() || '').trim();
             const status = document.getElementById('multilinkStatus');
             if (!value) {
-                if (status) status.textContent = 'Сначала сохрани мультиссылку, чтобы открыть страницу.';
+                if (status) status.textContent = 'Сначала создай мультиссылку.';
                 return;
             }
             window.open(value, '_blank');
@@ -2865,10 +2840,11 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 const publicUrl = result?.publicUrl || `${API_BASE_URL}/u/${encodeURIComponent(result?.slug || slug)}`;
                 const stored = { ...draft, slug: result?.slug || slug, publicUrl, created: true };
                 localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(stored));
-                setMultilinkPublicUrl(publicUrl, 'Публичная ссылка готова. Её можно отправлять любому человеку.');
-                if (status) status.textContent = result?.message || 'Страница сохранена. Если это было первое создание, списано 100 кредитов.';
+                setMultilinkHint('Страница создана. Она сразу открылась и её уже можно отправлять любому человеку.');
+                if (status) status.textContent = result?.message || 'Страница сохранена.';
                 updateMultilinkActionButtons(true);
                 tg?.HapticFeedback?.notificationOccurred?.('success');
+                openMultilinkUrl(publicUrl);
             } catch (error) {
                 if (status) status.textContent = error.message || 'Не удалось сохранить мультиссылку.';
                 tg?.HapticFeedback?.notificationOccurred?.('error');
@@ -2935,7 +2911,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             items.forEach((item) => createMultilinkItem(item));
             const savedSlug = sanitizeMultilinkSlug(draft?.slug || draft?.username || draft?.title || 'user');
             const savedUrl = draft?.publicUrl || '';
-            setMultilinkPublicUrl(savedUrl, savedUrl ? 'Последняя сохранённая ссылка.' : `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
+            setMultilinkHint(savedUrl ? 'Страница уже создана. Можно редактировать и сохранять изменения бесплатно.' : `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
             updateMultilinkActionButtons(!!savedUrl);
             if (status && !savedUrl) status.textContent = `Создание мультиссылки стоит ${MULTILINK_CREATE_COST} кредитов. Редактирование бесплатно.`;
             renderMultilinkPreview();
@@ -2951,7 +2927,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (fileInput) fileInput.value = '';
             document.getElementById('multilinkItems').innerHTML = '';
             defaultMultilinkItems.forEach((item) => createMultilinkItem(item));
-            setMultilinkPublicUrl('', `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
+            setMultilinkHint(`Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
             updateMultilinkActionButtons(false);
             const status = document.getElementById('multilinkStatus');
             if (status) status.textContent = 'Форма сброшена. Можно создать новую страницу.';
@@ -2973,7 +2949,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return;
             }
 
-            const publicUrl = document.getElementById('multilinkPublicUrl')?.value?.trim();
+            const publicUrl = getStoredMultilinkPublicUrl();
             if (!publicUrl) {
                 if (status) status.textContent = 'Сейчас удалять нечего.';
                 return;
@@ -2995,7 +2971,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
                 localStorage.removeItem(MULTILINK_STORAGE_KEY);
                 resetMultilinkDraft();
-                setMultilinkPublicUrl('', `Страница удалена. Новое создание будет стоить ${MULTILINK_CREATE_COST} кредитов.`);
+                setMultilinkHint(`Страница удалена. Новое создание будет стоить ${MULTILINK_CREATE_COST} кредитов.`);
                 if (status) status.textContent = 'Мультиссылка удалена. Теперь можно создать новую.';
                 tg?.HapticFeedback?.notificationOccurred?.('success');
             } catch (error) {
@@ -3040,9 +3016,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const resetBtn = document.getElementById('resetMultilinkBtn');
             const chooseAvatarBtn = document.getElementById('chooseMultilinkAvatarBtn');
             const avatarFileInput = document.getElementById('multilinkAvatarFile');
-            const copyBtn = document.getElementById('copyMultilinkBtn');
-            const openBtn = document.getElementById('openMultilinkBtn');
-            if (!addBtn || !saveBtn || !deleteBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput || !copyBtn || !openBtn) return;
+            if (!addBtn || !saveBtn || !deleteBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
             if (addBtn.dataset.bound === '1') return;
             addBtn.dataset.bound = '1';
 
@@ -3052,8 +3026,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             resetBtn.addEventListener('click', resetMultilinkDraft);
             chooseAvatarBtn.addEventListener('click', () => avatarFileInput.click());
             avatarFileInput.addEventListener('change', handleMultilinkAvatarChange);
-            copyBtn.addEventListener('click', copyMultilinkUrl);
-            openBtn.addEventListener('click', openMultilinkUrl);
 
             ['multilinkTitle', 'multilinkUsername', 'multilinkBio'].forEach((id) => {
                 document.getElementById(id)?.addEventListener('input', renderMultilinkPreview);
