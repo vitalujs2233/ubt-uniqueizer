@@ -4776,6 +4776,46 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+<!-- MULTILINK SECTION -->
+<div id="multilink-section" style="padding:20px;">
+  <h2 style="font-size:18px;margin-bottom:10px;">Мультиссылка</h2>
+  <input id="mlTitle" placeholder="Название" class="neo-input" />
+  <input id="mlUsername" placeholder="Username (slug)" class="neo-input" style="margin-top:10px;" />
+  <textarea id="mlBio" placeholder="Описание" class="neo-input" style="margin-top:10px;"></textarea>
+  <button onclick="createMultilink()" style="margin-top:12px;" class="primary-btn">Создать ссылку (100)</button>
+</div>
+
+<script>
+async function createMultilink(){
+  const tg = window.Telegram?.WebApp;
+
+  const payload = {
+    initData: tg?.initData || null,
+    telegram_id: tg?.initDataUnsafe?.user?.id || null,
+    slug: document.getElementById('mlUsername').value,
+    title: document.getElementById('mlTitle').value,
+    bio: document.getElementById('mlBio').value,
+    links: []
+  };
+
+  const res = await fetch('/api/multilink',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if(data.ok){
+    alert('Ссылка создана');
+    window.open(data.publicUrl,'_blank');
+  }else{
+    alert(data.message || 'Ошибка');
+  }
+}
+</script>
+
 </body>
 </html>`;
         }
@@ -5481,5 +5521,45 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
+
+<!-- MULTILINK SECTION -->
+<div id="multilink-section" style="padding:20px;">
+  <h2 style="font-size:18px;margin-bottom:10px;">Мультиссылка</h2>
+  <input id="mlTitle" placeholder="Название" class="neo-input" />
+  <input id="mlUsername" placeholder="Username (slug)" class="neo-input" style="margin-top:10px;" />
+  <textarea id="mlBio" placeholder="Описание" class="neo-input" style="margin-top:10px;"></textarea>
+  <button onclick="createMultilink()" style="margin-top:12px;" class="primary-btn">Создать ссылку (100)</button>
+</div>
+
+<script>
+async function createMultilink(){
+  const tg = window.Telegram?.WebApp;
+
+  const payload = {
+    initData: tg?.initData || null,
+    telegram_id: tg?.initDataUnsafe?.user?.id || null,
+    slug: document.getElementById('mlUsername').value,
+    title: document.getElementById('mlTitle').value,
+    bio: document.getElementById('mlBio').value,
+    links: []
+  };
+
+  const res = await fetch('/api/multilink',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if(data.ok){
+    alert('Ссылка создана');
+    window.open(data.publicUrl,'_blank');
+  }else{
+    alert(data.message || 'Ошибка');
+  }
+}
+</script>
+
 </body>
 </html>
