@@ -1805,42 +1805,6 @@ body::after {
 
                         <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
                     </div>
-                    <!-- Раздел Кнопки -->
-<div class="inner-panel mb-4">
-    <div class="flex items-center justify-between gap-3 mb-3">
-        <div>
-            <div class="text-white font-semibold italic">Кнопки (ссылки)</div>
-            <div class="text-xs text-gray-400 mt-1">Добавь кнопки для Telegram, канала или сайта</div>
-        </div>
-        <!-- Кнопка добавить поле -->
-        <button type="button" onclick="addNewLinkField()" class="secondary-btn btn-sm px-4 py-2 rounded-xl text-sm font-semibold">
-            + Добавить
-        </button>
-    </div>
-
-    <!-- Сюда будут добавляться поля для ссылок -->
-    <div id="multilinkItemsContainer" class="space-y-3">
-        <!-- По умолчанию пусто -->
-    </div>
-</div>
-
-<!-- Блок кнопок управления -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-    <button type="button" onclick="saveMultilinkToSupabase()" id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">
-        Опубликовать за 100 кредитов
-    </button>
-    <button type="button" id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">
-        Удалить страницу
-    </button>
-    <button type="button" id="resetMultilinkBtn" onclick="document.getElementById('multilinkItemsContainer').innerHTML=''" class="secondary-btn p-4 rounded-2xl font-bold">
-        Сбросить форму
-    </button>
-</div>
-
-<div class="text-center mt-3">
-    <div class="text-xs text-gray-400 italic">После публикации будет списано 100 кредитов</div>
-</div>
-
 
                     <div class="inner-panel mb-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
@@ -1854,20 +1818,16 @@ body::after {
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Опубликовать за 100 кредитов</button>
+                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Создать ссылку • 100 кредитов</button>
                         <button id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">Удалить страницу</button>
                         <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить форму</button>
-                    </div>
-
-                    <div class="text-center text-xs text-gray-400 mt-3">
-                        После публикации будет списано 100 кредитов
                     </div>
 
                     <div class="inner-panel mt-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div>
                                 <div class="text-white font-semibold">Как это работает</div>
-                                <div class="text-xs text-gray-400 mt-1">После публикации будет списано 100 кредитов и страница станет доступна по ссылке</div>
+                                <div class="text-xs text-gray-400 mt-1">После нажатия на кнопку страница создаётся и сразу открывается</div>
                             </div>
                             <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">AUTO OPEN</span>
                         </div>
@@ -2820,7 +2780,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const value = (url || getStoredMultilinkPublicUrl() || '').trim();
             const status = document.getElementById('multilinkStatus');
             if (!value) {
-                if (status) status.textContent = 'Сначала опубликуй страницу.';
+                if (status) status.textContent = 'Сначала создай мультиссылку.';
                 return;
             }
             window.open(value, '_blank');
@@ -2847,7 +2807,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             if (!draft.links.length) {
-                if (status) status.textContent = 'Добавь хотя бы одну кнопку.';
+                if (status) status.textContent = 'Добавь хотя бы одну ссылку.';
                 return;
             }
 
@@ -2882,13 +2842,13 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 const publicUrl = result?.publicUrl || `${API_BASE_URL}/u/${encodeURIComponent(result?.slug || slug)}`;
                 const stored = { ...draft, slug: result?.slug || slug, publicUrl, created: true };
                 localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(stored));
-                setMultilinkHint('Страница опубликована. Она уже доступна по ссылке и её можно отправлять любому человеку.');
-                if (status) status.textContent = result?.message || 'Страница опубликована.';
+                setMultilinkHint('Страница создана. Она сразу открылась и её уже можно отправлять любому человеку.');
+                if (status) status.textContent = result?.message || 'Страница сохранена.';
                 updateMultilinkActionButtons(true);
                 tg?.HapticFeedback?.notificationOccurred?.('success');
                 openMultilinkUrl(publicUrl);
             } catch (error) {
-                if (status) status.textContent = error.message || 'Не удалось опубликовать страницу.';
+                if (status) status.textContent = error.message || 'Не удалось сохранить мультиссылку.';
                 tg?.HapticFeedback?.notificationOccurred?.('error');
             } finally {
                 if (saveBtn) {
@@ -5444,65 +5404,6 @@ if (e.target.id === 'dvizhRulesModal') {
 closeDvizhRulesModal();
 }
 });
-    // 1. Функция добавления новой кнопки в конструктор
-function addNewLinkField() {
-    const container = document.getElementById('multilinkItemsContainer');
-    if (!container) return; // проверка, что контейнер существует
-    const div = document.createElement('div');
-    div.className = "inner-panel p-3 animate-fade-in relative border border-gray-700/50 bg-gray-900/30 mb-3";
-    div.innerHTML = `
-        <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-gray-600 hover:text-red-400 text-lg">×</button>
-        <input type="text" class="link-name-input neo-input mb-2 text-sm" placeholder="Название (напр: Мой TG)">
-        <input type="text" class="link-url-input neo-input text-blue-400 text-xs" placeholder="Ссылка (https://...)">
-    `;
-    container.appendChild(div);
-}
-
-// 2. Функция сохранения данных в Supabase
-async function saveMultilinkToSupabase() {
-    const btn = document.getElementById('saveMultilinkBtn');
-    const bioText = document.getElementById('multilinkBio')?.value || '';
-    const names = document.querySelectorAll('.link-name-input');
-    const urls = document.querySelectorAll('.link-url-input');
-    
-    let finalLinks = [];
-    names.forEach((el, i) => {
-        if (el.value && urls[i].value) {
-            finalLinks.push({ title: el.value, url: urls[i].value });
-        }
-    });
-
-    if (finalLinks.length === 0) {
-        alert("Добавьте хотя бы одну ссылку!");
-        return;
-    }
-
-    btn.disabled = true;
-    const originalText = btn.innerText;
-    btn.innerText = "Публикация...";
-
-    try {
-        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        const { error } = await supabase
-            .from('user_links') 
-            .upsert({ 
-                user_id: user ? user.id : 0, 
-                bio: bioText,
-                links: finalLinks,
-                slug: user ? (user.username || 'id' + user.id) : 'guest'
-            });
-
-        if (error) throw error;
-        alert("Успешно! Страница создана.");
-    } catch (err) {
-        console.error(err);
-        alert("Ошибка сохранения: " + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerText = originalText;
-    }
-}
-
 </script>
 <div id="dvizhRulesModal" class="fixed inset-0 z-[999] hidden items-end justify-center bg-black/70 backdrop-blur-sm">
 <div class="w-full max-w-xl rounded-t-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.96),rgba(8,10,24,0.98))] p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
