@@ -2776,6 +2776,36 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
         }
 
+
+        function showMultilinkUrl(url = '') {
+            const value = String(url || '').trim();
+            const box = document.getElementById('multilinkResultBox');
+            const text = document.getElementById('multilinkPublicUrl');
+            if (!box || !text) return;
+            if (!value) {
+                box.classList.add('hidden');
+                text.textContent = '';
+                return;
+            }
+            text.textContent = value;
+            box.classList.remove('hidden');
+        }
+
+        async function copyMultilinkUrl(url = '') {
+            const value = (url || getStoredMultilinkPublicUrl() || '').trim();
+            const status = document.getElementById('multilinkStatus');
+            if (!value) {
+                if (status) status.textContent = 'Сначала создай мультиссылку.';
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(value);
+                if (status) status.textContent = 'Ссылка скопирована.';
+            } catch (error) {
+                if (status) status.textContent = 'Не удалось скопировать ссылку.';
+            }
+        }
+
         function openMultilinkUrl(url = '') {
             const value = (url || getStoredMultilinkPublicUrl() || '').trim();
             const status = document.getElementById('multilinkStatus');
@@ -2845,6 +2875,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 setMultilinkHint('Страница создана. Она сразу открылась и её уже можно отправлять любому человеку.');
                 if (status) status.textContent = result?.message || 'Страница сохранена.';
                 updateMultilinkActionButtons(true);
+                showMultilinkUrl(publicUrl);
                 tg?.HapticFeedback?.notificationOccurred?.('success');
                 openMultilinkUrl(publicUrl);
             } catch (error) {
@@ -2919,6 +2950,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const savedUrl = draft?.publicUrl || '';
             setMultilinkHint(savedUrl ? 'Страница уже создана. Можно редактировать и сохранять изменения бесплатно.' : `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
             updateMultilinkActionButtons(!!savedUrl);
+            showMultilinkUrl(savedUrl);
             if (status && !savedUrl) status.textContent = `Создание мультиссылки стоит ${MULTILINK_CREATE_COST} кредитов. Редактирование бесплатно.`;
             renderMultilinkPreview();
         }
@@ -2937,6 +2969,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             updateMultilinkActionButtons(false);
             const status = document.getElementById('multilinkStatus');
             if (status) status.textContent = 'Форма сброшена. Можно создать новую страницу.';
+            showMultilinkUrl('');
             renderMultilinkPreview();
         }
 
@@ -3024,6 +3057,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const saveBtn = document.getElementById('saveMultilinkBtn');
             const deleteBtn = document.getElementById('deleteMultilinkBtn');
             const resetBtn = document.getElementById('resetMultilinkBtn');
+            const copyBtn = document.getElementById('copyMultilinkUrlBtn');
+            const openBtn = document.getElementById('openMultilinkUrlBtn');
             const chooseAvatarBtn = document.getElementById('chooseMultilinkAvatarBtn');
             const avatarFileInput = document.getElementById('multilinkAvatarFile');
             if (!addBtn || !saveBtn || !deleteBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
