@@ -1771,52 +1771,54 @@ body::after {
                 </div>
             </div>
 
-            
-<div id="multilink-section" class="hidden">
+            <div id="multilink-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
-                    <h2 class="section-title text-xl font-extrabold">📱 Прокладка / Мини-лендинг</h2>
+                    <h2 class="section-title text-xl font-extrabold">🔗 Мультиссылка</h2>
                 </div>
 
                 <div class="glass-box p-4 rounded-[24px] mb-4">
                     <div class="flex items-start justify-between gap-3 mb-4">
                         <div>
-                            <div class="text-white font-semibold text-lg">Prelander Builder</div>
-                            <div class="text-sm text-gray-400 mt-1">Собери мобильную прокладку с картинкой, текстом и кнопкой перехода</div>
+                            <div class="text-white font-semibold text-lg">Multilink Builder</div>
+                            <div class="text-sm text-gray-400 mt-1">Собери страницу со всеми ссылками в стиле lite.link</div>
                         </div>
-                        <div class="h-14 w-14 rounded-[20px] bg-cyan-500/15 flex items-center justify-center text-3xl shrink-0">📱</div>
+                        <div class="h-14 w-14 rounded-[20px] bg-cyan-500/15 flex items-center justify-center text-3xl shrink-0">🔗</div>
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 mb-4">
-                        <input id="multilinkTitle" type="text" class="neo-input" placeholder="Заголовок страницы" value="Dating Girls" />
-                        <input id="multilinkUsername" type="text" class="neo-input" placeholder="slug (example: dating-girls)" value="dating-girls" />
-                        <input id="prelanderSubtitle" type="text" class="neo-input" placeholder="Подзаголовок" value="Лучшие предложения уже ждут тебя" />
+                        <input id="multilinkTitle" type="text" class="neo-input" placeholder="Название профиля" value="UBT ToolKit" />
+                        <input id="multilinkUsername" type="text" class="neo-input" placeholder="username" value="ubttoolkit" />
 
                         <div class="inner-panel">
                             <div class="flex items-center gap-4">
-                                <img id="multilinkAvatarPickerPreview" src="https://placehold.co/800x1000/png" alt="cover preview" class="w-20 h-20 rounded-[20px] object-cover border border-white/10 shrink-0" />
+                                <img id="multilinkAvatarPickerPreview" src="https://placehold.co/160x160/png" alt="avatar preview" class="w-20 h-20 rounded-full object-cover border border-white/10 shrink-0" />
                                 <div class="flex-1">
-                                    <div class="text-white font-semibold mb-1">Обложка страницы</div>
-                                    <div class="text-xs text-gray-400 mb-3">Пользователь сможет выбрать фото для своей прокладки</div>
+                                    <div class="text-white font-semibold mb-1">Аватар профиля</div>
+                                    <div class="text-xs text-gray-400 mb-3">Пользователь сможет выбрать фото для своей мультиссылки</div>
                                     <input id="multilinkAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
-                                    <input id="multilinkAvatar" type="hidden" value="https://placehold.co/800x1000/png" />
+                                    <input id="multilinkAvatar" type="hidden" value="https://placehold.co/160x160/png" />
                                     <button id="chooseMultilinkAvatarBtn" type="button" class="secondary-btn px-4 py-3 rounded-2xl text-sm font-semibold w-full sm:w-auto">Выбрать фото</button>
                                 </div>
                             </div>
                         </div>
 
-                        <textarea id="multilinkBio" class="neo-input min-h-[140px]" placeholder="Описание страницы">Короткий прогрев, выгоды, эмоции и призыв перейти дальше.</textarea>
-                        <input id="prelanderButtonText" type="text" class="neo-input" placeholder="Текст кнопки" value="Открыть предложение" />
-                        <input id="prelanderButtonUrl" type="text" class="neo-input" placeholder="Ссылка кнопки (https://...)" value="https://example.com" />
+                        <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
                     </div>
 
-                    <div class="hidden">
-                        <button id="addMultilinkItemBtn" type="button"></button>
-                        <div id="multilinkItems"></div>
+                    <div class="inner-panel mb-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold">Кнопки</div>
+                                <div class="text-xs text-gray-400 mt-1">Добавь ссылки для Telegram, оффера, канала или сайта</div>
+                            </div>
+                            <button id="addMultilinkItemBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">+ Добавить</button>
+                        </div>
+                        <div id="multilinkItems" class="space-y-3"></div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Создать прокладку • 100 кредитов</button>
+                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Создать ссылку • 100 кредитов</button>
                         <button id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">Удалить страницу</button>
                         <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить форму</button>
                     </div>
@@ -1825,11 +1827,11 @@ body::after {
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div>
                                 <div class="text-white font-semibold">Как это работает</div>
-                                <div class="text-xs text-gray-400 mt-1">После нажатия страница создаётся и сразу открывается по публичной ссылке</div>
+                                <div class="text-xs text-gray-400 mt-1">После нажатия на кнопку страница создаётся и сразу открывается</div>
                             </div>
-                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">PRELANDER</span>
+                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">AUTO OPEN</span>
                         </div>
-                        <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">При первом создании спишется 100 кредитов. После этого прокладка сразу откроется. Редактирование бесплатно. После удаления можно создать новую заново.</div>
+                        <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">При первом создании спишется 100 кредитов. После этого страница сразу откроется. Редактирование бесплатно. После удаления можно создать новую заново.</div>
                     </div>
 
                     <p id="multilinkStatus" class="mt-3 text-sm text-gray-300"></p>
@@ -1839,23 +1841,22 @@ body::after {
                     <div class="flex items-center justify-between gap-3 mb-3">
                         <div>
                             <div class="text-white font-semibold">👁️ Превью страницы</div>
-                            <div class="text-sm text-gray-400">Как будет выглядеть публичная прокладка на телефоне</div>
+                            <div class="text-sm text-gray-400">Как будет выглядеть публичная мультиссылка</div>
                         </div>
-                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">MOBILE</span>
+                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LITE STYLE</span>
                     </div>
 
                     <div id="multilinkPreview" class="inner-panel overflow-hidden">
-                        <div class="max-w-md mx-auto py-2">
-                            <img id="multilinkPreviewAvatar" src="https://placehold.co/800x1000/png" alt="cover" class="w-full h-56 rounded-[24px] object-cover mb-4 border border-white/10" />
-                            <div id="multilinkPreviewTitle" class="text-white text-3xl font-extrabold leading-tight">Dating Girls</div>
-                            <div id="prelanderPreviewSubtitle" class="text-cyan-300 text-sm mt-2">Лучшие предложения уже ждут тебя</div>
-                            <div id="multilinkPreviewBio" class="text-sm text-gray-300 mt-4 mb-6 leading-relaxed">Короткий прогрев, выгоды, эмоции и призыв перейти дальше.</div>
-                            <a id="prelanderPreviewButton" href="#" target="_blank" rel="noopener noreferrer" class="primary-btn w-full p-4 rounded-2xl font-bold text-center block">Открыть предложение</a>
+                        <div class="max-w-md mx-auto text-center py-4">
+                            <img id="multilinkPreviewAvatar" src="https://placehold.co/160x160/png" alt="avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border border-white/10" />
+                            <div id="multilinkPreviewTitle" class="text-white text-2xl font-extrabold">UBT ToolKit</div>
+                            <div id="multilinkPreviewHandle" class="text-cyan-300 text-sm mt-1">@ubttoolkit</div>
+                            <div id="multilinkPreviewBio" class="text-sm text-gray-300 mt-3 mb-6 leading-relaxed">Весь мой трафик, каналы и полезные ссылки в одном месте.</div>
+                            <div id="multilinkPreviewLinks" class="space-y-3"></div>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
@@ -2631,7 +2632,29 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         ];
 
         function createMultilinkItem(item = {}) {
-            return null;
+            const wrap = document.getElementById('multilinkItems');
+            if (!wrap) return;
+
+            const row = document.createElement('div');
+            row.className = 'inner-panel';
+            row.innerHTML = `
+                <div class="grid grid-cols-1 gap-3">
+                    <input type="text" class="neo-input multilink-item-title" placeholder="Название кнопки" value="${escapeHtml(item.title || '')}">
+                    <input type="text" class="neo-input multilink-item-url" placeholder="https://..." value="${escapeHtml(item.url || '')}">
+                    <button type="button" class="secondary-btn px-3 py-3 rounded-2xl text-sm font-semibold remove-multilink-item-btn">Удалить</button>
+                </div>
+            `;
+
+            row.querySelector('.remove-multilink-item-btn')?.addEventListener('click', () => {
+                row.remove();
+                renderMultilinkPreview();
+            });
+
+            row.querySelectorAll('input').forEach((input) => {
+                input.addEventListener('input', renderMultilinkPreview);
+            });
+
+            wrap.appendChild(row);
         }
 
 
@@ -2673,31 +2696,41 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 username: document.getElementById('multilinkUsername')?.value?.trim().replace(/^@/, '') || '',
                 avatar: document.getElementById('multilinkAvatar')?.value?.trim() || '',
                 bio: document.getElementById('multilinkBio')?.value?.trim() || '',
-                subtitle: document.getElementById('prelanderSubtitle')?.value?.trim() || '',
-                button_text: document.getElementById('prelanderButtonText')?.value?.trim() || '',
-                button_url: document.getElementById('prelanderButtonUrl')?.value?.trim() || '',
-                links: []
+                links: Array.from(document.querySelectorAll('#multilinkItems .inner-panel')).map((row) => ({
+                    title: row.querySelector('.multilink-item-title')?.value?.trim() || '',
+                    url: row.querySelector('.multilink-item-url')?.value?.trim() || ''
+                })).filter((item) => item.title && item.url)
             };
         }
 
         function renderMultilinkPreview() {
             const draft = getMultilinkDraft();
             const previewTitle = document.getElementById('multilinkPreviewTitle');
+            const previewHandle = document.getElementById('multilinkPreviewHandle');
             const previewBio = document.getElementById('multilinkPreviewBio');
             const previewAvatar = document.getElementById('multilinkPreviewAvatar');
-            const previewSubtitle = document.getElementById('prelanderPreviewSubtitle');
-            const previewButton = document.getElementById('prelanderPreviewButton');
+            const previewLinks = document.getElementById('multilinkPreviewLinks');
 
-            if (previewTitle) previewTitle.textContent = draft.title || 'Заголовок страницы';
-            if (previewSubtitle) previewSubtitle.textContent = draft.subtitle || 'Подзаголовок';
-            if (previewBio) previewBio.textContent = draft.bio || 'Описание страницы';
-            const avatarSrc = draft.avatar || 'https://placehold.co/800x1000/png';
+            if (previewTitle) previewTitle.textContent = draft.title || 'Название профиля';
+            if (previewHandle) previewHandle.textContent = draft.username ? `@${draft.username}` : '@username';
+            if (previewBio) previewBio.textContent = draft.bio || 'Короткое описание страницы';
+            const avatarSrc = draft.avatar || 'https://placehold.co/160x160/png';
             if (previewAvatar) previewAvatar.src = avatarSrc;
             const pickerPreview = document.getElementById('multilinkAvatarPickerPreview');
             if (pickerPreview) pickerPreview.src = avatarSrc;
-            if (previewButton) {
-                previewButton.textContent = draft.button_text || 'Открыть предложение';
-                previewButton.href = draft.button_url || '#';
+
+            if (previewLinks) {
+                previewLinks.innerHTML = '';
+                const links = draft.links.length ? draft.links : defaultMultilinkItems;
+                links.forEach((item) => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.className = 'block w-full rounded-2xl px-4 py-4 font-semibold primary-btn';
+                    link.textContent = item.title;
+                    previewLinks.appendChild(link);
+                });
             }
         }
 
@@ -2755,7 +2788,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
         async function saveMultilinkDraft() {
             const draft = getMultilinkDraft();
-            const slug = sanitizeMultilinkSlug(draft.username || draft.title || 'page');
+            const slug = sanitizeMultilinkSlug(draft.username || draft.title || 'user');
             draft.slug = slug;
             renderMultilinkPreview();
 
@@ -2769,12 +2802,12 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             if (!draft.title || !draft.username) {
-                if (status) status.textContent = 'Заполни заголовок и slug.';
+                if (status) status.textContent = 'Заполни название и username.';
                 return;
             }
 
-            if (!draft.button_text || !draft.button_url) {
-                if (status) status.textContent = 'Заполни текст кнопки и ссылку кнопки.';
+            if (!draft.links.length) {
+                if (status) status.textContent = 'Добавь хотя бы одну ссылку.';
                 return;
             }
 
@@ -2786,7 +2819,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(draft));
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/prelander`, {
+                const response = await fetch(`${API_BASE_URL}/api/multilink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2795,11 +2828,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                         user_id: tgUserId,
                         slug,
                         title: draft.title,
-                        subtitle: draft.subtitle,
-                        description: draft.bio,
-                        image_url: draft.avatar,
-                        button_text: draft.button_text,
-                        button_url: draft.button_url
+                        bio: draft.bio,
+                        avatar_url: draft.avatar,
+                        links: draft.links
                     })
                 });
 
@@ -2808,16 +2839,16 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     throw new Error(result?.message || `HTTP ${response.status}`);
                 }
 
-                const publicUrl = result?.publicUrl || `${API_BASE_URL}/p/${encodeURIComponent(result?.page?.slug || slug)}`;
-                const stored = { ...draft, slug: result?.page?.slug || slug, publicUrl, created: true };
+                const publicUrl = result?.publicUrl || `${API_BASE_URL}/u/${encodeURIComponent(result?.slug || slug)}`;
+                const stored = { ...draft, slug: result?.slug || slug, publicUrl, created: true };
                 localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(stored));
-                setMultilinkHint('Прокладка создана. Она сразу открылась и её уже можно отправлять любому человеку.');
-                if (status) status.textContent = result?.message || 'Прокладка сохранена.';
+                setMultilinkHint('Страница создана. Она сразу открылась и её уже можно отправлять любому человеку.');
+                if (status) status.textContent = result?.message || 'Страница сохранена.';
                 updateMultilinkActionButtons(true);
                 tg?.HapticFeedback?.notificationOccurred?.('success');
                 openMultilinkUrl(publicUrl);
             } catch (error) {
-                if (status) status.textContent = error.message || 'Не удалось сохранить прокладку.';
+                if (status) status.textContent = error.message || 'Не удалось сохранить мультиссылку.';
                 tg?.HapticFeedback?.notificationOccurred?.('error');
             } finally {
                 if (saveBtn) {
@@ -2832,11 +2863,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const usernameInput = document.getElementById('multilinkUsername');
             const avatarInput = document.getElementById('multilinkAvatar');
             const bioInput = document.getElementById('multilinkBio');
-            const subtitleInput = document.getElementById('prelanderSubtitle');
-            const buttonTextInput = document.getElementById('prelanderButtonText');
-            const buttonUrlInput = document.getElementById('prelanderButtonUrl');
+            const itemsWrap = document.getElementById('multilinkItems');
             const status = document.getElementById('multilinkStatus');
-            if (!titleInput || !usernameInput || !avatarInput || !bioInput || !subtitleInput || !buttonTextInput || !buttonUrlInput) return;
+            if (!titleInput || !usernameInput || !avatarInput || !bioInput || !itemsWrap) return;
 
             let draft = null;
             try {
@@ -2849,7 +2878,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
 
             if (tgUserId) {
                 try {
-                    const response = await fetch(`${API_BASE_URL}/api/prelander/me`, {
+                    const response = await fetch(`${API_BASE_URL}/api/multilink/me`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -2863,61 +2892,58 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                         draft = {
                             title: result.page.title || '',
                             username: result.page.slug || '',
-                            avatar: result.page.image_url || '',
-                            bio: result.page.description || '',
-                            subtitle: result.page.subtitle || '',
-                            button_text: result.page.button_text || '',
-                            button_url: result.page.button_url || '',
+                            avatar: result.page.avatar_url || '',
+                            bio: result.page.bio || '',
+                            links: Array.isArray(result.links) ? result.links.map((item) => ({ title: item.title, url: item.url })) : [],
                             slug: result.page.slug || '',
-                            publicUrl: result.publicUrl || `${API_BASE_URL}/p/${encodeURIComponent(result.page.slug || '')}`,
-                            created: true,
-                            links: []
+                            publicUrl: `${API_BASE_URL}/u/${encodeURIComponent(result.page.slug || '')}`,
+                            created: true
                         };
                         localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(draft));
                     }
                 } catch (error) {
-                    console.error('load prelander me error', error);
+                    console.error('load multilink me error', error);
                 }
             }
 
-            titleInput.value = draft?.title || 'Dating Girls';
-            usernameInput.value = draft?.username || 'dating-girls';
-            avatarInput.value = draft?.avatar || 'https://placehold.co/800x1000/png';
-            bioInput.value = draft?.bio || 'Короткий прогрев, выгоды, эмоции и призыв перейти дальше.';
-            subtitleInput.value = draft?.subtitle || 'Лучшие предложения уже ждут тебя';
-            buttonTextInput.value = draft?.button_text || 'Открыть предложение';
-            buttonUrlInput.value = draft?.button_url || 'https://example.com';
+            titleInput.value = draft?.title || 'UBT ToolKit';
+            usernameInput.value = draft?.username || 'ubttoolkit';
+            avatarInput.value = draft?.avatar || 'https://placehold.co/160x160/png';
+            bioInput.value = draft?.bio || 'Весь мой трафик, каналы и полезные ссылки в одном месте.';
             updateMultilinkAvatarPreview(avatarInput.value);
 
+            itemsWrap.innerHTML = '';
+            const items = Array.isArray(draft?.links) && draft.links.length ? draft.links : defaultMultilinkItems;
+            items.forEach((item) => createMultilinkItem(item));
+            const savedSlug = sanitizeMultilinkSlug(draft?.slug || draft?.username || draft?.title || 'user');
             const savedUrl = draft?.publicUrl || '';
-            setMultilinkHint(savedUrl ? 'Прокладка уже создана. Можно редактировать и сохранять изменения бесплатно.' : `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
+            setMultilinkHint(savedUrl ? 'Страница уже создана. Можно редактировать и сохранять изменения бесплатно.' : `Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
             updateMultilinkActionButtons(!!savedUrl);
-            if (status && !savedUrl) status.textContent = `Создание прокладки стоит ${MULTILINK_CREATE_COST} кредитов. Редактирование бесплатно.`;
+            if (status && !savedUrl) status.textContent = `Создание мультиссылки стоит ${MULTILINK_CREATE_COST} кредитов. Редактирование бесплатно.`;
             renderMultilinkPreview();
         }
 
         function resetMultilinkDraft() {
             localStorage.removeItem(MULTILINK_STORAGE_KEY);
-            document.getElementById('multilinkTitle').value = 'Dating Girls';
-            document.getElementById('multilinkUsername').value = 'dating-girls';
-            updateMultilinkAvatarPreview('https://placehold.co/800x1000/png');
-            document.getElementById('multilinkBio').value = 'Короткий прогрев, выгоды, эмоции и призыв перейти дальше.';
-            document.getElementById('prelanderSubtitle').value = 'Лучшие предложения уже ждут тебя';
-            document.getElementById('prelanderButtonText').value = 'Открыть предложение';
-            document.getElementById('prelanderButtonUrl').value = 'https://example.com';
+            document.getElementById('multilinkTitle').value = 'UBT ToolKit';
+            document.getElementById('multilinkUsername').value = 'ubttoolkit';
+            updateMultilinkAvatarPreview('https://placehold.co/160x160/png');
+            document.getElementById('multilinkBio').value = 'Весь мой трафик, каналы и полезные ссылки в одном месте.';
             const fileInput = document.getElementById('multilinkAvatarFile');
             if (fileInput) fileInput.value = '';
+            document.getElementById('multilinkItems').innerHTML = '';
+            defaultMultilinkItems.forEach((item) => createMultilinkItem(item));
             setMultilinkHint(`Первое создание стоит ${MULTILINK_CREATE_COST} кредитов.`);
             updateMultilinkActionButtons(false);
             const status = document.getElementById('multilinkStatus');
-            if (status) status.textContent = 'Форма сброшена. Можно создать новую прокладку.';
+            if (status) status.textContent = 'Форма сброшена. Можно создать новую страницу.';
             renderMultilinkPreview();
         }
 
         function updateMultilinkActionButtons(hasPage) {
             const saveBtn = document.getElementById('saveMultilinkBtn');
             const deleteBtn = document.getElementById('deleteMultilinkBtn');
-            if (saveBtn) saveBtn.textContent = hasPage ? 'Сохранить изменения' : `Создать прокладку • ${MULTILINK_CREATE_COST} кредитов`;
+            if (saveBtn) saveBtn.textContent = hasPage ? 'Сохранить изменения' : `Создать ссылку • ${MULTILINK_CREATE_COST} кредитов`;
             if (deleteBtn) deleteBtn.classList.toggle('btn-disabled', !hasPage);
         }
 
@@ -2935,18 +2961,18 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 return;
             }
 
-            const ok = window.confirm('Удалить текущую прокладку? Потом можно будет создать новую заново.');
+            const ok = window.confirm('Удалить текущую мультиссылку? Потом можно будет создать новую заново.');
             if (!ok) return;
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/prelander/delete`, {
+                const response = await fetch(`${API_BASE_URL}/api/multilink/delete`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        telegram_id: tgUserId,
-                        user_id: tgUserId
-                    })
+                            initData: tg?.initData || null,
+                            telegram_id: tgUserId,
+                            user_id: tgUserId
+                        })
                 });
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok || !result?.ok) {
@@ -2956,10 +2982,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 localStorage.removeItem(MULTILINK_STORAGE_KEY);
                 resetMultilinkDraft();
                 setMultilinkHint(`Страница удалена. Новое создание будет стоить ${MULTILINK_CREATE_COST} кредитов.`);
-                if (status) status.textContent = 'Прокладка удалена. Теперь можно создать новую.';
+                if (status) status.textContent = 'Мультиссылка удалена. Теперь можно создать новую.';
                 tg?.HapticFeedback?.notificationOccurred?.('success');
             } catch (error) {
-                if (status) status.textContent = error.message || 'Не удалось удалить прокладку.';
+                if (status) status.textContent = error.message || 'Не удалось удалить страницу.';
                 tg?.HapticFeedback?.notificationOccurred?.('error');
             }
         }
@@ -2994,22 +3020,24 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function initMultilinkSection() {
+            const addBtn = document.getElementById('addMultilinkItemBtn');
             const saveBtn = document.getElementById('saveMultilinkBtn');
             const deleteBtn = document.getElementById('deleteMultilinkBtn');
             const resetBtn = document.getElementById('resetMultilinkBtn');
             const chooseAvatarBtn = document.getElementById('chooseMultilinkAvatarBtn');
             const avatarFileInput = document.getElementById('multilinkAvatarFile');
-            if (!saveBtn || !deleteBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
-            if (saveBtn.dataset.bound === '1') return;
-            saveBtn.dataset.bound = '1';
+            if (!addBtn || !saveBtn || !deleteBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
+            if (addBtn.dataset.bound === '1') return;
+            addBtn.dataset.bound = '1';
 
+            addBtn.addEventListener('click', () => createMultilinkItem());
             saveBtn.addEventListener('click', saveMultilinkDraft);
             deleteBtn.addEventListener('click', deleteMultilinkPage);
             resetBtn.addEventListener('click', resetMultilinkDraft);
             chooseAvatarBtn.addEventListener('click', () => avatarFileInput.click());
             avatarFileInput.addEventListener('change', handleMultilinkAvatarChange);
 
-            ['multilinkTitle', 'multilinkUsername', 'multilinkBio', 'prelanderSubtitle', 'prelanderButtonText', 'prelanderButtonUrl'].forEach((id) => {
+            ['multilinkTitle', 'multilinkUsername', 'multilinkBio'].forEach((id) => {
                 document.getElementById(id)?.addEventListener('input', renderMultilinkPreview);
             });
 
