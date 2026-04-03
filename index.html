@@ -1818,16 +1818,20 @@ body::after {
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Создать ссылку • 100 кредитов</button>
+                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Опубликовать за 100 кредитов</button>
                         <button id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">Удалить страницу</button>
                         <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить форму</button>
+                    </div>
+
+                    <div class="text-center text-xs text-gray-400 mt-3">
+                        После публикации будет списано 100 кредитов
                     </div>
 
                     <div class="inner-panel mt-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div>
                                 <div class="text-white font-semibold">Как это работает</div>
-                                <div class="text-xs text-gray-400 mt-1">После нажатия на кнопку страница создаётся и сразу открывается</div>
+                                <div class="text-xs text-gray-400 mt-1">После публикации будет списано 100 кредитов и страница станет доступна по ссылке</div>
                             </div>
                             <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">AUTO OPEN</span>
                         </div>
@@ -2780,7 +2784,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const value = (url || getStoredMultilinkPublicUrl() || '').trim();
             const status = document.getElementById('multilinkStatus');
             if (!value) {
-                if (status) status.textContent = 'Сначала создай мультиссылку.';
+                if (status) status.textContent = 'Сначала опубликуй страницу.';
                 return;
             }
             window.open(value, '_blank');
@@ -2807,7 +2811,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
 
             if (!draft.links.length) {
-                if (status) status.textContent = 'Добавь хотя бы одну ссылку.';
+                if (status) status.textContent = 'Добавь хотя бы одну кнопку.';
                 return;
             }
 
@@ -2842,13 +2846,13 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 const publicUrl = result?.publicUrl || `${API_BASE_URL}/u/${encodeURIComponent(result?.slug || slug)}`;
                 const stored = { ...draft, slug: result?.slug || slug, publicUrl, created: true };
                 localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(stored));
-                setMultilinkHint('Страница создана. Она сразу открылась и её уже можно отправлять любому человеку.');
-                if (status) status.textContent = result?.message || 'Страница сохранена.';
+                setMultilinkHint('Страница опубликована. Она уже доступна по ссылке и её можно отправлять любому человеку.');
+                if (status) status.textContent = result?.message || 'Страница опубликована.';
                 updateMultilinkActionButtons(true);
                 tg?.HapticFeedback?.notificationOccurred?.('success');
                 openMultilinkUrl(publicUrl);
             } catch (error) {
-                if (status) status.textContent = error.message || 'Не удалось сохранить мультиссылку.';
+                if (status) status.textContent = error.message || 'Не удалось опубликовать страницу.';
                 tg?.HapticFeedback?.notificationOccurred?.('error');
             } finally {
                 if (saveBtn) {
@@ -5483,36 +5487,3 @@ closeDvizhRulesModal();
 </div>
 </body>
 </html>
-
-<script>
-async function publishPage() {
-  const tg = window.Telegram?.WebApp;
-
-  const payload = {
-    initData: tg?.initData || null,
-    slug: document.getElementById('plSlug')?.value,
-    title: document.getElementById('plTitle')?.value,
-    subtitle: document.getElementById('plSubtitle')?.value,
-    description: document.getElementById('plDesc')?.value,
-    image_url: document.getElementById('plImage')?.value,
-    button_text: document.getElementById('plBtnText')?.value,
-    button_url: document.getElementById('plBtnUrl')?.value,
-    publish: true
-  };
-
-  const res = await fetch('/api/prelander', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-
-  if (data.ok) {
-    alert('Страница опубликована!');
-    window.open(data.publicUrl, '_blank');
-  } else {
-    alert(data.message || 'Ошибка');
-  }
-}
-</script>
