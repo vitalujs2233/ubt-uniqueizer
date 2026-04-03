@@ -1777,87 +1777,51 @@ body::after {
                     <h2 class="section-title text-xl font-extrabold">🔗 Мультиссылка</h2>
                 </div>
 
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-start justify-between gap-3 mb-4">
+                <!-- НАЧАЛО БЛОКА МУЛЬТИССЫЛКИ -->
+                <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm mt-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                        </div>
                         <div>
-                            <div class="text-white font-semibold text-lg">Multilink Builder</div>
-                            <div class="text-sm text-gray-400 mt-1">Собери страницу со всеми ссылками в стиле lite.link</div>
+                            <h3 class="text-xl font-bold text-white">Моя Мультиссылка</h3>
+                            <p class="text-gray-400 text-sm">Создай визитку для профиля</p>
                         </div>
-                        <div class="h-14 w-14 rounded-[20px] bg-cyan-500/15 flex items-center justify-center text-3xl shrink-0">🔗</div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3 mb-4">
-                        <input id="multilinkTitle" type="text" class="neo-input" placeholder="Название профиля" value="UBT ToolKit" />
-                        <input id="multilinkUsername" type="text" class="neo-input" placeholder="username" value="ubttoolkit" />
+                    <div class="space-y-4">
+                        <input type="text" id="vcard-title" placeholder="Название страницы" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white">
+                        <textarea id="vcard-bio" placeholder="Описание страницы" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white min-h-[110px]"></textarea>
+                        <input type="text" id="vcard-avatar" placeholder="Ссылка на фото / аватар" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white">
+                        <input type="text" id="vcard-slug" placeholder="Название ссылки (например: mylink)" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white">
 
-                        <div class="inner-panel">
-                            <div class="flex items-center gap-4">
-                                <img id="multilinkAvatarPickerPreview" src="https://placehold.co/160x160/png" alt="avatar preview" class="w-20 h-20 rounded-full object-cover border border-white/10 shrink-0" />
-                                <div class="flex-1">
-                                    <div class="text-white font-semibold mb-1">Аватар профиля</div>
-                                    <div class="text-xs text-gray-400 mb-3">Пользователь сможет выбрать фото для своей мультиссылки</div>
-                                    <input id="multilinkAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
-                                    <input id="multilinkAvatar" type="hidden" value="https://placehold.co/160x160/png" />
-                                    <button id="chooseMultilinkAvatarBtn" type="button" class="secondary-btn px-4 py-3 rounded-2xl text-sm font-semibold w-full sm:w-auto">Выбрать фото</button>
-                                </div>
+                        <div id="vcard-buttons-container" class="space-y-3">
+                        </div>
+
+                        <button onclick="addVCardButtonField()" class="w-full py-3 bg-gray-700 text-white rounded-xl">+ Добавить кнопку</button>
+
+                        <div class="rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-200">
+                            После публикации будет списано 100 кредитов
+                        </div>
+
+                        <button onclick="saveVCardToSupabase()" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold">ОПУБЛИКОВАТЬ ЗА 100 КРЕДИТОВ</button>
+
+                        <div id="vcard-result" class="hidden rounded-xl border border-gray-700 bg-gray-900/60 p-4">
+                            <div class="text-sm text-gray-400 mb-2">Твоя публичная ссылка</div>
+                            <div id="vcard-public-url" class="text-cyan-300 break-all text-sm mb-4"></div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="copyVCardLink()" class="w-full py-3 bg-gray-700 text-white rounded-xl font-semibold">Копировать</button>
+                                <button onclick="openVCardLink()" class="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold">Открыть</button>
                             </div>
                         </div>
 
-                        <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
-                    </div>
-
-                    <div class="inner-panel mb-4">
-                        <div class="flex items-center justify-between gap-3 mb-3">
-                            <div>
-                                <div class="text-white font-semibold">Кнопки</div>
-                                <div class="text-xs text-gray-400 mt-1">Добавь ссылки для Telegram, оффера, канала или сайта</div>
-                            </div>
-                            <button id="addMultilinkItemBtn" class="secondary-btn px-3 py-2 rounded-xl text-sm font-semibold">+ Добавить</button>
-                        </div>
-                        <div id="multilinkItems" class="space-y-3"></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Создать ссылку • 100 кредитов</button>
-                        <button id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">Удалить страницу</button>
-                        <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить форму</button>
-                    </div>
-
-                    <div class="inner-panel mt-4">
-                        <div class="flex items-center justify-between gap-3 mb-3">
-                            <div>
-                                <div class="text-white font-semibold">Как это работает</div>
-                                <div class="text-xs text-gray-400 mt-1">После нажатия на кнопку страница создаётся и сразу открывается</div>
-                            </div>
-                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">AUTO OPEN</span>
-                        </div>
-                        <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">При первом создании спишется 100 кредитов. После этого страница сразу откроется. Редактирование бесплатно. После удаления можно создать новую заново.</div>
-                    </div>
-
-                    <p id="multilinkStatus" class="mt-3 text-sm text-gray-300"></p>
-                </div>
-
-                <div class="glass-box p-4 rounded-[24px]">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div>
-                            <div class="text-white font-semibold">👁️ Превью страницы</div>
-                            <div class="text-sm text-gray-400">Как будет выглядеть публичная мультиссылка</div>
-                        </div>
-                        <span class="glow-badge text-xs px-3 py-1 rounded-full font-semibold">LITE STYLE</span>
-                    </div>
-
-                    <div id="multilinkPreview" class="inner-panel overflow-hidden">
-                        <div class="max-w-md mx-auto text-center py-4">
-                            <img id="multilinkPreviewAvatar" src="https://placehold.co/160x160/png" alt="avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border border-white/10" />
-                            <div id="multilinkPreviewTitle" class="text-white text-2xl font-extrabold">UBT ToolKit</div>
-                            <div id="multilinkPreviewHandle" class="text-cyan-300 text-sm mt-1">@ubttoolkit</div>
-                            <div id="multilinkPreviewBio" class="text-sm text-gray-300 mt-3 mb-6 leading-relaxed">Весь мой трафик, каналы и полезные ссылки в одном месте.</div>
-                            <div id="multilinkPreviewLinks" class="space-y-3"></div>
-                        </div>
+                        <div id="vcard-status" class="text-sm text-gray-400"></div>
                     </div>
                 </div>
+                <!-- КОНЕЦ БЛОКА МУЛЬТИССЫЛКИ -->
             </div>
-
             <div id="spy-section" class="hidden">
                 <button onclick="showSection('main')" class="mb-4 text-blue-400 font-medium">← Назад</button>
                 <h2 class="section-title text-xl mb-4 font-extrabold">🔥 Тренды УБТ</h2>
@@ -4776,6 +4740,13 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    try { loadVCardDraft(); } catch (e) { console.error(e); }
+});
+</script>
+
 </body>
 </html>`;
         }
@@ -5404,6 +5375,142 @@ if (e.target.id === 'dvizhRulesModal') {
 closeDvizhRulesModal();
 }
 });
+
+        let currentVCardPublicUrl = '';
+
+        function addVCardButtonField(data = {}) {
+            const container = document.getElementById('vcard-buttons-container');
+            if (!container) return;
+            const row = document.createElement('div');
+            row.className = 'grid grid-cols-1 gap-3 rounded-xl border border-gray-700/60 bg-gray-900/40 p-3';
+            row.innerHTML = `
+                <input type="text" class="vcard-btn-title w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white" placeholder="Текст кнопки" value="${(data.title || '').replace(/"/g, '&quot;')}">
+                <input type="text" class="vcard-btn-url w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white" placeholder="Ссылка кнопки" value="${(data.url || '').replace(/"/g, '&quot;')}">
+                <button type="button" class="w-full py-2 bg-red-500/20 text-red-300 rounded-xl font-semibold">Удалить кнопку</button>
+            `;
+            row.querySelector('button').addEventListener('click', () => row.remove());
+            container.appendChild(row);
+        }
+
+        function collectVCardButtons() {
+            return Array.from(document.querySelectorAll('#vcard-buttons-container > div')).map((row) => {
+                const title = row.querySelector('.vcard-btn-title')?.value?.trim() || '';
+                const url = row.querySelector('.vcard-btn-url')?.value?.trim() || '';
+                return { title, url };
+            }).filter((item) => item.title && item.url);
+        }
+
+        async function saveVCardToSupabase() {
+            const tg = window.Telegram?.WebApp;
+            const status = document.getElementById('vcard-status');
+            const title = document.getElementById('vcard-title')?.value?.trim() || '';
+            const bio = document.getElementById('vcard-bio')?.value?.trim() || '';
+            const avatar = document.getElementById('vcard-avatar')?.value?.trim() || '';
+            const slug = document.getElementById('vcard-slug')?.value?.trim() || '';
+            const links = collectVCardButtons();
+
+            if (!title) {
+                if (status) status.textContent = 'Укажи название страницы';
+                return;
+            }
+            if (!slug) {
+                if (status) status.textContent = 'Укажи название ссылки';
+                return;
+            }
+            if (!links.length) {
+                if (status) status.textContent = 'Добавь хотя бы одну кнопку';
+                return;
+            }
+
+            if (status) status.textContent = 'Публикуем страницу...';
+
+            try {
+                const res = await fetch('/api/multilink', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || null,
+                        title: title,
+                        bio: bio,
+                        avatar_url: avatar || null,
+                        slug: slug,
+                        links: links,
+                        publish: true
+                    })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok || !data.ok) {
+                    if (status) status.textContent = data.message || 'Не удалось опубликовать страницу';
+                    return;
+                }
+
+                currentVCardPublicUrl = data.publicUrl || '';
+                const resultBox = document.getElementById('vcard-result');
+                const urlNode = document.getElementById('vcard-public-url');
+                if (urlNode) urlNode.textContent = currentVCardPublicUrl;
+                if (resultBox) resultBox.classList.remove('hidden');
+
+                if (status) status.textContent = 'Страница опубликована';
+            } catch (error) {
+                console.error(error);
+                if (status) status.textContent = 'Ошибка соединения';
+            }
+        }
+
+        async function copyVCardLink() {
+            if (!currentVCardPublicUrl) return;
+            await navigator.clipboard.writeText(currentVCardPublicUrl);
+            const status = document.getElementById('vcard-status');
+            if (status) status.textContent = 'Ссылка скопирована';
+        }
+
+        function openVCardLink() {
+            if (!currentVCardPublicUrl) return;
+            window.open(currentVCardPublicUrl, '_blank');
+        }
+
+        async function loadVCardDraft() {
+            const container = document.getElementById('vcard-buttons-container');
+            if (container) container.innerHTML = '';
+            const tg = window.Telegram?.WebApp;
+
+            try {
+                const res = await fetch('/api/multilink/me', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        initData: tg?.initData || null,
+                        telegram_id: tg?.initDataUnsafe?.user?.id || null
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok || !data.page) {
+                    addVCardButtonField();
+                    return;
+                }
+
+                document.getElementById('vcard-title').value = data.page.title || '';
+                document.getElementById('vcard-bio').value = data.page.bio || '';
+                document.getElementById('vcard-avatar').value = data.page.avatar_url || '';
+                document.getElementById('vcard-slug').value = data.page.slug || '';
+
+                (data.links || []).forEach((item) => addVCardButtonField({ title: item.title, url: item.url }));
+                if (!(data.links || []).length) addVCardButtonField();
+
+                currentVCardPublicUrl = data.publicUrl || (data.page?.slug ? `${window.location.origin}/u/${data.page.slug}` : '');
+                if (currentVCardPublicUrl) {
+                    document.getElementById('vcard-public-url').textContent = currentVCardPublicUrl;
+                    document.getElementById('vcard-result').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error(error);
+                addVCardButtonField();
+            }
+        }
+
 </script>
 <div id="dvizhRulesModal" class="fixed inset-0 z-[999] hidden items-end justify-center bg-black/70 backdrop-blur-sm">
 <div class="w-full max-w-xl rounded-t-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.96),rgba(8,10,24,0.98))] p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
@@ -5481,5 +5588,12 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    try { loadVCardDraft(); } catch (e) { console.error(e); }
+});
+</script>
+
 </body>
 </html>
