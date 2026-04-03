@@ -5444,6 +5444,65 @@ if (e.target.id === 'dvizhRulesModal') {
 closeDvizhRulesModal();
 }
 });
+    // 1. Функция добавления новой кнопки в конструктор
+function addNewLinkField() {
+    const container = document.getElementById('multilinkItemsContainer');
+    if (!container) return; // проверка, что контейнер существует
+    const div = document.createElement('div');
+    div.className = "inner-panel p-3 animate-fade-in relative border border-gray-700/50 bg-gray-900/30 mb-3";
+    div.innerHTML = `
+        <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-gray-600 hover:text-red-400 text-lg">×</button>
+        <input type="text" class="link-name-input neo-input mb-2 text-sm" placeholder="Название (напр: Мой TG)">
+        <input type="text" class="link-url-input neo-input text-blue-400 text-xs" placeholder="Ссылка (https://...)">
+    `;
+    container.appendChild(div);
+}
+
+// 2. Функция сохранения данных в Supabase
+async function saveMultilinkToSupabase() {
+    const btn = document.getElementById('saveMultilinkBtn');
+    const bioText = document.getElementById('multilinkBio')?.value || '';
+    const names = document.querySelectorAll('.link-name-input');
+    const urls = document.querySelectorAll('.link-url-input');
+    
+    let finalLinks = [];
+    names.forEach((el, i) => {
+        if (el.value && urls[i].value) {
+            finalLinks.push({ title: el.value, url: urls[i].value });
+        }
+    });
+
+    if (finalLinks.length === 0) {
+        alert("Добавьте хотя бы одну ссылку!");
+        return;
+    }
+
+    btn.disabled = true;
+    const originalText = btn.innerText;
+    btn.innerText = "Публикация...";
+
+    try {
+        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        const { error } = await supabase
+            .from('user_links') 
+            .upsert({ 
+                user_id: user ? user.id : 0, 
+                bio: bioText,
+                links: finalLinks,
+                slug: user ? (user.username || 'id' + user.id) : 'guest'
+            });
+
+        if (error) throw error;
+        alert("Успешно! Страница создана.");
+    } catch (err) {
+        console.error(err);
+        alert("Ошибка сохранения: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+    }
+}
+
 </script>
 <div id="dvizhRulesModal" class="fixed inset-0 z-[999] hidden items-end justify-center bg-black/70 backdrop-blur-sm">
 <div class="w-full max-w-xl rounded-t-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.96),rgba(8,10,24,0.98))] p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
