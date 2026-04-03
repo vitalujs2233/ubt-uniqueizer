@@ -1649,7 +1649,6 @@ app.post('/api/multilink', async (req, res) => {
 
     let page;
     let created = false;
-    const shouldPublish = req.body?.publish === true;
 
     if (existing.rows.length) {
       const updated = await pool.query(
@@ -1658,11 +1657,11 @@ app.post('/api/multilink', async (req, res) => {
              title = $3,
              bio = $4,
              avatar_url = $5,
-             is_active = case when $6 then true else is_active end,
+             is_active = true,
              updated_at = now()
          where user_id = $1
          returning *`,
-        [user.id, slug, title, bio || null, avatarUrl, shouldPublish]
+        [user.id, slug, title, bio || null, avatarUrl]
       );
       page = updated.rows[0];
 
@@ -1671,15 +1670,13 @@ app.post('/api/multilink', async (req, res) => {
         [page.id]
       );
     } else {
-      if (shouldPublish) {
-        await spendUserCredits(user.id, MULTILINK_CREATE_PRICE, 'Публикация страницы');
-      }
+      await spendUserCredits(user.id, MULTILINK_CREATE_PRICE, 'Создание мультиссылки');
 
       const inserted = await pool.query(
         `insert into multilink_pages (user_id, slug, title, bio, avatar_url, is_active)
-         values ($1, $2, $3, $4, $5, $6)
+         values ($1, $2, $3, $4, $5, true)
          returning *`,
-        [user.id, slug, title, bio || null, avatarUrl, shouldPublish]
+        [user.id, slug, title, bio || null, avatarUrl]
       );
       page = inserted.rows[0];
       created = true;
@@ -1702,7 +1699,7 @@ app.post('/api/multilink', async (req, res) => {
     return res.json({
       ok: true,
       created,
-      charged_credits: created && shouldPublish ? MULTILINK_CREATE_PRICE : 0,
+      charged_credits: created ? MULTILINK_CREATE_PRICE : 0,
       publicUrl: `${PUBLIC_BASE_URL}/u/${page.slug}`,
       page: {
         id: page.id,
@@ -1716,7 +1713,7 @@ app.post('/api/multilink', async (req, res) => {
     console.error('Save multilink error:', error);
 
     if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
-      return res.status(400).json({ ok: false, message: error.message === 'Недостаточно средств' ? 'Недостаточно кредитов. Нужно 100 кредитов.' : error.message });
+      return res.status(400).json({ ok: false, message: error.message });
     }
 
     return res.status(500).json({ ok: false, message: 'Server error' });
