@@ -1821,6 +1821,25 @@ body::after {
                         <button id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">Сохранить</button>
                         <button id="resetMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Сбросить</button>
                     </div>
+
+                    <div class="inner-panel mt-4">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <div>
+                                <div class="text-white font-semibold">Публичная ссылка</div>
+                                <div class="text-xs text-gray-400 mt-1">После сохранения пользователь получает ссылку на свою страницу</div>
+                            </div>
+                            <span class="glow-badge text-[11px] px-3 py-1 rounded-full font-semibold">SHARE</span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <input id="multilinkPublicUrl" type="text" class="neo-input" placeholder="Ссылка появится после сохранения" readonly />
+                            <div class="grid grid-cols-2 gap-3">
+                                <button id="copyMultilinkBtn" class="secondary-btn p-4 rounded-2xl font-bold">Копировать ссылку</button>
+                                <button id="openMultilinkBtn" class="green-btn p-4 rounded-2xl font-bold">Открыть страницу</button>
+                            </div>
+                            <div id="multilinkLinkHint" class="text-xs text-gray-400 leading-relaxed">Без backend будет работать demo-ссылка на этом же устройстве. Для настоящей общей ссылки файл уже готов к API-сохранению.</div>
+                        </div>
+                    </div>
+
                     <p id="multilinkStatus" class="mt-3 text-sm text-gray-300"></p>
                 </div>
 
@@ -2610,6 +2629,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         };
 
         const MULTILINK_STORAGE_KEY = 'ubt_multilink_draft';
+        const MULTILINK_PAGES_STORAGE_KEY = 'ubt_multilink_pages';
         const defaultMultilinkItems = [
             { title: 'Telegram канал', url: 'https://t.me/ubttoolkit' },
             { title: 'Smart Link', url: 'https://example.com/smart' },
@@ -2719,13 +2739,115 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             }
         }
 
-        function saveMultilinkDraft() {
-            const draft = getMultilinkDraft();
-            localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(draft));
+        function sanitizeMultilinkSlug(value) {
+            return (value || '')
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/^@+/, '')
+                .replace(/[^a-z0-9_-]+/g, '-')
+                .replace(/-{2,}/g, '-')
+                .replace(/^[-_]+|[-_]+$/g, '')
+                .slice(0, 40) || `user-${Date.now()}`;
+        }
+
+        function getStoredMultilinkPages() {
+            try {
+                return JSON.parse(localStorage.getItem(MULTILINK_PAGES_STORAGE_KEY) || '{}') || {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function setStoredMultilinkPages(pages) {
+            localStorage.setItem(MULTILINK_PAGES_STORAGE_KEY, JSON.stringify(pages || {}));
+        }
+
+        function buildDemoMultilinkUrl(slug) {
+            return `${window.location.origin}${window.location.pathname}?multilink_demo=${encodeURIComponent(slug)}`;
+        }
+
+        function setMultilinkPublicUrl(url, hintText = '') {
+            const input = document.getElementById('multilinkPublicUrl');
+            const hint = document.getElementById('multilinkLinkHint');
+            if (input) input.value = url || '';
+            if (hint && hintText) hint.textContent = hintText;
+        }
+
+        async function copyMultilinkUrl() {
+            const input = document.getElementById('multilinkPublicUrl');
+            const value = input?.value?.trim();
             const status = document.getElementById('multilinkStatus');
-            if (status) status.textContent = 'Черновик мультиссылки сохранён локально в браузере.';
+            if (!value) {
+                if (status) status.textContent = 'Сначала сохрани мультиссылку, чтобы появилась ссылка.';
+                return;
+            }
+
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(value);
+                } else {
+                    input.removeAttribute('readonly');
+                    input.select();
+                    document.execCommand('copy');
+                    input.setAttribute('readonly', 'readonly');
+                }
+                if (status) status.textContent = 'Ссылка скопирована.';
+                tg?.HapticFeedback?.notificationOccurred?.('success');
+            } catch (error) {
+                if (status) status.textContent = 'Не удалось скопировать ссылку автоматически.';
+            }
+        }
+
+        function openMultilinkUrl() {
+            const value = document.getElementById('multilinkPublicUrl')?.value?.trim();
+            const status = document.getElementById('multilinkStatus');
+            if (!value) {
+                if (status) status.textContent = 'Сначала сохрани мультиссылку, чтобы открыть страницу.';
+                return;
+            }
+            window.open(value, '_blank');
+        }
+
+        async function saveMultilinkDraft() {
+            const draft = getMultilinkDraft();
+            const slug = sanitizeMultilinkSlug(draft.username || draft.title || 'user');
+            draft.slug = slug;
+            localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify(draft));
             renderMultilinkPreview();
-            tg?.HapticFeedback?.notificationOccurred?.('success');
+
+            const status = document.getElementById('multilinkStatus');
+
+            try {
+                const response = await fetch('/api/multilink', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(draft)
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const result = await response.json();
+                const publicUrl = result?.publicUrl || result?.url || result?.shareUrl || `${window.location.origin}/u/${encodeURIComponent(result?.slug || slug)}`;
+                localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify({ ...draft, slug: result?.slug || slug, publicUrl }));
+                setMultilinkPublicUrl(publicUrl, 'Боевая ссылка готова. Её можно отправлять другим пользователям.');
+                if (status) status.textContent = 'Мультиссылка сохранена на сервере. Публичная ссылка готова.';
+                tg?.HapticFeedback?.notificationOccurred?.('success');
+                return;
+            } catch (error) {
+                const pages = getStoredMultilinkPages();
+                pages[slug] = {
+                    ...draft,
+                    slug,
+                    savedAt: new Date().toISOString()
+                };
+                setStoredMultilinkPages(pages);
+                const demoUrl = buildDemoMultilinkUrl(slug);
+                localStorage.setItem(MULTILINK_STORAGE_KEY, JSON.stringify({ ...draft, slug, publicUrl: demoUrl }));
+                setMultilinkPublicUrl(demoUrl, 'Сейчас это demo-ссылка и она откроется на этом же устройстве. Когда подключишь backend, ссылка станет общей для всех.');
+                if (status) status.textContent = 'Черновик сохранён. Demo-ссылка создана локально.';
+                tg?.HapticFeedback?.notificationOccurred?.('success');
+            }
         }
 
         function loadMultilinkDraft() {
@@ -2752,6 +2874,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             itemsWrap.innerHTML = '';
             const items = Array.isArray(draft?.links) && draft.links.length ? draft.links : defaultMultilinkItems;
             items.forEach((item) => createMultilinkItem(item));
+            const savedSlug = sanitizeMultilinkSlug(draft?.slug || draft?.username || draft?.title || 'user');
+            const savedUrl = draft?.publicUrl || (draft ? buildDemoMultilinkUrl(savedSlug) : '');
+            setMultilinkPublicUrl(savedUrl, savedUrl ? 'Последняя сохранённая ссылка.' : 'Сохрани мультиссылку, чтобы получить публичную ссылку.');
             renderMultilinkPreview();
         }
 
@@ -2765,9 +2890,39 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (fileInput) fileInput.value = '';
             document.getElementById('multilinkItems').innerHTML = '';
             defaultMultilinkItems.forEach((item) => createMultilinkItem(item));
+            setMultilinkPublicUrl('', 'Сохрани мультиссылку, чтобы получить публичную ссылку.');
             const status = document.getElementById('multilinkStatus');
             if (status) status.textContent = 'Форма мультиссылки сброшена.';
             renderMultilinkPreview();
+        }
+
+        function renderStandaloneMultilinkPage(page) {
+            if (!page) return false;
+            document.body.innerHTML = `
+                <div class="min-h-screen px-4 py-8" style="background: radial-gradient(circle at top left, rgba(168,85,247,0.18), transparent 28%), radial-gradient(circle at top right, rgba(56,189,248,0.16), transparent 28%), linear-gradient(180deg, #02010a 0%, #08051a 42%, #0b0d24 100%); color: #fff; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+                    <div style="max-width: 440px; margin: 0 auto; text-align: center;">
+                        <img src="${escapeHtml(page.avatar || 'https://placehold.co/160x160/png')}" alt="avatar" style="width: 112px; height: 112px; border-radius: 999px; object-fit: cover; margin: 0 auto 18px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 0 30px rgba(168,85,247,0.18);">
+                        <div style="font-size: 30px; font-weight: 800; line-height: 1.1;">${escapeHtml(page.title || 'Мультиссылка')}</div>
+                        <div style="font-size: 14px; color: #8be9ff; margin-top: 8px;">@${escapeHtml(page.username || page.slug || 'user')}</div>
+                        <div style="font-size: 14px; color: #d3d0e5; line-height: 1.65; margin: 16px 0 28px;">${escapeHtml(page.bio || '')}</div>
+                        <div style="display: grid; gap: 14px;">
+                            ${(Array.isArray(page.links) && page.links.length ? page.links : defaultMultilinkItems).map((item) => `<a href="${escapeHtml(item.url || '#')}" target="_blank" rel="noopener noreferrer" style="display:block; padding: 18px 20px; border-radius: 22px; text-decoration:none; color:#fff; font-weight:700; background: linear-gradient(135deg, #8b5cf6, #4f46e5 50%, #38bdf8); box-shadow: 0 12px 28px rgba(56,189,248,0.18);">${escapeHtml(item.title || 'Ссылка')}</a>`).join('')}
+                        </div>
+                        <div style="margin-top: 28px; font-size: 12px; color: #b7b2d1;">Создано в UBT ToolKit</div>
+                    </div>
+                </div>
+            `;
+            return true;
+        }
+
+        function tryOpenStandaloneMultilinkFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const demoSlug = sanitizeMultilinkSlug(params.get('multilink_demo') || '');
+            if (!demoSlug) return false;
+            const pages = getStoredMultilinkPages();
+            const page = pages[demoSlug];
+            if (!page) return false;
+            return renderStandaloneMultilinkPage(page);
         }
 
         function initMultilinkSection() {
@@ -2776,7 +2931,9 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const resetBtn = document.getElementById('resetMultilinkBtn');
             const chooseAvatarBtn = document.getElementById('chooseMultilinkAvatarBtn');
             const avatarFileInput = document.getElementById('multilinkAvatarFile');
-            if (!addBtn || !saveBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
+            const copyBtn = document.getElementById('copyMultilinkBtn');
+            const openBtn = document.getElementById('openMultilinkBtn');
+            if (!addBtn || !saveBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput || !copyBtn || !openBtn) return;
             if (addBtn.dataset.bound === '1') return;
             addBtn.dataset.bound = '1';
 
@@ -2785,6 +2942,8 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             resetBtn.addEventListener('click', resetMultilinkDraft);
             chooseAvatarBtn.addEventListener('click', () => avatarFileInput.click());
             avatarFileInput.addEventListener('change', handleMultilinkAvatarChange);
+            copyBtn.addEventListener('click', copyMultilinkUrl);
+            openBtn.addEventListener('click', openMultilinkUrl);
 
             ['multilinkTitle', 'multilinkUsername', 'multilinkBio'].forEach((id) => {
                 document.getElementById(id)?.addEventListener('input', renderMultilinkPreview);
@@ -4947,13 +5106,16 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
             });
         }
 
-        renderSpyTrends();
-        renderVideoHistory();
-        renderPrelandHistory();
-        loadSmartLinks();
-        registerTelegramUser();
-        setupSupportLink();
-        showBottomPage('home');
+        if (tryOpenStandaloneMultilinkFromUrl()) {
+        } else {
+            renderSpyTrends();
+            renderVideoHistory();
+            renderPrelandHistory();
+            loadSmartLinks();
+            registerTelegramUser();
+            setupSupportLink();
+            showBottomPage('home');
+        }
     </script>
 
 <script>
