@@ -1548,7 +1548,311 @@ app.post('/dvizh/moderate', async (req, res) => {
 // =======================
 // DVIZH MODULE END
 // =======================
-ensureCpaTables().finally(() => {
+
+// =======================
+// MULTILINK MODULE START
+// =======================
+
+function normalizeMultilinkSlug(value = '') {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100);
+}
+
+function escapeHtml(value = '') {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function normalizeMultilinkLinks(links) {
+  if (!Array.isArray(links)) return [];
+
+  return links
+    .map((item, index) => ({
+      title: String(item?.title || '').trim().slice(0, 120),
+      url: normalizeUrl(item?.url || ''),
+      sort_order: Number.isFinite(Number(item?.sort_order)) ? Number(item.sort_order) : index
+    }))
+    .filter((item) => item.title && item.url);
+}
+
+async function ensureMultilinkTables() {
+  await pool.query(`
+    create table if not exists multilink_pages (
+      id bigserial primary key,
+      user_id bigint not null unique,
+      slug varchar(100) not null unique,
+      title varchar(120) not null,
+      bio text,
+      avatar_url text,
+      is_active boolean default true,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now()
+    )
+  `);
+
+  await pool.query(`
+    create table if not exists multilink_items (
+      id bigserial primary key,
+      page_id bigint not null references multilink_pages(id) on delete cascade,
+      title varchar(120) not null,
+      url text not null,
+      sort_order integer default 0,
+      is_active boolean default true,
+      created_at timestamptz default now()
+    )
+  `);
+
+  await pool.query(`
+    create index if not exists idx_multilink_items_page_sort
+    on multilink_items(page_id, sort_order)
+  `);
+}
+
+app.post('/api/multilink', async (req, res) => {
+  try {
+    const tgUser = getUserIdentityFromBody(req);
+    const body = req.body || {};
+    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
+    const userId = tgUser?.id || fallbackUserId;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const rawSlug = body.slug || body.username || '';
+    const slug = normalizeMultilinkSlug(rawSlug);
+    const title = String(body.title || '').trim().slice(0, 120);
+    const bio = String(body.bio || '').trim().slice(0, 500);
+    const avatarUrl = String(body.avatar_url || '').trim();
+    const links = normalizeMultilinkLinks(body.links);
+
+    if (!slug) {
+      return res.status(400).json({ ok: false, message: 'Укажи slug или username' });
+    }
+
+    if (!title) {
+      return res.status(400).json({ ok: false, message: 'Укажи название страницы' });
+    }
+
+    const existingSlug = await pool.query(
+      'select id, user_id from multilink_pages where slug = $1 limit 1',
+      [slug]
+    );
+
+    if (existingSlug.rows.length > 0 && Number(existingSlug.rows[0].user_id) !== Number(userId)) {
+      return res.status(400).json({ ok: false, message: 'Этот адрес уже занят' });
+    }
+
+    const existingPage = await pool.query(
+      'select * from multilink_pages where user_id = $1 limit 1',
+      [userId]
+    );
+
+    let page;
+
+    if (existingPage.rows.length > 0) {
+      const updated = await pool.query(
+        `update multilink_pages
+         set slug = $2,
+             title = $3,
+             bio = $4,
+             avatar_url = $5,
+             updated_at = now()
+         where user_id = $1
+         returning *`,
+        [userId, slug, title, bio || null, avatarUrl || null]
+      );
+      page = updated.rows[0];
+
+      await pool.query('delete from multilink_items where page_id = $1', [page.id]);
+    } else {
+      const inserted = await pool.query(
+        `insert into multilink_pages (user_id, slug, title, bio, avatar_url)
+         values ($1, $2, $3, $4, $5)
+         returning *`,
+        [userId, slug, title, bio || null, avatarUrl || null]
+      );
+      page = inserted.rows[0];
+    }
+
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      await pool.query(
+        `insert into multilink_items (page_id, title, url, sort_order)
+         values ($1, $2, $3, $4)`,
+        [page.id, link.title, link.url, i]
+      );
+    }
+
+    return res.json({
+      ok: true,
+      page,
+      links,
+      publicUrl: `${PUBLIC_BASE_URL}/u/${slug}`
+    });
+  } catch (error) {
+    console.error('Save multilink error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/me', async (req, res) => {
+  try {
+    const tgUser = getUserIdentityFromBody(req);
+    const body = req.body || {};
+    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
+    const userId = tgUser?.id || fallbackUserId;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      'select * from multilink_pages where user_id = $1 limit 1',
+      [userId]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.json({ ok: true, page: null, links: [] });
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select id, title, url, sort_order, is_active, created_at
+       from multilink_items
+       where page_id = $1
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    return res.json({
+      ok: true,
+      page,
+      links: linksResult.rows
+    });
+  } catch (error) {
+    console.error('Get multilink me error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/api/multilink/:slug', async (req, res) => {
+  try {
+    const slug = normalizeMultilinkSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+
+    const pageResult = await pool.query(
+      `select id, user_id, slug, title, bio, avatar_url, is_active, created_at, updated_at
+       from multilink_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select title, url, sort_order
+       from multilink_items
+       where page_id = $1 and is_active = true
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    return res.json({
+      ok: true,
+      page,
+      links: linksResult.rows
+    });
+  } catch (error) {
+    console.error('Get multilink by slug error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/u/:slug', async (req, res) => {
+  try {
+    const slug = normalizeMultilinkSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).send('Not found');
+    }
+
+    const pageResult = await pool.query(
+      `select id, slug, title, bio, avatar_url
+       from multilink_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).send('Page not found');
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select title, url
+       from multilink_items
+       where page_id = $1 and is_active = true
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    const avatarHtml = page.avatar_url
+      ? `<img src="${escapeHtml(page.avatar_url)}" alt="avatar" style="width:96px;height:96px;border-radius:999px;object-fit:cover;border:3px solid rgba(255,255,255,0.12);display:block;margin:0 auto 18px;" />`
+      : '';
+
+    const linksHtml = linksResult.rows.map((link) => `
+      <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer"
+         style="display:block;width:100%;padding:16px 18px;margin:0 0 12px 0;border-radius:18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);color:#fff;text-decoration:none;font-weight:600;box-sizing:border-box;">
+        ${escapeHtml(link.title)}
+      </a>
+    `).join('');
+
+    return res.send(`<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(page.title)}</title>
+</head>
+<body style="margin:0;min-height:100vh;background:linear-gradient(180deg,#030303 0%,#060914 42%,#09101d 100%);color:#fff;font-family:Inter,Arial,sans-serif;padding:24px;box-sizing:border-box;">
+  <div style="max-width:420px;margin:0 auto;padding:36px 20px;text-align:center;">
+    ${avatarHtml}
+    <h1 style="margin:0 0 10px 0;font-size:28px;line-height:1.2;">${escapeHtml(page.title)}</h1>
+    <p style="margin:0 0 24px 0;color:#9ca3af;font-size:15px;line-height:1.5;">${escapeHtml(page.bio || '')}</p>
+    <div style="margin-top:18px;">${linksHtml}</div>
+    <div style="margin-top:28px;color:#6b7280;font-size:12px;">Powered by UBT ToolKit</div>
+  </div>
+</body>
+</html>`);
+  } catch (error) {
+    console.error('Public multilink page error:', error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+// =======================
+// MULTILINK MODULE END
+// =======================
+
+ensureCpaTables().finally(async () => {
+  await ensureMultilinkTables();
   app.listen(port, () => {
     console.log('Server running on port ' + port);
   });
