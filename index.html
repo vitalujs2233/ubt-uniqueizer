@@ -2823,8 +2823,6 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        initData: tg?.initData || null,
-                        telegram_id: tgUserId,
                         user_id: tgUserId,
                         slug,
                         title: draft.title,
@@ -2881,11 +2879,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                     const response = await fetch(`${API_BASE_URL}/api/multilink/me`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            initData: tg?.initData || null,
-                            telegram_id: tgUserId,
-                            user_id: tgUserId
-                        })
+                        body: JSON.stringify({ user_id: tgUserId })
                     });
                     const result = await response.json().catch(() => ({}));
                     if (response.ok && result?.ok && result?.page) {
@@ -2968,11 +2962,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 const response = await fetch(`${API_BASE_URL}/api/multilink/delete`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                            initData: tg?.initData || null,
-                            telegram_id: tgUserId,
-                            user_id: tgUserId
-                        })
+                    body: JSON.stringify({ user_id: tgUserId })
                 });
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok || !result?.ok) {
@@ -4776,6 +4766,36 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+<!-- MULTILINK RESULT BLOCK -->
+<div id="multilinkResultBox" style="display:none;padding:16px;margin:16px;border-radius:16px;background:#111;">
+  <div style="margin-bottom:8px;">Ссылка готова</div>
+  <div id="multilinkResultUrl" style="word-break:break-all;color:#00ffff;margin-bottom:10px;"></div>
+  <button onclick="copyMultilinkUrl()">Копировать</button>
+  <button onclick="openMultilinkUrl()">Открыть</button>
+</div>
+
+<script>
+window.generatedMultilinkUrl = '';
+
+function showMultilinkResult(url) {
+  window.generatedMultilinkUrl = url;
+  document.getElementById('multilinkResultUrl').textContent = url;
+  document.getElementById('multilinkResultBox').style.display = 'block';
+}
+
+async function copyMultilinkUrl() {
+  if (!window.generatedMultilinkUrl) return;
+  await navigator.clipboard.writeText(window.generatedMultilinkUrl);
+  alert('Ссылка скопирована');
+}
+
+function openMultilinkUrl() {
+  if (!window.generatedMultilinkUrl) return;
+  window.open(window.generatedMultilinkUrl, '_blank');
+}
+</script>
+
 </body>
 </html>`;
         }
@@ -5481,5 +5501,35 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
+
+<!-- MULTILINK RESULT BLOCK -->
+<div id="multilinkResultBox" style="display:none;padding:16px;margin:16px;border-radius:16px;background:#111;">
+  <div style="margin-bottom:8px;">Ссылка готова</div>
+  <div id="multilinkResultUrl" style="word-break:break-all;color:#00ffff;margin-bottom:10px;"></div>
+  <button onclick="copyMultilinkUrl()">Копировать</button>
+  <button onclick="openMultilinkUrl()">Открыть</button>
+</div>
+
+<script>
+window.generatedMultilinkUrl = '';
+
+function showMultilinkResult(url) {
+  window.generatedMultilinkUrl = url;
+  document.getElementById('multilinkResultUrl').textContent = url;
+  document.getElementById('multilinkResultBox').style.display = 'block';
+}
+
+async function copyMultilinkUrl() {
+  if (!window.generatedMultilinkUrl) return;
+  await navigator.clipboard.writeText(window.generatedMultilinkUrl);
+  alert('Ссылка скопирована');
+}
+
+function openMultilinkUrl() {
+  if (!window.generatedMultilinkUrl) return;
+  window.open(window.generatedMultilinkUrl, '_blank');
+}
+</script>
+
 </body>
 </html>
