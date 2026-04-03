@@ -1896,7 +1896,6 @@ app.get('/u/:slug', async (req, res) => {
 // =======================
 
 
-
 // =======================
 // PRELANDER MODULE START
 // =======================
@@ -1907,7 +1906,7 @@ function normalizePrelanderSlug(value = '') {
   return String(value || '')
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/[^a-z0-9_-]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .slice(0, 80);
@@ -1923,8 +1922,8 @@ async function ensurePrelanderTables() {
       subtitle varchar(220),
       description text,
       image_url text,
-      button_text varchar(120),
-      button_url text,
+      button_text varchar(120) not null,
+      button_url text not null,
       is_active boolean default true,
       created_at timestamptz default now(),
       updated_at timestamptz default now()
@@ -1939,25 +1938,21 @@ async function ensurePrelanderTables() {
 
 app.post('/api/prelander', async (req, res) => {
   try {
-    const tgUser = getUserIdentityFromBody(req);
-    const body = req.body || {};
-    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
-    const userId = tgUser?.id || fallbackUserId;
-
-    if (!userId) {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
       return res.status(401).json({ ok: false, message: 'Invalid user' });
     }
 
-    const slug = normalizePrelanderSlug(body.slug || body.username || '');
-    const title = String(body.title || '').trim().slice(0, 160);
-    const subtitle = String(body.subtitle || '').trim().slice(0, 220);
-    const description = String(body.description || '').trim().slice(0, 4000);
-    const imageUrl = String(body.image_url || '').trim();
-    const buttonText = String(body.button_text || '').trim().slice(0, 120);
-    const buttonUrl = normalizeUrl(body.button_url || '');
+    const slug = normalizePrelanderSlug(req.body?.slug || '');
+    const title = String(req.body?.title || '').trim().slice(0, 160);
+    const subtitle = String(req.body?.subtitle || '').trim().slice(0, 220);
+    const description = String(req.body?.description || '').trim();
+    const imageUrl = String(req.body?.image_url || '').trim();
+    const buttonText = String(req.body?.button_text || '').trim().slice(0, 120);
+    const buttonUrl = normalizeUrl(req.body?.button_url || '');
 
     if (!slug) {
-      return res.status(400).json({ ok: false, message: 'Укажи slug страницы' });
+      return res.status(400).json({ ok: false, message: 'Укажи slug' });
     }
 
     if (!title) {
@@ -1972,24 +1967,24 @@ app.post('/api/prelander', async (req, res) => {
       return res.status(400).json({ ok: false, message: 'Укажи корректную ссылку кнопки' });
     }
 
-    const existingSlug = await pool.query(
+    const slugBusy = await pool.query(
       'select id, user_id from prelander_pages where slug = $1 limit 1',
       [slug]
     );
 
-    if (existingSlug.rows.length > 0 && Number(existingSlug.rows[0].user_id) !== Number(userId)) {
-      return res.status(400).json({ ok: false, message: 'Этот адрес уже занят' });
+    if (slugBusy.rows.length > 0 && Number(slugBusy.rows[0].user_id) !== Number(user.id)) {
+      return res.status(400).json({ ok: false, message: 'Этот slug уже занят' });
     }
 
-    const existingPage = await pool.query(
+    const existing = await pool.query(
       'select * from prelander_pages where user_id = $1 limit 1',
-      [userId]
+      [user.id]
     );
 
     let page;
     let created = false;
 
-    if (existingPage.rows.length > 0) {
+    if (existing.rows.length > 0) {
       const updated = await pool.query(
         `update prelander_pages
          set slug = $2,
@@ -2003,18 +1998,18 @@ app.post('/api/prelander', async (req, res) => {
              updated_at = now()
          where user_id = $1
          returning *`,
-        [userId, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
+        [user.id, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
       );
       page = updated.rows[0];
     } else {
-      await spendUserCredits(userId, PRELANDER_CREATE_PRICE, 'Создание прокладки');
+      await spendUserCredits(user.id, PRELANDER_CREATE_PRICE, 'Создание прокладки');
 
       const inserted = await pool.query(
         `insert into prelander_pages
-          (user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active)
+         (user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active)
          values ($1, $2, $3, $4, $5, $6, $7, $8, true)
          returning *`,
-        [userId, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
+        [user.id, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
       );
       page = inserted.rows[0];
       created = true;
@@ -2040,55 +2035,52 @@ app.post('/api/prelander', async (req, res) => {
 
 app.post('/api/prelander/me', async (req, res) => {
   try {
-    const tgUser = getUserIdentityFromBody(req);
-    const body = req.body || {};
-    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
-    const userId = tgUser?.id || fallbackUserId;
-
-    if (!userId) {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
       return res.status(401).json({ ok: false, message: 'Invalid user' });
     }
 
-    const pageResult = await pool.query(
+    const result = await pool.query(
       `select id, user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active, created_at, updated_at
        from prelander_pages
        where user_id = $1
        limit 1`,
-      [userId]
+      [user.id]
     );
 
-    if (!pageResult.rows.length) {
-      return res.json({ ok: true, page: null });
+    if (!result.rows.length) {
+      return res.json({ ok: true, page: null, publicUrl: null });
     }
 
-    return res.json({ ok: true, page: pageResult.rows[0] });
+    const page = result.rows[0];
+    return res.json({
+      ok: true,
+      page,
+      publicUrl: page.is_active ? `${PUBLIC_BASE_URL}/p/${page.slug}` : null
+    });
   } catch (error) {
-    console.error('Get prelander me error:', error);
+    console.error('Get prelander error:', error);
     return res.status(500).json({ ok: false, message: 'Server error' });
   }
 });
 
 app.post('/api/prelander/delete', async (req, res) => {
   try {
-    const tgUser = getUserIdentityFromBody(req);
-    const body = req.body || {};
-    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
-    const userId = tgUser?.id || fallbackUserId;
-
-    if (!userId) {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
       return res.status(401).json({ ok: false, message: 'Invalid user' });
     }
 
-    const pageResult = await pool.query(
-      `select id from prelander_pages where user_id = $1 limit 1`,
-      [userId]
+    const result = await pool.query(
+      'select id from prelander_pages where user_id = $1 limit 1',
+      [user.id]
     );
 
-    if (!pageResult.rows.length) {
+    if (!result.rows.length) {
       return res.status(404).json({ ok: false, message: 'Страница не найдена' });
     }
 
-    await pool.query(`delete from prelander_pages where user_id = $1`, [userId]);
+    await pool.query('delete from prelander_pages where user_id = $1', [user.id]);
 
     return res.json({ ok: true, deleted: true, message: 'Прокладка удалена' });
   } catch (error) {
@@ -2105,19 +2097,19 @@ app.get('/api/prelander/:slug', async (req, res) => {
       return res.status(404).json({ ok: false, message: 'Not found' });
     }
 
-    const pageResult = await pool.query(
-      `select id, user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active, created_at, updated_at
+    const result = await pool.query(
+      `select id, user_id, slug, title, subtitle, description, image_url, button_text, button_url
        from prelander_pages
        where slug = $1 and is_active = true
        limit 1`,
       [slug]
     );
 
-    if (!pageResult.rows.length) {
-      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    if (!result.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
     }
 
-    return res.json({ ok: true, page: pageResult.rows[0] });
+    return res.json({ ok: true, page: result.rows[0] });
   } catch (error) {
     console.error('Get prelander by slug error:', error);
     return res.status(500).json({ ok: false, message: 'Server error' });
@@ -2132,7 +2124,7 @@ app.get('/p/:slug', async (req, res) => {
       return res.status(404).send('Not found');
     }
 
-    const pageResult = await pool.query(
+    const result = await pool.query(
       `select slug, title, subtitle, description, image_url, button_text, button_url
        from prelander_pages
        where slug = $1 and is_active = true
@@ -2140,22 +2132,19 @@ app.get('/p/:slug', async (req, res) => {
       [slug]
     );
 
-    if (!pageResult.rows.length) {
+    if (!result.rows.length) {
       return res.status(404).send('Page not found');
     }
 
-    const page = pageResult.rows[0];
+    const page = result.rows[0];
     const heroHtml = page.image_url
       ? `<img src="${escapeHtml(page.image_url)}" alt="cover" style="width:100%;max-width:420px;border-radius:24px;display:block;margin:0 auto 18px;object-fit:cover;box-shadow:0 18px 46px rgba(0,0,0,0.35);" />`
       : '';
-
     const subtitleHtml = page.subtitle
       ? `<div style="margin:0 0 14px 0;font-size:18px;line-height:1.35;color:#cbd5e1;font-weight:600;">${escapeHtml(page.subtitle)}</div>`
       : '';
-
     const descriptionHtml = page.description
-      ? `<div style="margin:0 0 24px 0;font-size:16px;line-height:1.6;color:#e5e7eb;">${escapeHtml(page.description).replace(/
-/g, '<br/>')}</div>`
+      ? `<div style="margin:0 0 24px 0;font-size:16px;line-height:1.6;color:#e5e7eb;">${escapeHtml(page.description).replace(/\n/g, '<br/>')}</div>`
       : '';
 
     return res.send(`<!DOCTYPE html>
