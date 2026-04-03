@@ -1548,7 +1548,653 @@ app.post('/dvizh/moderate', async (req, res) => {
 // =======================
 // DVIZH MODULE END
 // =======================
-ensureCpaTables().finally(() => {
+// =======================
+// MULTILINK MODULE START
+// =======================
+
+const MULTILINK_CREATE_PRICE = 100;
+
+function normalizeMultilinkSlug(value = '') {
+  return String(value)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 50);
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function ensureMultilinkTables() {
+  await tryQuery(`
+    create table if not exists multilink_pages (
+      id bigserial primary key,
+      user_id bigint not null,
+      slug varchar(100) not null unique,
+      title varchar(120) not null,
+      bio text,
+      avatar_url text,
+      is_active boolean default true,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now()
+    )
+  `);
+
+  await tryQuery(`
+    create index if not exists idx_multilink_pages_user_id
+    on multilink_pages(user_id)
+  `);
+
+  await tryQuery(`
+    create table if not exists multilink_items (
+      id bigserial primary key,
+      page_id bigint not null references multilink_pages(id) on delete cascade,
+      title varchar(120) not null,
+      url text not null,
+      sort_order integer default 0,
+      is_active boolean default true,
+      created_at timestamptz default now()
+    )
+  `);
+
+  await tryQuery(`
+    create index if not exists idx_multilink_items_page_id
+    on multilink_items(page_id)
+  `);
+}
+
+app.post('/api/multilink', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const rawSlug = req.body?.slug || req.body?.username || req.body?.handle || '';
+    const slug = normalizeMultilinkSlug(rawSlug);
+    const title = String(req.body?.title || '').trim();
+    const bio = String(req.body?.bio || '').trim();
+    const avatarUrl = req.body?.avatar_url || null;
+    const links = Array.isArray(req.body?.links) ? req.body.links : [];
+
+    if (!slug) {
+      return res.status(400).json({ ok: false, message: 'Укажи username для ссылки' });
+    }
+
+    if (!title) {
+      return res.status(400).json({ ok: false, message: 'Укажи название страницы' });
+    }
+
+    const existing = await pool.query(
+      `select * from multilink_pages where user_id = $1 limit 1`,
+      [user.id]
+    );
+
+    const slugTaken = await pool.query(
+      `select id, user_id from multilink_pages where slug = $1 limit 1`,
+      [slug]
+    );
+
+    if (slugTaken.rows.length && Number(slugTaken.rows[0].user_id) !== Number(user.id)) {
+      return res.status(400).json({ ok: false, message: 'Этот username уже занят' });
+    }
+
+    let page;
+    let created = false;
+
+    if (existing.rows.length) {
+      const updated = await pool.query(
+        `update multilink_pages
+         set slug = $2,
+             title = $3,
+             bio = $4,
+             avatar_url = $5,
+             is_active = true,
+             updated_at = now()
+         where user_id = $1
+         returning *`,
+        [user.id, slug, title, bio || null, avatarUrl]
+      );
+      page = updated.rows[0];
+
+      await pool.query(
+        `delete from multilink_items where page_id = $1`,
+        [page.id]
+      );
+    } else {
+      await spendUserCredits(user.id, MULTILINK_CREATE_PRICE, 'Создание мультиссылки');
+
+      const inserted = await pool.query(
+        `insert into multilink_pages (user_id, slug, title, bio, avatar_url, is_active)
+         values ($1, $2, $3, $4, $5, true)
+         returning *`,
+        [user.id, slug, title, bio || null, avatarUrl]
+      );
+      page = inserted.rows[0];
+      created = true;
+    }
+
+    for (let i = 0; i < links.length; i++) {
+      const item = links[i] || {};
+      const itemTitle = String(item.title || '').trim();
+      const itemUrl = normalizeUrl(item.url || '');
+
+      if (!itemTitle || !itemUrl) continue;
+
+      await pool.query(
+        `insert into multilink_items (page_id, title, url, sort_order, is_active)
+         values ($1, $2, $3, $4, true)`,
+        [page.id, itemTitle, itemUrl, i]
+      );
+    }
+
+    return res.json({
+      ok: true,
+      created,
+      charged_credits: created ? MULTILINK_CREATE_PRICE : 0,
+      publicUrl: `${PUBLIC_BASE_URL}/u/${page.slug}`,
+      page: {
+        id: page.id,
+        slug: page.slug,
+        title: page.title,
+        bio: page.bio,
+        avatar_url: page.avatar_url
+      }
+    });
+  } catch (error) {
+    console.error('Save multilink error:', error);
+
+    if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
+      return res.status(400).json({ ok: false, message: error.message });
+    }
+
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/me', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      `select id, slug, title, bio, avatar_url, is_active, created_at, updated_at
+       from multilink_pages
+       where user_id = $1
+       limit 1`,
+      [user.id]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.json({ ok: true, page: null, links: [] });
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select id, title, url, sort_order, is_active
+       from multilink_items
+       where page_id = $1
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    return res.json({
+      ok: true,
+      page,
+      links: linksResult.rows,
+      publicUrl: page.is_active ? `${PUBLIC_BASE_URL}/u/${page.slug}` : null
+    });
+  } catch (error) {
+    console.error('Get my multilink error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/delete', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      `select id from multilink_pages where user_id = $1 limit 1`,
+      [user.id]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    }
+
+    const pageId = pageResult.rows[0].id;
+
+    await pool.query(`delete from multilink_items where page_id = $1`, [pageId]);
+    await pool.query(`delete from multilink_pages where id = $1`, [pageId]);
+
+    return res.json({ ok: true, deleted: true, message: 'Мультиссылка удалена' });
+  } catch (error) {
+    console.error('Delete multilink error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/api/multilink/:slug', async (req, res) => {
+  try {
+    const slug = normalizeMultilinkSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+
+    const pageResult = await pool.query(
+      `select id, slug, title, bio, avatar_url
+       from multilink_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select title, url, sort_order
+       from multilink_items
+       where page_id = $1 and is_active = true
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    return res.json({
+      ok: true,
+      page,
+      links: linksResult.rows
+    });
+  } catch (error) {
+    console.error('Get multilink by slug error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/u/:slug', async (req, res) => {
+  try {
+    const slug = normalizeMultilinkSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).send('Not found');
+    }
+
+    const pageResult = await pool.query(
+      `select id, slug, title, bio, avatar_url
+       from multilink_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).send('Page not found');
+    }
+
+    const page = pageResult.rows[0];
+    const linksResult = await pool.query(
+      `select title, url
+       from multilink_items
+       where page_id = $1 and is_active = true
+       order by sort_order asc, id asc`,
+      [page.id]
+    );
+
+    const avatarHtml = page.avatar_url
+      ? `<img src="${escapeHtml(page.avatar_url)}" alt="avatar" style="width:96px;height:96px;border-radius:999px;object-fit:cover;border:3px solid rgba(255,255,255,0.12);display:block;margin:0 auto 18px;" />`
+      : '';
+
+    const linksHtml = linksResult.rows.map((link) => `
+      <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer"
+         style="display:block;width:100%;padding:16px 18px;margin:0 0 12px 0;border-radius:18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);color:#fff;text-decoration:none;font-weight:600;box-sizing:border-box;">
+        ${escapeHtml(link.title)}
+      </a>
+    `).join('');
+
+    return res.send(`<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(page.title)}</title>
+</head>
+<body style="margin:0;min-height:100vh;background:linear-gradient(180deg,#030303 0%,#060914 42%,#09101d 100%);color:#fff;font-family:Inter,Arial,sans-serif;padding:24px;box-sizing:border-box;">
+  <div style="max-width:420px;margin:0 auto;padding:36px 20px;text-align:center;">
+    ${avatarHtml}
+    <h1 style="margin:0 0 10px 0;font-size:28px;line-height:1.2;">${escapeHtml(page.title)}</h1>
+    <p style="margin:0 0 24px 0;color:#9ca3af;font-size:15px;line-height:1.5;">${escapeHtml(page.bio || '')}</p>
+    <div style="margin-top:18px;">${linksHtml}</div>
+    <div style="margin-top:28px;color:#6b7280;font-size:12px;">Powered by UBT ToolKit</div>
+  </div>
+</body>
+</html>`);
+  } catch (error) {
+    console.error('Public multilink page error:', error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+// =======================
+// MULTILINK MODULE END
+// =======================
+
+
+
+// =======================
+// PRELANDER MODULE START
+// =======================
+
+const PRELANDER_CREATE_PRICE = 100;
+
+function normalizePrelanderSlug(value = '') {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80);
+}
+
+async function ensurePrelanderTables() {
+  await tryQuery(`
+    create table if not exists prelander_pages (
+      id bigserial primary key,
+      user_id bigint not null unique,
+      slug varchar(100) not null unique,
+      title varchar(160) not null,
+      subtitle varchar(220),
+      description text,
+      image_url text,
+      button_text varchar(120),
+      button_url text,
+      is_active boolean default true,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now()
+    )
+  `);
+
+  await tryQuery(`
+    create index if not exists idx_prelander_pages_user_id
+    on prelander_pages(user_id)
+  `);
+}
+
+app.post('/api/prelander', async (req, res) => {
+  try {
+    const tgUser = getUserIdentityFromBody(req);
+    const body = req.body || {};
+    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
+    const userId = tgUser?.id || fallbackUserId;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const slug = normalizePrelanderSlug(body.slug || body.username || '');
+    const title = String(body.title || '').trim().slice(0, 160);
+    const subtitle = String(body.subtitle || '').trim().slice(0, 220);
+    const description = String(body.description || '').trim().slice(0, 4000);
+    const imageUrl = String(body.image_url || '').trim();
+    const buttonText = String(body.button_text || '').trim().slice(0, 120);
+    const buttonUrl = normalizeUrl(body.button_url || '');
+
+    if (!slug) {
+      return res.status(400).json({ ok: false, message: 'Укажи slug страницы' });
+    }
+
+    if (!title) {
+      return res.status(400).json({ ok: false, message: 'Укажи заголовок' });
+    }
+
+    if (!buttonText) {
+      return res.status(400).json({ ok: false, message: 'Укажи текст кнопки' });
+    }
+
+    if (!buttonUrl) {
+      return res.status(400).json({ ok: false, message: 'Укажи корректную ссылку кнопки' });
+    }
+
+    const existingSlug = await pool.query(
+      'select id, user_id from prelander_pages where slug = $1 limit 1',
+      [slug]
+    );
+
+    if (existingSlug.rows.length > 0 && Number(existingSlug.rows[0].user_id) !== Number(userId)) {
+      return res.status(400).json({ ok: false, message: 'Этот адрес уже занят' });
+    }
+
+    const existingPage = await pool.query(
+      'select * from prelander_pages where user_id = $1 limit 1',
+      [userId]
+    );
+
+    let page;
+    let created = false;
+
+    if (existingPage.rows.length > 0) {
+      const updated = await pool.query(
+        `update prelander_pages
+         set slug = $2,
+             title = $3,
+             subtitle = $4,
+             description = $5,
+             image_url = $6,
+             button_text = $7,
+             button_url = $8,
+             is_active = true,
+             updated_at = now()
+         where user_id = $1
+         returning *`,
+        [userId, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
+      );
+      page = updated.rows[0];
+    } else {
+      await spendUserCredits(userId, PRELANDER_CREATE_PRICE, 'Создание прокладки');
+
+      const inserted = await pool.query(
+        `insert into prelander_pages
+          (user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, true)
+         returning *`,
+        [userId, slug, title, subtitle || null, description || null, imageUrl || null, buttonText, buttonUrl]
+      );
+      page = inserted.rows[0];
+      created = true;
+    }
+
+    return res.json({
+      ok: true,
+      created,
+      page,
+      publicUrl: `${PUBLIC_BASE_URL}/p/${page.slug}`,
+      message: created ? 'Прокладка создана' : 'Прокладка обновлена'
+    });
+  } catch (error) {
+    console.error('Create prelander error:', error);
+
+    if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
+      return res.status(400).json({ ok: false, message: error.message });
+    }
+
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/prelander/me', async (req, res) => {
+  try {
+    const tgUser = getUserIdentityFromBody(req);
+    const body = req.body || {};
+    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
+    const userId = tgUser?.id || fallbackUserId;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      `select id, user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active, created_at, updated_at
+       from prelander_pages
+       where user_id = $1
+       limit 1`,
+      [userId]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.json({ ok: true, page: null });
+    }
+
+    return res.json({ ok: true, page: pageResult.rows[0] });
+  } catch (error) {
+    console.error('Get prelander me error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/prelander/delete', async (req, res) => {
+  try {
+    const tgUser = getUserIdentityFromBody(req);
+    const body = req.body || {};
+    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
+    const userId = tgUser?.id || fallbackUserId;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      `select id from prelander_pages where user_id = $1 limit 1`,
+      [userId]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    }
+
+    await pool.query(`delete from prelander_pages where user_id = $1`, [userId]);
+
+    return res.json({ ok: true, deleted: true, message: 'Прокладка удалена' });
+  } catch (error) {
+    console.error('Delete prelander error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/api/prelander/:slug', async (req, res) => {
+  try {
+    const slug = normalizePrelanderSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).json({ ok: false, message: 'Not found' });
+    }
+
+    const pageResult = await pool.query(
+      `select id, user_id, slug, title, subtitle, description, image_url, button_text, button_url, is_active, created_at, updated_at
+       from prelander_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    }
+
+    return res.json({ ok: true, page: pageResult.rows[0] });
+  } catch (error) {
+    console.error('Get prelander by slug error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.get('/p/:slug', async (req, res) => {
+  try {
+    const slug = normalizePrelanderSlug(req.params.slug || '');
+
+    if (!slug) {
+      return res.status(404).send('Not found');
+    }
+
+    const pageResult = await pool.query(
+      `select slug, title, subtitle, description, image_url, button_text, button_url
+       from prelander_pages
+       where slug = $1 and is_active = true
+       limit 1`,
+      [slug]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).send('Page not found');
+    }
+
+    const page = pageResult.rows[0];
+    const heroHtml = page.image_url
+      ? `<img src="${escapeHtml(page.image_url)}" alt="cover" style="width:100%;max-width:420px;border-radius:24px;display:block;margin:0 auto 18px;object-fit:cover;box-shadow:0 18px 46px rgba(0,0,0,0.35);" />`
+      : '';
+
+    const subtitleHtml = page.subtitle
+      ? `<div style="margin:0 0 14px 0;font-size:18px;line-height:1.35;color:#cbd5e1;font-weight:600;">${escapeHtml(page.subtitle)}</div>`
+      : '';
+
+    const descriptionHtml = page.description
+      ? `<div style="margin:0 0 24px 0;font-size:16px;line-height:1.6;color:#e5e7eb;">${escapeHtml(page.description).replace(/
+/g, '<br/>')}</div>`
+      : '';
+
+    return res.send(`<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(page.title)}</title>
+</head>
+<body style="margin:0;min-height:100vh;background:linear-gradient(180deg,#030303 0%,#060914 42%,#09101d 100%);color:#fff;font-family:Inter,Arial,sans-serif;padding:18px;box-sizing:border-box;">
+  <div style="max-width:460px;margin:0 auto;padding:18px 0 28px 0;">
+    ${heroHtml}
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,0.28);">
+      <h1 style="margin:0 0 10px 0;font-size:30px;line-height:1.15;">${escapeHtml(page.title)}</h1>
+      ${subtitleHtml}
+      ${descriptionHtml}
+      <a href="${escapeHtml(page.button_url)}" target="_blank" rel="noopener noreferrer"
+         style="display:block;width:100%;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;text-decoration:none;font-weight:700;text-align:center;box-sizing:border-box;">
+        ${escapeHtml(page.button_text || 'Открыть')}
+      </a>
+      <div style="margin-top:18px;color:#6b7280;font-size:12px;text-align:center;">Powered by UBT ToolKit</div>
+    </div>
+  </div>
+</body>
+</html>`);
+  } catch (error) {
+    console.error('Public prelander page error:', error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+// =======================
+// PRELANDER MODULE END
+// =======================
+
+
+ensureCpaTables().finally(async () => {
+  await ensureMultilinkTables();
+  await ensurePrelanderTables();
   app.listen(port, () => {
     console.log('Server running on port ' + port);
   });
