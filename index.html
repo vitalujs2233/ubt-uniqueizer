@@ -1789,7 +1789,20 @@ body::after {
                     <div class="grid grid-cols-1 gap-3 mb-4">
                         <input id="multilinkTitle" type="text" class="neo-input" placeholder="Название профиля" value="UBT ToolKit" />
                         <input id="multilinkUsername" type="text" class="neo-input" placeholder="username" value="ubttoolkit" />
-                        <input id="multilinkAvatar" type="text" class="neo-input" placeholder="Ссылка на аватар" value="https://placehold.co/160x160/png" />
+
+                        <div class="inner-panel">
+                            <div class="flex items-center gap-4">
+                                <img id="multilinkAvatarPickerPreview" src="https://placehold.co/160x160/png" alt="avatar preview" class="w-20 h-20 rounded-full object-cover border border-white/10 shrink-0" />
+                                <div class="flex-1">
+                                    <div class="text-white font-semibold mb-1">Аватар профиля</div>
+                                    <div class="text-xs text-gray-400 mb-3">Пользователь сможет выбрать фото для своей мультиссылки</div>
+                                    <input id="multilinkAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+                                    <input id="multilinkAvatar" type="hidden" value="https://placehold.co/160x160/png" />
+                                    <button id="chooseMultilinkAvatarBtn" type="button" class="secondary-btn px-4 py-3 rounded-2xl text-sm font-semibold w-full sm:w-auto">Выбрать фото</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
                     </div>
 
@@ -2629,6 +2642,39 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             wrap.appendChild(row);
         }
 
+
+        function updateMultilinkAvatarPreview(src) {
+            const avatarValue = src || 'https://placehold.co/160x160/png';
+            const hiddenAvatar = document.getElementById('multilinkAvatar');
+            const pickerPreview = document.getElementById('multilinkAvatarPickerPreview');
+            const previewAvatar = document.getElementById('multilinkPreviewAvatar');
+
+            if (hiddenAvatar) hiddenAvatar.value = avatarValue;
+            if (pickerPreview) pickerPreview.src = avatarValue;
+            if (previewAvatar) previewAvatar.src = avatarValue;
+        }
+
+        function handleMultilinkAvatarChange(event) {
+            const file = event?.target?.files?.[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                const status = document.getElementById('multilinkStatus');
+                if (status) status.textContent = 'Пожалуйста, выбери изображение PNG, JPG, WEBP или GIF.';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const result = e?.target?.result || '';
+                updateMultilinkAvatarPreview(result);
+                renderMultilinkPreview();
+                const status = document.getElementById('multilinkStatus');
+                if (status) status.textContent = 'Фото аватарки выбрано. Нажми «Сохранить», чтобы сохранить черновик.';
+            };
+            reader.readAsDataURL(file);
+        }
+
         function getMultilinkDraft() {
             return {
                 title: document.getElementById('multilinkTitle')?.value?.trim() || '',
@@ -2653,7 +2699,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (previewTitle) previewTitle.textContent = draft.title || 'Название профиля';
             if (previewHandle) previewHandle.textContent = draft.username ? `@${draft.username}` : '@username';
             if (previewBio) previewBio.textContent = draft.bio || 'Короткое описание страницы';
-            if (previewAvatar) previewAvatar.src = draft.avatar || 'https://placehold.co/160x160/png';
+            const avatarSrc = draft.avatar || 'https://placehold.co/160x160/png';
+            if (previewAvatar) previewAvatar.src = avatarSrc;
+            const pickerPreview = document.getElementById('multilinkAvatarPickerPreview');
+            if (pickerPreview) pickerPreview.src = avatarSrc;
 
             if (previewLinks) {
                 previewLinks.innerHTML = '';
@@ -2698,6 +2747,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             if (draft?.username) usernameInput.value = draft.username;
             if (draft?.avatar) avatarInput.value = draft.avatar;
             if (draft?.bio) bioInput.value = draft.bio;
+            updateMultilinkAvatarPreview(avatarInput.value);
 
             itemsWrap.innerHTML = '';
             const items = Array.isArray(draft?.links) && draft.links.length ? draft.links : defaultMultilinkItems;
@@ -2709,8 +2759,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             localStorage.removeItem(MULTILINK_STORAGE_KEY);
             document.getElementById('multilinkTitle').value = 'UBT ToolKit';
             document.getElementById('multilinkUsername').value = 'ubttoolkit';
-            document.getElementById('multilinkAvatar').value = 'https://placehold.co/160x160/png';
+            updateMultilinkAvatarPreview('https://placehold.co/160x160/png');
             document.getElementById('multilinkBio').value = 'Весь мой трафик, каналы и полезные ссылки в одном месте.';
+            const fileInput = document.getElementById('multilinkAvatarFile');
+            if (fileInput) fileInput.value = '';
             document.getElementById('multilinkItems').innerHTML = '';
             defaultMultilinkItems.forEach((item) => createMultilinkItem(item));
             const status = document.getElementById('multilinkStatus');
@@ -2722,15 +2774,19 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
             const addBtn = document.getElementById('addMultilinkItemBtn');
             const saveBtn = document.getElementById('saveMultilinkBtn');
             const resetBtn = document.getElementById('resetMultilinkBtn');
-            if (!addBtn || !saveBtn || !resetBtn) return;
+            const chooseAvatarBtn = document.getElementById('chooseMultilinkAvatarBtn');
+            const avatarFileInput = document.getElementById('multilinkAvatarFile');
+            if (!addBtn || !saveBtn || !resetBtn || !chooseAvatarBtn || !avatarFileInput) return;
             if (addBtn.dataset.bound === '1') return;
             addBtn.dataset.bound = '1';
 
             addBtn.addEventListener('click', () => createMultilinkItem());
             saveBtn.addEventListener('click', saveMultilinkDraft);
             resetBtn.addEventListener('click', resetMultilinkDraft);
+            chooseAvatarBtn.addEventListener('click', () => avatarFileInput.click());
+            avatarFileInput.addEventListener('change', handleMultilinkAvatarChange);
 
-            ['multilinkTitle', 'multilinkUsername', 'multilinkAvatar', 'multilinkBio'].forEach((id) => {
+            ['multilinkTitle', 'multilinkUsername', 'multilinkBio'].forEach((id) => {
                 document.getElementById(id)?.addEventListener('input', renderMultilinkPreview);
             });
 
