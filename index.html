@@ -1805,6 +1805,42 @@ body::after {
 
                         <textarea id="multilinkBio" class="neo-input min-h-[120px]" placeholder="Короткое описание">Весь мой трафик, каналы и полезные ссылки в одном месте.</textarea>
                     </div>
+                    <!-- Раздел Кнопки -->
+<div class="inner-panel mb-4">
+    <div class="flex items-center justify-between gap-3 mb-3">
+        <div>
+            <div class="text-white font-semibold italic">Кнопки (ссылки)</div>
+            <div class="text-xs text-gray-400 mt-1">Добавь кнопки для Telegram, канала или сайта</div>
+        </div>
+        <!-- Кнопка добавить поле -->
+        <button type="button" onclick="addNewLinkField()" class="secondary-btn btn-sm px-4 py-2 rounded-xl text-sm font-semibold">
+            + Добавить
+        </button>
+    </div>
+
+    <!-- Сюда будут добавляться поля для ссылок -->
+    <div id="multilinkItemsContainer" class="space-y-3">
+        <!-- По умолчанию пусто -->
+    </div>
+</div>
+
+<!-- Блок кнопок управления -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <button type="button" onclick="saveMultilinkToSupabase()" id="saveMultilinkBtn" class="primary-btn p-4 rounded-2xl font-bold">
+        Опубликовать за 100 кредитов
+    </button>
+    <button type="button" id="deleteMultilinkBtn" class="danger-badge p-4 rounded-2xl font-bold">
+        Удалить страницу
+    </button>
+    <button type="button" id="resetMultilinkBtn" onclick="document.getElementById('multilinkItemsContainer').innerHTML=''" class="secondary-btn p-4 rounded-2xl font-bold">
+        Сбросить форму
+    </button>
+</div>
+
+<div class="text-center mt-3">
+    <div class="text-xs text-gray-400 italic">После публикации будет списано 100 кредитов</div>
+</div>
+
 
                     <div class="inner-panel mb-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
