@@ -1901,3 +1901,170 @@ ensureCpaTables().finally(async () => {
     console.log('Server running on port ' + port);
   });
 });
+
+
+// =======================
+// MULTILINK MODULE
+// =======================
+
+app.post('/api/multilink', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const { slug, title, bio, avatar_url, links } = req.body;
+
+    if (!slug || !title) {
+      return res.status(400).json({ message: 'Заполни обязательные поля' });
+    }
+
+    const existing = await pool.query(
+      'select * from multilink_pages where telegram_id = $1',
+      [user.id]
+    );
+
+    let page;
+
+    if (existing.rows.length > 0) {
+      const updated = await pool.query(
+        `update multilink_pages
+         set slug=$2, title=$3, bio=$4, avatar_url=$5, updated_at=now()
+         where telegram_id=$1 returning *`,
+        [user.id, slug, title, bio || null, avatar_url || null]
+      );
+
+      page = updated.rows[0];
+
+      await pool.query(
+        'delete from multilink_items where page_id=$1',
+        [page.id]
+      );
+    } else {
+      await spendUserCredits(user.id, 100, 'Создание мультиссылки');
+
+      const inserted = await pool.query(
+        `insert into multilink_pages (telegram_id, slug, title, bio, avatar_url)
+         values ($1,$2,$3,$4,$5) returning *`,
+        [user.id, slug, title, bio || null, avatar_url || null]
+      );
+
+      page = inserted.rows[0];
+    }
+
+    for (let i = 0; i < (links || []).length; i++) {
+      const link = links[i];
+      if (!link.title || !link.url) continue;
+
+      await pool.query(
+        `insert into multilink_items (page_id,title,url,sort_order)
+         values ($1,$2,$3,$4)`,
+        [page.id, link.title, link.url, i]
+      );
+    }
+
+    res.json({
+      ok: true,
+      publicUrl: `${PUBLIC_BASE_URL}/u/${slug}`
+    });
+
+  } catch (e) {
+    console.error(e);
+    if (e.message === 'Недостаточно средств') {
+      return res.status(400).json({ message: e.message });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/me', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const pageRes = await pool.query(
+      'select * from multilink_pages where telegram_id=$1 limit 1',
+      [user.id]
+    );
+
+    if (!pageRes.rows.length) {
+      return res.json({ ok: true, page: null });
+    }
+
+    const page = pageRes.rows[0];
+
+    const linksRes = await pool.query(
+      'select * from multilink_items where page_id=$1 order by sort_order asc',
+      [page.id]
+    );
+
+    res.json({
+      ok: true,
+      page,
+      links: linksRes.rows
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/delete', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) return res.status(401).json({ message: 'Invalid user' });
+
+    const pageRes = await pool.query(
+      'select * from multilink_pages where telegram_id=$1 limit 1',
+      [user.id]
+    );
+
+    if (!pageRes.rows.length) {
+      return res.status(404).json({ message: 'Нет страницы' });
+    }
+
+    const page = pageRes.rows[0];
+
+    await pool.query('delete from multilink_items where page_id=$1', [page.id]);
+    await pool.query('delete from multilink_pages where id=$1', [page.id]);
+
+    res.json({ ok: true });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/u/:slug', async (req, res) => {
+  const { slug } = req.params;
+
+  const pageRes = await pool.query(
+    'select * from multilink_pages where slug=$1 limit 1',
+    [slug]
+  );
+
+  if (!pageRes.rows.length) {
+    return res.send('Not found');
+  }
+
+  const page = pageRes.rows[0];
+
+  const linksRes = await pool.query(
+    'select * from multilink_items where page_id=$1 order by sort_order asc',
+    [page.id]
+  );
+
+  const links = linksRes.rows;
+
+  res.send(`
+    <html>
+    <body style="background:#0b1220;color:white;text-align:center;padding:40px;font-family:sans-serif">
+      <img src="${page.avatar_url}" style="width:100px;height:100px;border-radius:50%"/>
+      <h1>${page.title}</h1>
+      <p>${page.bio}</p>
+      ${links.map(l => `<a href="${l.url}" style="display:block;margin:10px;padding:15px;background:#1f2937;border-radius:10px;color:white;text-decoration:none">${l.title}</a>`).join('')}
+    </body>
+    </html>
+  `);
+});
