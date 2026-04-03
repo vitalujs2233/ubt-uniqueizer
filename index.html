@@ -4776,38 +4776,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
-
-<!-- MULTILINK RESULT UI -->
-<div id="multilinkResult" class="hidden" style="margin:20px;padding:16px;border-radius:16px;background:#111;border:1px solid rgba(255,255,255,0.1);">
-  <div style="margin-bottom:8px;color:#aaa;">Твоя публичная ссылка</div>
-  <div id="multilinkPublicUrl" style="color:#00ffff;word-break:break-all;margin-bottom:12px;"></div>
-  <div style="display:flex;gap:10px;">
-    <button onclick="copyMultilinkPublicUrl()" style="padding:10px 14px;border-radius:10px;background:#333;color:#fff;">Копировать</button>
-    <button onclick="openMultilinkPublicUrl()" style="padding:10px 14px;border-radius:10px;background:#6d28d9;color:#fff;">Открыть</button>
-  </div>
-</div>
-
-<script>
-let currentMultilinkUrl = '';
-
-function showMultilinkUrl(url){
-  currentMultilinkUrl = url;
-  document.getElementById('multilinkPublicUrl').textContent = url;
-  document.getElementById('multilinkResult').classList.remove('hidden');
-}
-
-async function copyMultilinkPublicUrl(){
-  if(!currentMultilinkUrl) return;
-  await navigator.clipboard.writeText(currentMultilinkUrl);
-  alert('Ссылка скопирована');
-}
-
-function openMultilinkPublicUrl(){
-  if(!currentMultilinkUrl) return;
-  window.open(currentMultilinkUrl,'_blank');
-}
-</script>
-
 </body>
 </html>`;
         }
@@ -5513,37 +5481,5 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
-
-<!-- MULTILINK RESULT UI -->
-<div id="multilinkResult" class="hidden" style="margin:20px;padding:16px;border-radius:16px;background:#111;border:1px solid rgba(255,255,255,0.1);">
-  <div style="margin-bottom:8px;color:#aaa;">Твоя публичная ссылка</div>
-  <div id="multilinkPublicUrl" style="color:#00ffff;word-break:break-all;margin-bottom:12px;"></div>
-  <div style="display:flex;gap:10px;">
-    <button onclick="copyMultilinkPublicUrl()" style="padding:10px 14px;border-radius:10px;background:#333;color:#fff;">Копировать</button>
-    <button onclick="openMultilinkPublicUrl()" style="padding:10px 14px;border-radius:10px;background:#6d28d9;color:#fff;">Открыть</button>
-  </div>
-</div>
-
-<script>
-let currentMultilinkUrl = '';
-
-function showMultilinkUrl(url){
-  currentMultilinkUrl = url;
-  document.getElementById('multilinkPublicUrl').textContent = url;
-  document.getElementById('multilinkResult').classList.remove('hidden');
-}
-
-async function copyMultilinkPublicUrl(){
-  if(!currentMultilinkUrl) return;
-  await navigator.clipboard.writeText(currentMultilinkUrl);
-  alert('Ссылка скопирована');
-}
-
-function openMultilinkPublicUrl(){
-  if(!currentMultilinkUrl) return;
-  window.open(currentMultilinkUrl,'_blank');
-}
-</script>
-
 </body>
 </html>
