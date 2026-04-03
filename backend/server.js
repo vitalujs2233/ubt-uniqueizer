@@ -1548,46 +1548,36 @@ app.post('/dvizh/moderate', async (req, res) => {
 // =======================
 // DVIZH MODULE END
 // =======================
-
 // =======================
 // MULTILINK MODULE START
 // =======================
 
+const MULTILINK_CREATE_PRICE = 100;
+
 function normalizeMultilinkSlug(value = '') {
-  return String(value || '')
+  return String(value)
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9_]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 100);
+    .replace(/[^a-z0-9_-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 50);
 }
 
 function escapeHtml(value = '') {
-  return String(value || '')
+  return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function normalizeMultilinkLinks(links) {
-  if (!Array.isArray(links)) return [];
-
-  return links
-    .map((item, index) => ({
-      title: String(item?.title || '').trim().slice(0, 120),
-      url: normalizeUrl(item?.url || ''),
-      sort_order: Number.isFinite(Number(item?.sort_order)) ? Number(item.sort_order) : index
-    }))
-    .filter((item) => item.title && item.url);
+    .replace(/'/g, '&#039;');
 }
 
 async function ensureMultilinkTables() {
-  await pool.query(`
+  await tryQuery(`
     create table if not exists multilink_pages (
       id bigserial primary key,
-      user_id bigint not null unique,
+      user_id bigint not null,
       slug varchar(100) not null unique,
       title varchar(120) not null,
       bio text,
@@ -1598,7 +1588,12 @@ async function ensureMultilinkTables() {
     )
   `);
 
-  await pool.query(`
+  await tryQuery(`
+    create index if not exists idx_multilink_pages_user_id
+    on multilink_pages(user_id)
+  `);
+
+  await tryQuery(`
     create table if not exists multilink_items (
       id bigserial primary key,
       page_id bigint not null references multilink_pages(id) on delete cascade,
@@ -1610,114 +1605,134 @@ async function ensureMultilinkTables() {
     )
   `);
 
-  await pool.query(`
-    create index if not exists idx_multilink_items_page_sort
-    on multilink_items(page_id, sort_order)
+  await tryQuery(`
+    create index if not exists idx_multilink_items_page_id
+    on multilink_items(page_id)
   `);
 }
 
 app.post('/api/multilink', async (req, res) => {
   try {
-    const tgUser = getUserIdentityFromBody(req);
-    const body = req.body || {};
-    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
-    const userId = tgUser?.id || fallbackUserId;
-
-    if (!userId) {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
       return res.status(401).json({ ok: false, message: 'Invalid user' });
     }
 
-    const rawSlug = body.slug || body.username || '';
+    const rawSlug = req.body?.slug || req.body?.username || req.body?.handle || '';
     const slug = normalizeMultilinkSlug(rawSlug);
-    const title = String(body.title || '').trim().slice(0, 120);
-    const bio = String(body.bio || '').trim().slice(0, 500);
-    const avatarUrl = String(body.avatar_url || '').trim();
-    const links = normalizeMultilinkLinks(body.links);
+    const title = String(req.body?.title || '').trim();
+    const bio = String(req.body?.bio || '').trim();
+    const avatarUrl = req.body?.avatar_url || null;
+    const links = Array.isArray(req.body?.links) ? req.body.links : [];
 
     if (!slug) {
-      return res.status(400).json({ ok: false, message: 'Укажи slug или username' });
+      return res.status(400).json({ ok: false, message: 'Укажи username для ссылки' });
     }
 
     if (!title) {
       return res.status(400).json({ ok: false, message: 'Укажи название страницы' });
     }
 
-    const existingSlug = await pool.query(
-      'select id, user_id from multilink_pages where slug = $1 limit 1',
+    const existing = await pool.query(
+      `select * from multilink_pages where user_id = $1 limit 1`,
+      [user.id]
+    );
+
+    const slugTaken = await pool.query(
+      `select id, user_id from multilink_pages where slug = $1 limit 1`,
       [slug]
     );
 
-    if (existingSlug.rows.length > 0 && Number(existingSlug.rows[0].user_id) !== Number(userId)) {
-      return res.status(400).json({ ok: false, message: 'Этот адрес уже занят' });
+    if (slugTaken.rows.length && Number(slugTaken.rows[0].user_id) !== Number(user.id)) {
+      return res.status(400).json({ ok: false, message: 'Этот username уже занят' });
     }
 
-    const existingPage = await pool.query(
-      'select * from multilink_pages where user_id = $1 limit 1',
-      [userId]
-    );
-
     let page;
+    let created = false;
 
-    if (existingPage.rows.length > 0) {
+    if (existing.rows.length) {
       const updated = await pool.query(
         `update multilink_pages
          set slug = $2,
              title = $3,
              bio = $4,
              avatar_url = $5,
+             is_active = true,
              updated_at = now()
          where user_id = $1
          returning *`,
-        [userId, slug, title, bio || null, avatarUrl || null]
+        [user.id, slug, title, bio || null, avatarUrl]
       );
       page = updated.rows[0];
 
-      await pool.query('delete from multilink_items where page_id = $1', [page.id]);
+      await pool.query(
+        `delete from multilink_items where page_id = $1`,
+        [page.id]
+      );
     } else {
+      await spendUserCredits(user.id, MULTILINK_CREATE_PRICE, 'Создание мультиссылки');
+
       const inserted = await pool.query(
-        `insert into multilink_pages (user_id, slug, title, bio, avatar_url)
-         values ($1, $2, $3, $4, $5)
+        `insert into multilink_pages (user_id, slug, title, bio, avatar_url, is_active)
+         values ($1, $2, $3, $4, $5, true)
          returning *`,
-        [userId, slug, title, bio || null, avatarUrl || null]
+        [user.id, slug, title, bio || null, avatarUrl]
       );
       page = inserted.rows[0];
+      created = true;
     }
 
     for (let i = 0; i < links.length; i++) {
-      const link = links[i];
+      const item = links[i] || {};
+      const itemTitle = String(item.title || '').trim();
+      const itemUrl = normalizeUrl(item.url || '');
+
+      if (!itemTitle || !itemUrl) continue;
+
       await pool.query(
-        `insert into multilink_items (page_id, title, url, sort_order)
-         values ($1, $2, $3, $4)`,
-        [page.id, link.title, link.url, i]
+        `insert into multilink_items (page_id, title, url, sort_order, is_active)
+         values ($1, $2, $3, $4, true)`,
+        [page.id, itemTitle, itemUrl, i]
       );
     }
 
     return res.json({
       ok: true,
-      page,
-      links,
-      publicUrl: `${PUBLIC_BASE_URL}/u/${slug}`
+      created,
+      charged_credits: created ? MULTILINK_CREATE_PRICE : 0,
+      publicUrl: `${PUBLIC_BASE_URL}/u/${page.slug}`,
+      page: {
+        id: page.id,
+        slug: page.slug,
+        title: page.title,
+        bio: page.bio,
+        avatar_url: page.avatar_url
+      }
     });
   } catch (error) {
     console.error('Save multilink error:', error);
+
+    if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
+      return res.status(400).json({ ok: false, message: error.message });
+    }
+
     return res.status(500).json({ ok: false, message: 'Server error' });
   }
 });
 
 app.post('/api/multilink/me', async (req, res) => {
   try {
-    const tgUser = getUserIdentityFromBody(req);
-    const body = req.body || {};
-    const fallbackUserId = body.user_id ? Number(body.user_id) : null;
-    const userId = tgUser?.id || fallbackUserId;
-
-    if (!userId) {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
       return res.status(401).json({ ok: false, message: 'Invalid user' });
     }
 
     const pageResult = await pool.query(
-      'select * from multilink_pages where user_id = $1 limit 1',
-      [userId]
+      `select id, slug, title, bio, avatar_url, is_active, created_at, updated_at
+       from multilink_pages
+       where user_id = $1
+       limit 1`,
+      [user.id]
     );
 
     if (!pageResult.rows.length) {
@@ -1726,7 +1741,7 @@ app.post('/api/multilink/me', async (req, res) => {
 
     const page = pageResult.rows[0];
     const linksResult = await pool.query(
-      `select id, title, url, sort_order, is_active, created_at
+      `select id, title, url, sort_order, is_active
        from multilink_items
        where page_id = $1
        order by sort_order asc, id asc`,
@@ -1736,10 +1751,39 @@ app.post('/api/multilink/me', async (req, res) => {
     return res.json({
       ok: true,
       page,
-      links: linksResult.rows
+      links: linksResult.rows,
+      publicUrl: page.is_active ? `${PUBLIC_BASE_URL}/u/${page.slug}` : null
     });
   } catch (error) {
-    console.error('Get multilink me error:', error);
+    console.error('Get my multilink error:', error);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+});
+
+app.post('/api/multilink/delete', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Invalid user' });
+    }
+
+    const pageResult = await pool.query(
+      `select id from multilink_pages where user_id = $1 limit 1`,
+      [user.id]
+    );
+
+    if (!pageResult.rows.length) {
+      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+    }
+
+    const pageId = pageResult.rows[0].id;
+
+    await pool.query(`delete from multilink_items where page_id = $1`, [pageId]);
+    await pool.query(`delete from multilink_pages where id = $1`, [pageId]);
+
+    return res.json({ ok: true, deleted: true, message: 'Мультиссылка удалена' });
+  } catch (error) {
+    console.error('Delete multilink error:', error);
     return res.status(500).json({ ok: false, message: 'Server error' });
   }
 });
@@ -1753,7 +1797,7 @@ app.get('/api/multilink/:slug', async (req, res) => {
     }
 
     const pageResult = await pool.query(
-      `select id, user_id, slug, title, bio, avatar_url, is_active, created_at, updated_at
+      `select id, slug, title, bio, avatar_url
        from multilink_pages
        where slug = $1 and is_active = true
        limit 1`,
@@ -1761,7 +1805,7 @@ app.get('/api/multilink/:slug', async (req, res) => {
     );
 
     if (!pageResult.rows.length) {
-      return res.status(404).json({ ok: false, message: 'Страница не найдена' });
+      return res.status(404).json({ ok: false, message: 'Not found' });
     }
 
     const page = pageResult.rows[0];
