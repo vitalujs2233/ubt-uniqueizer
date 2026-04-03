@@ -5483,3 +5483,36 @@ closeDvizhRulesModal();
 </div>
 </body>
 </html>
+
+<script>
+async function publishPage() {
+  const tg = window.Telegram?.WebApp;
+
+  const payload = {
+    initData: tg?.initData || null,
+    slug: document.getElementById('plSlug')?.value,
+    title: document.getElementById('plTitle')?.value,
+    subtitle: document.getElementById('plSubtitle')?.value,
+    description: document.getElementById('plDesc')?.value,
+    image_url: document.getElementById('plImage')?.value,
+    button_text: document.getElementById('plBtnText')?.value,
+    button_url: document.getElementById('plBtnUrl')?.value,
+    publish: true
+  };
+
+  const res = await fetch('/api/prelander', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if (data.ok) {
+    alert('Страница опубликована!');
+    window.open(data.publicUrl, '_blank');
+  } else {
+    alert(data.message || 'Ошибка');
+  }
+}
+</script>
