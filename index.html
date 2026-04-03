@@ -4243,59 +4243,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
-
-<!-- Multilink helper: passive, does nothing until called -->
-<script>
-(function () {
-  window.generatedMultilinkUrl = window.generatedMultilinkUrl || '';
-
-  window.showMultilinkResult = function (url) {
-    try {
-      if (!url) return;
-      window.generatedMultilinkUrl = url;
-      var box = document.getElementById('multilinkResultBox');
-      var urlNode = document.getElementById('multilinkResultUrl');
-      if (urlNode) urlNode.textContent = url;
-      if (box) box.classList.remove('hidden');
-    } catch (e) {
-      console.error('showMultilinkResult error', e);
-    }
-  };
-
-  window.copyMultilinkUrl = async function () {
-    try {
-      if (!window.generatedMultilinkUrl) return;
-      await navigator.clipboard.writeText(window.generatedMultilinkUrl);
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.showAlert) {
-        Telegram.WebApp.showAlert('Ссылка скопирована');
-      } else {
-        alert('Ссылка скопирована');
-      }
-    } catch (e) {
-      console.error('copyMultilinkUrl error', e);
-    }
-  };
-
-  window.openMultilinkUrl = function () {
-    try {
-      if (!window.generatedMultilinkUrl) return;
-      window.open(window.generatedMultilinkUrl, '_blank');
-    } catch (e) {
-      console.error('openMultilinkUrl error', e);
-    }
-  };
-})();
-</script>
-
-<div id="multilinkResultBox" class="hidden" style="margin:16px;padding:16px;border-radius:16px;background:rgba(17,17,17,.7);border:1px solid rgba(255,255,255,.08);">
-  <div style="margin-bottom:8px;color:#fff;font-weight:600;">Ссылка готова</div>
-  <div id="multilinkResultUrl" style="word-break:break-all;color:#67e8f9;margin-bottom:12px;"></div>
-  <div style="display:flex;gap:10px;">
-    <button type="button" onclick="copyMultilinkUrl()" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#334155;color:#fff;">Копировать</button>
-    <button type="button" onclick="openMultilinkUrl()" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#8b5cf6;color:#fff;">Открыть</button>
-  </div>
-</div>
-
 </body>
 </html>`;
         }
@@ -4998,58 +4945,5 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
-
-<!-- Multilink helper: passive, does nothing until called -->
-<script>
-(function () {
-  window.generatedMultilinkUrl = window.generatedMultilinkUrl || '';
-
-  window.showMultilinkResult = function (url) {
-    try {
-      if (!url) return;
-      window.generatedMultilinkUrl = url;
-      var box = document.getElementById('multilinkResultBox');
-      var urlNode = document.getElementById('multilinkResultUrl');
-      if (urlNode) urlNode.textContent = url;
-      if (box) box.classList.remove('hidden');
-    } catch (e) {
-      console.error('showMultilinkResult error', e);
-    }
-  };
-
-  window.copyMultilinkUrl = async function () {
-    try {
-      if (!window.generatedMultilinkUrl) return;
-      await navigator.clipboard.writeText(window.generatedMultilinkUrl);
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.showAlert) {
-        Telegram.WebApp.showAlert('Ссылка скопирована');
-      } else {
-        alert('Ссылка скопирована');
-      }
-    } catch (e) {
-      console.error('copyMultilinkUrl error', e);
-    }
-  };
-
-  window.openMultilinkUrl = function () {
-    try {
-      if (!window.generatedMultilinkUrl) return;
-      window.open(window.generatedMultilinkUrl, '_blank');
-    } catch (e) {
-      console.error('openMultilinkUrl error', e);
-    }
-  };
-})();
-</script>
-
-<div id="multilinkResultBox" class="hidden" style="margin:16px;padding:16px;border-radius:16px;background:rgba(17,17,17,.7);border:1px solid rgba(255,255,255,.08);">
-  <div style="margin-bottom:8px;color:#fff;font-weight:600;">Ссылка готова</div>
-  <div id="multilinkResultUrl" style="word-break:break-all;color:#67e8f9;margin-bottom:12px;"></div>
-  <div style="display:flex;gap:10px;">
-    <button type="button" onclick="copyMultilinkUrl()" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#334155;color:#fff;">Копировать</button>
-    <button type="button" onclick="openMultilinkUrl()" style="padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#8b5cf6;color:#fff;">Открыть</button>
-  </div>
-</div>
-
 </body>
 </html>
