@@ -325,6 +325,19 @@ async function tryQuery(sql, params = []) {
   }
 }
 
+
+async function ensureWheelTable() {
+  await tryQuery(`
+    create table if not exists wheel_spins (
+      id serial primary key,
+      telegram_id bigint,
+      reward int default 0,
+      cost int default 2,
+      created_at timestamptz default now()
+    )
+  `);
+}
+
 async function ensureCpaTables() {
   await tryQuery(`
     create table if not exists cpa_offer_links (
@@ -1897,7 +1910,82 @@ app.get('/u/:slug', async (req, res) => {
 
 ensureCpaTables().finally(async () => {
   await ensureMultilinkTables();
-  app.listen(port, () => {
+  
+app.post('/wheel/spin', async (req, res) => {
+  try {
+    const user = getUserIdentityFromBody(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const telegramId = user.id;
+    const spinCost = 2;
+
+    await spendUserCredits(telegramId, spinCost, 'Колесо фортуны');
+
+    const rewards = [
+      { reward: 0, chance: 28 },
+      { reward: 1, chance: 24 },
+      { reward: 2, chance: 18 },
+      { reward: 5, chance: 14 },
+      { reward: 10, chance: 10 },
+      { reward: 50, chance: 6 }
+    ];
+
+    function getRandomReward() {
+      const rand = Math.random() * 100;
+      let cumulative = 0;
+      for (const item of rewards) {
+        cumulative += item.chance;
+        if (rand <= cumulative) {
+          return item.reward;
+        }
+      }
+      return 0;
+    }
+
+    const reward = getRandomReward();
+
+    if (reward > 0) {
+      await pool.query(
+        'update users set balance = balance + $2 where telegram_id = $1',
+        [telegramId, reward]
+      );
+
+      await addTransaction({
+        telegram_id: telegramId,
+        type: 'wheel_win',
+        amount: reward,
+        credits: reward,
+        status: 'completed',
+        description: 'Выигрыш в колесе фортуны'
+      });
+    }
+
+    await tryQuery(
+      'insert into wheel_spins (telegram_id, reward, cost) values ($1, $2, $3)',
+      [telegramId, reward, spinCost]
+    );
+
+    res.json({
+      success: true,
+      reward
+    });
+  } catch (error) {
+    console.error('Wheel spin error:', error);
+
+    if (error.message === 'Недостаточно средств' || error.message === 'Пользователь не найден') {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+app.listen(port, () => {
     console.log('Server running on port ' + port);
   });
 });
+
+ensureWheelTable().catch(console.error);
