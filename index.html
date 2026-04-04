@@ -5638,17 +5638,43 @@ closeDvizhRulesModal();
 </div>
 
     <script>
-        function openWheel() {
-            const tg = window.Telegram && window.Telegram.WebApp;
-            if (tg && typeof tg.HapticFeedback?.impactOccurred === 'function') {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-            if (tg && typeof tg.showAlert === 'function') {
-                tg.showAlert('Колесо удачи скоро откроется 🎡');
-            } else {
-                alert('Колесо удачи скоро откроется 🎡');
-            }
-        }
+       function openWheel() {
+    const tg = window.Telegram && window.Telegram.WebApp;
+    if (tg && typeof tg.HapticFeedback?.impactOccurred === 'function') {
+        tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    const modal = document.getElementById('wheelModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function closeWheel() {
+    const modal = document.getElementById('wheelModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
     </script>
+    <div id="wheelModal" class="wheel-modal-backdrop hidden">
+    <div class="wheel-modal-box p-5">
+
+        <button onclick="closeWheel()" style="position:absolute;right:10px;top:10px;">✕</button>
+
+        <h2 style="text-align:center;font-weight:bold;margin-bottom:10px;">
+            🎡 Колесо фортуны
+        </h2>
+
+        <div style="display:flex;justify-content:center;">
+            <canvas id="fortuneWheelCanvas" width="260" height="260"></canvas>
+        </div>
+
+        <button onclick="spinWheel()" style="width:100%;margin-top:15px;padding:12px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:white;">
+            Крутить
+        </button>
+
+    </div>
+</div>
 </body>
 </html>
