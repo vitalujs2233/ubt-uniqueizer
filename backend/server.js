@@ -1924,12 +1924,12 @@ app.post('/wheel/spin', async (req, res) => {
     await spendUserCredits(telegramId, spinCost, 'Колесо фортуны');
 
     const rewards = [
-      { reward: 0, chance: 60 },
-      { reward: 1, chance: 20 },
-      { reward: 2, chance: 10 },
-      { reward: 5, chance: 6 },
-      { reward: 10, chance: 3 },
-      { reward: 50, chance: 1 }
+      { reward: 0, chance: 28 },
+      { reward: 1, chance: 24 },
+      { reward: 2, chance: 18 },
+      { reward: 5, chance: 14 },
+      { reward: 10, chance: 10 },
+      { reward: 50, chance: 6 }
     ];
 
     function getRandomReward() {
@@ -1965,7 +1965,20 @@ app.post('/wheel/spin', async (req, res) => {
       [telegramId, reward, spinCost]
     );
 
-    res.json({ success: true, reward, cost: spinCost });
+    const userResult = await pool.query(
+      'select telegram_id, username, first_name, photo_url, balance, plan from users where telegram_id = $1 limit 1',
+      [telegramId]
+    );
+
+    const dbUser = userResult.rows[0] || null;
+
+    res.json({
+      success: true,
+      reward,
+      cost: spinCost,
+      balance: dbUser ? Number(dbUser.balance) : null,
+      user: dbUser
+    });
   } catch (error) {
     console.error('Wheel spin error:', error);
 
@@ -1973,14 +1986,13 @@ app.post('/wheel/spin', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: error.message || 'Server error' });
   }
 });
 
 
-app.listen(port, () => {
-    console.log('Server running on port ' + port);
-  });
-});
-
 ensureWheelTable().catch(console.error);
+
+app.listen(port, () => {
+  console.log('Server running on port ' + port);
+});
