@@ -5694,7 +5694,7 @@ function closeWheel() {
             <button id="spinWheelBtn"
                     onclick="spinWheel()"
                     class="primary-btn px-4 py-4 rounded-2xl font-bold">
-                Крутить за 2 кредита
+                Крутить
             </button>
 
             <button onclick="closeWheel()"
@@ -5704,7 +5704,7 @@ function closeWheel() {
         </div>
 
         <div class="mt-4 text-center text-xs text-gray-400">
-            1 прокрутка стоит 2 кредита • Выигрыши: 0 • 1 • 2 • 5 • 10 • 50
+            Выигрыши на колесе: 0 • 1 • 2 • 5 • 10 • 50 кредитов • стоимость: 2 кредита
         </div>
     </div>
 </div>
@@ -5817,49 +5817,21 @@ async function spinWheel() {
         btn.classList.add('btn-disabled');
     }
 
-    setWheelResult('Списываем 2 кредита и запускаем колесо...');
+    setWheelResult('Колесо крутится...');
 
     let reward = 0;
-    let cost = 2;
-    let newBalance = null;
-    let requestError = null;
-
     try {
-        const resp = await fetch(`${API_BASE_URL}/wheel/spin`, {
+        const resp = await fetch('/wheel/spin', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(getTelegramWheelBody())
         });
-
-        const rawText = await resp.text();
-        let data = {};
-        try {
-            data = rawText ? JSON.parse(rawText) : {};
-        } catch (e) {
-            throw new Error('Сервер вернул некорректный ответ');
-        }
-
-        if (!resp.ok) {
-            throw new Error(data.error || data.message || 'Ошибка прокрутки');
-        }
-
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) throw new Error(data.error || data.message || 'Ошибка прокрутки');
         reward = Number(data.reward || 0);
-        cost = Number(data.cost || 2);
-        newBalance = typeof data.balance === 'number' ? data.balance : Number(data.balance);
-
-        if (data.user) {
-            appState.user = {
-                ...(appState.user || {}),
-                ...data.user
-            };
-            updateUserBar();
-        } else if (Number.isFinite(newBalance) && appState.user) {
-            appState.user.balance = newBalance;
-            updateUserBar();
-        }
     } catch (e) {
-        console.error('spinWheel error:', e);
-        requestError = e;
+        setWheelResult(e.message || 'Не удалось выполнить прокрутку');
+        reward = 0;
     }
 
     const index = findSegmentIndexByReward(reward);
@@ -5885,16 +5857,7 @@ async function spinWheel() {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            if (requestError) {
-                setWheelResult(requestError.message || 'Не удалось выполнить прокрутку');
-            } else {
-                const balanceText = Number.isFinite(newBalance) ? ` • Баланс: ${newBalance}` : '';
-                setWheelResult(`Списано ${cost} кр. Выигрыш: ${reward} кр${balanceText}`);
-                if (window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred) {
-                    window.Telegram.WebApp.HapticFeedback.notificationOccurred(reward > 0 ? 'success' : 'warning');
-                }
-            }
-
+            setWheelResult('Списано 2 кр. Выигрыш: ' + reward + ' кр.');
             window.__wheelBusy = false;
             if (btn) {
                 btn.disabled = false;
