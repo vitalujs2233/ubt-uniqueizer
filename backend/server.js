@@ -1901,4 +1901,3 @@ ensureCpaTables().finally(async () => {
     console.log('Server running on port ' + port);
   });
 });
-// wheel endpoint already added earlier
