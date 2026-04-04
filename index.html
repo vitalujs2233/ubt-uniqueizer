@@ -393,6 +393,135 @@
             text-shadow: 0 0 22px rgba(139,92,246,0.10);
         }
 
+        .wheel-card {
+            background:
+                radial-gradient(circle at top left, rgba(168,85,247,0.24), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(56,189,248,0.18), transparent 36%),
+                linear-gradient(180deg, rgba(12,16,34,0.96), rgba(7,10,22,0.98));
+            border-color: rgba(103,232,249,0.18);
+            box-shadow:
+                0 18px 42px rgba(0,0,0,0.45),
+                0 0 0 1px rgba(168,85,247,0.08),
+                0 0 28px rgba(56,189,248,0.10);
+        }
+
+        .wheel-card:hover {
+            border-color: rgba(103,232,249,0.38);
+            box-shadow:
+                0 18px 42px rgba(0,0,0,0.45),
+                0 0 0 1px rgba(103,232,249,0.15),
+                0 0 34px rgba(168,85,247,0.16);
+        }
+
+        .wheel-glow {
+            position: absolute;
+            inset: auto -30px -36px auto;
+            width: 110px;
+            height: 110px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(168,85,247,0.34), rgba(56,189,248,0.12), transparent 72%);
+            filter: blur(12px);
+            pointer-events: none;
+        }
+
+        .wheel-icon {
+            background: linear-gradient(135deg, rgba(168,85,247,0.22), rgba(56,189,248,0.20));
+            border: 1px solid rgba(255,255,255,0.10);
+            box-shadow: 0 0 24px rgba(168,85,247,0.18);
+        }
+
+        .wheel-preview {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            border-radius: 999px;
+            background:
+                conic-gradient(
+                    from -15deg,
+                    rgba(56,189,248,0.95) 0deg 60deg,
+                    rgba(168,85,247,0.95) 60deg 120deg,
+                    rgba(34,211,238,0.95) 120deg 180deg,
+                    rgba(99,102,241,0.95) 180deg 240deg,
+                    rgba(217,70,239,0.95) 240deg 300deg,
+                    rgba(250,204,21,0.95) 300deg 360deg
+                );
+            box-shadow:
+                0 0 0 6px rgba(255,255,255,0.05),
+                0 0 24px rgba(103,232,249,0.20),
+                inset 0 0 20px rgba(255,255,255,0.12);
+            animation: wheelCardFloat 3.8s ease-in-out infinite;
+        }
+
+        .wheel-preview::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 14px solid #f8fafc;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.35));
+        }
+
+        .wheel-preview-ring {
+            position: absolute;
+            inset: 8px;
+            border-radius: 999px;
+            border: 1px dashed rgba(255,255,255,0.34);
+            opacity: 0.7;
+        }
+
+        .wheel-preview-center {
+            position: absolute;
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: white;
+            background: radial-gradient(circle, rgba(15,23,42,0.96), rgba(2,6,23,1));
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.08);
+        }
+
+        .wheel-slice {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 10px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.55);
+        }
+
+        .wheel-slice-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-38px); }
+        .wheel-slice-2 { transform: translate(-50%, -50%) rotate(60deg) translateY(-38px) rotate(-60deg); }
+        .wheel-slice-3 { transform: translate(-50%, -50%) rotate(120deg) translateY(-38px) rotate(-120deg); }
+        .wheel-slice-4 { transform: translate(-50%, -50%) rotate(180deg) translateY(-38px) rotate(-180deg); }
+        .wheel-slice-5 { transform: translate(-50%, -50%) rotate(240deg) translateY(-38px) rotate(-240deg); }
+        .wheel-slice-6 { transform: translate(-50%, -50%) rotate(300deg) translateY(-38px) rotate(-300deg); }
+
+        .wheel-cta {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            opacity: 0.9;
+        }
+
+        @keyframes wheelCardFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(6deg); }
+        }
+
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -1091,221 +1220,7 @@ body::after {
     font-size: 14px !important;
 }
 
-
-        /* ===== Wheel of Fortune ===== */
-        .wheel-card {
-            background:
-                radial-gradient(circle at top left, rgba(250,204,21,0.18), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(168,85,247,0.18), transparent 34%),
-                linear-gradient(180deg, rgba(18,12,34,0.96), rgba(8,10,26,0.98));
-            border: 1px solid rgba(250,204,21,0.22);
-            box-shadow:
-                0 0 0 1px rgba(250,204,21,0.05),
-                0 18px 40px rgba(0,0,0,0.34),
-                0 0 28px rgba(168,85,247,0.18);
-        }
-
-        .wheel-mini-wrap {
-            position: relative;
-            width: 74px;
-            height: 74px;
-            margin-top: 8px;
-        }
-
-        .wheel-mini {
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.16);
-            box-shadow:
-                inset 0 0 18px rgba(255,255,255,0.06),
-                0 0 18px rgba(250,204,21,0.18);
-            background:
-                conic-gradient(
-                    #8b5cf6 0deg 45deg,
-                    #3b82f6 45deg 90deg,
-                    #14b8a6 90deg 135deg,
-                    #f59e0b 135deg 180deg,
-                    #ec4899 180deg 225deg,
-                    #8b5cf6 225deg 270deg,
-                    #3b82f6 270deg 315deg,
-                    #22c55e 315deg 360deg
-                );
-            animation: wheelMiniSpin 6s linear infinite;
-        }
-
-        .wheel-mini-center {
-            position: absolute;
-            inset: 50%;
-            width: 18px;
-            height: 18px;
-            transform: translate(-50%, -50%);
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 35%, #fff, #facc15 58%, #d97706 100%);
-            box-shadow: 0 0 16px rgba(250,204,21,0.45);
-        }
-
-        .wheel-mini-pointer {
-            position: absolute;
-            top: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 14px solid #f8fafc;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.35));
-        }
-
-        .wheel-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #fde68a;
-            background: linear-gradient(135deg, rgba(250,204,21,0.16), rgba(168,85,247,0.16));
-            border: 1px solid rgba(250,204,21,0.22);
-            box-shadow: 0 0 18px rgba(250,204,21,0.12);
-        }
-
-        .wheel-modal-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 18px;
-            background: rgba(3, 6, 18, 0.84);
-            backdrop-filter: blur(14px);
-        }
-
-        .wheel-modal-box {
-            width: 100%;
-            max-width: 460px;
-            border-radius: 30px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.10);
-            background:
-                radial-gradient(circle at top left, rgba(250,204,21,0.16), transparent 28%),
-                radial-gradient(circle at top right, rgba(56,189,248,0.14), transparent 24%),
-                radial-gradient(circle at bottom center, rgba(168,85,247,0.18), transparent 32%),
-                linear-gradient(180deg, rgba(15,18,35,0.98), rgba(6,10,24,0.98));
-            box-shadow:
-                0 30px 70px rgba(0,0,0,0.52),
-                0 0 0 1px rgba(255,255,255,0.04),
-                0 0 30px rgba(168,85,247,0.12);
-        }
-
-        .wheel-modal-box::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 35%, transparent 70%, rgba(255,255,255,0.03));
-        }
-
-        .wheel-close-btn {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.10);
-            border-radius: 999px;
-            background: rgba(255,255,255,0.06);
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-        }
-
-        .wheel-stage {
-            position: relative;
-            width: 320px;
-            height: 360px;
-            margin: 0 auto;
-        }
-
-        .wheel-pointer {
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            z-index: 4;
-            border-left: 16px solid transparent;
-            border-right: 16px solid transparent;
-            border-top: 28px solid #ffffff;
-            filter: drop-shadow(0 0 14px rgba(255,255,255,0.4));
-        }
-
-        .wheel-shadow-ring {
-            position: absolute;
-            inset: 36px;
-            border-radius: 999px;
-            box-shadow:
-                inset 0 0 0 2px rgba(255,255,255,0.06),
-                inset 0 0 40px rgba(255,255,255,0.05),
-                0 0 26px rgba(168,85,247,0.22);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .wheel-canvas-wrap {
-            position: absolute;
-            inset: 24px 24px 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #fortuneWheelCanvas {
-            width: 272px;
-            height: 272px;
-            border-radius: 999px;
-            filter: drop-shadow(0 16px 30px rgba(0,0,0,0.35));
-        }
-
-        .wheel-glow {
-            position: absolute;
-            inset: 40px;
-            border-radius: 999px;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 62%);
-            z-index: 0;
-        }
-
-        .wheel-result-box {
-            min-height: 54px;
-            border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 14px;
-            text-align: center;
-            color: #e5e7eb;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .wheel-spinning {
-            filter: drop-shadow(0 0 28px rgba(250,204,21,0.22));
-        }
-
-        @keyframes wheelMiniSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-    </style>
+</style>
 </head>
 <body class="p-4">
 
@@ -1421,6 +1336,32 @@ body::after {
                             </div>
 
                             <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card cursor-pointer wheel-card" onclick="openWheel()">
+                        <div class="wheel-glow"></div>
+                        <div class="h-full flex flex-col justify-between relative z-10">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <div class="text-[15px] font-bold">Колесо удачи</div>
+                                    <div class="text-xs text-cyan-200/80 mt-1">Бонусы и подарки</div>
+                                </div>
+                                <div class="h-12 w-12 rounded-[18px] wheel-icon flex items-center justify-center text-2xl shrink-0">🎡</div>
+                            </div>
+
+                            <div class="mt-3 wheel-preview">
+                                <div class="wheel-preview-ring"></div>
+                                <div class="wheel-preview-center">SPIN</div>
+                                <div class="wheel-slice wheel-slice-1">0</div>
+                                <div class="wheel-slice wheel-slice-2">1</div>
+                                <div class="wheel-slice wheel-slice-3">2</div>
+                                <div class="wheel-slice wheel-slice-4">5</div>
+                                <div class="wheel-slice wheel-slice-5">10</div>
+                                <div class="wheel-slice wheel-slice-6">50</div>
+                            </div>
+
+                            <div class="text-xs text-fuchsia-200 mt-3 tracking-wide wheel-cta">Tap to open lucky spin</div>
                         </div>
                     </div>
 
@@ -4976,221 +4917,7 @@ h2{font-size:18px;line-height:1.5;margin:0 0 18px;color:#4b5563;font-weight:500}
 p{font-size:17px;line-height:1.75;margin:0 0 16px}
 .cta{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;background:${meta.buttonClass};color:#fff;padding:16px 18px;border-radius:14px;font-weight:700;font-size:16px;margin-top:24px}
 .note{font-size:13px;color:#6b7280;margin-top:14px;text-align:center}
-
-        /* ===== Wheel of Fortune ===== */
-        .wheel-card {
-            background:
-                radial-gradient(circle at top left, rgba(250,204,21,0.18), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(168,85,247,0.18), transparent 34%),
-                linear-gradient(180deg, rgba(18,12,34,0.96), rgba(8,10,26,0.98));
-            border: 1px solid rgba(250,204,21,0.22);
-            box-shadow:
-                0 0 0 1px rgba(250,204,21,0.05),
-                0 18px 40px rgba(0,0,0,0.34),
-                0 0 28px rgba(168,85,247,0.18);
-        }
-
-        .wheel-mini-wrap {
-            position: relative;
-            width: 74px;
-            height: 74px;
-            margin-top: 8px;
-        }
-
-        .wheel-mini {
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.16);
-            box-shadow:
-                inset 0 0 18px rgba(255,255,255,0.06),
-                0 0 18px rgba(250,204,21,0.18);
-            background:
-                conic-gradient(
-                    #8b5cf6 0deg 45deg,
-                    #3b82f6 45deg 90deg,
-                    #14b8a6 90deg 135deg,
-                    #f59e0b 135deg 180deg,
-                    #ec4899 180deg 225deg,
-                    #8b5cf6 225deg 270deg,
-                    #3b82f6 270deg 315deg,
-                    #22c55e 315deg 360deg
-                );
-            animation: wheelMiniSpin 6s linear infinite;
-        }
-
-        .wheel-mini-center {
-            position: absolute;
-            inset: 50%;
-            width: 18px;
-            height: 18px;
-            transform: translate(-50%, -50%);
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 35%, #fff, #facc15 58%, #d97706 100%);
-            box-shadow: 0 0 16px rgba(250,204,21,0.45);
-        }
-
-        .wheel-mini-pointer {
-            position: absolute;
-            top: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 14px solid #f8fafc;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.35));
-        }
-
-        .wheel-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #fde68a;
-            background: linear-gradient(135deg, rgba(250,204,21,0.16), rgba(168,85,247,0.16));
-            border: 1px solid rgba(250,204,21,0.22);
-            box-shadow: 0 0 18px rgba(250,204,21,0.12);
-        }
-
-        .wheel-modal-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 18px;
-            background: rgba(3, 6, 18, 0.84);
-            backdrop-filter: blur(14px);
-        }
-
-        .wheel-modal-box {
-            width: 100%;
-            max-width: 460px;
-            border-radius: 30px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.10);
-            background:
-                radial-gradient(circle at top left, rgba(250,204,21,0.16), transparent 28%),
-                radial-gradient(circle at top right, rgba(56,189,248,0.14), transparent 24%),
-                radial-gradient(circle at bottom center, rgba(168,85,247,0.18), transparent 32%),
-                linear-gradient(180deg, rgba(15,18,35,0.98), rgba(6,10,24,0.98));
-            box-shadow:
-                0 30px 70px rgba(0,0,0,0.52),
-                0 0 0 1px rgba(255,255,255,0.04),
-                0 0 30px rgba(168,85,247,0.12);
-        }
-
-        .wheel-modal-box::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 35%, transparent 70%, rgba(255,255,255,0.03));
-        }
-
-        .wheel-close-btn {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.10);
-            border-radius: 999px;
-            background: rgba(255,255,255,0.06);
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-        }
-
-        .wheel-stage {
-            position: relative;
-            width: 320px;
-            height: 360px;
-            margin: 0 auto;
-        }
-
-        .wheel-pointer {
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            z-index: 4;
-            border-left: 16px solid transparent;
-            border-right: 16px solid transparent;
-            border-top: 28px solid #ffffff;
-            filter: drop-shadow(0 0 14px rgba(255,255,255,0.4));
-        }
-
-        .wheel-shadow-ring {
-            position: absolute;
-            inset: 36px;
-            border-radius: 999px;
-            box-shadow:
-                inset 0 0 0 2px rgba(255,255,255,0.06),
-                inset 0 0 40px rgba(255,255,255,0.05),
-                0 0 26px rgba(168,85,247,0.22);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .wheel-canvas-wrap {
-            position: absolute;
-            inset: 24px 24px 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #fortuneWheelCanvas {
-            width: 272px;
-            height: 272px;
-            border-radius: 999px;
-            filter: drop-shadow(0 16px 30px rgba(0,0,0,0.35));
-        }
-
-        .wheel-glow {
-            position: absolute;
-            inset: 40px;
-            border-radius: 999px;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 62%);
-            z-index: 0;
-        }
-
-        .wheel-result-box {
-            min-height: 54px;
-            border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 14px;
-            text-align: center;
-            color: #e5e7eb;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .wheel-spinning {
-            filter: drop-shadow(0 0 28px rgba(250,204,21,0.22));
-        }
-
-        @keyframes wheelMiniSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-    </style>
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -5204,245 +4931,6 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
-
-<div id="wheelModal" class="wheel-modal-backdrop hidden">
-    <div class="wheel-modal-box p-5 sm:p-6 fade-up">
-        <button class="wheel-close-btn" onclick="closeWheel()">✕</button>
-
-        <div class="text-center">
-            <div class="premium-pill mx-auto mb-3">🎡 UBT Bonus Game</div>
-            <h2 class="text-2xl font-black tracking-tight">Колесо фортуны</h2>
-            <p class="text-sm text-white/65 mt-2">Крути колесо с плавной анимацией и выигрывай призы прямо в кредитах</p>
-        </div>
-
-        <div class="wheel-stage mt-4">
-            <div class="wheel-pointer"></div>
-            <div class="wheel-glow"></div>
-            <div class="wheel-shadow-ring"></div>
-            <div class="wheel-canvas-wrap">
-                <canvas id="fortuneWheelCanvas" width="272" height="272"></canvas>
-            </div>
-        </div>
-
-        <div class="wheel-result-box mt-2" id="wheelResultText">
-            Нажми «Крутить», чтобы испытать удачу
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mt-4">
-            <button id="spinWheelBtn" onclick="spinWheel()" class="primary-btn rounded-2xl px-4 py-4 font-bold">
-                Крутить за 2 кредита
-            </button>
-            <button onclick="closeWheel()" class="secondary-btn rounded-2xl px-4 py-4 font-bold">
-                Закрыть
-            </button>
-        </div>
-
-        <div class="mt-4 inner-panel">
-            <div class="text-xs text-white/55 mb-2">Сектора на колесе</div>
-            <div class="flex flex-wrap gap-2 justify-center text-xs">
-                <span class="glow-badge px-3 py-1.5 rounded-full">0 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">1 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">2 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">5 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">10 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">50 кр</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-(function() {
-    const wheelState = {
-        segments: [
-            { label: '0 кр', reward: 0, color: '#8b5cf6' },
-            { label: '1 кр', reward: 1, color: '#3b82f6' },
-            { label: '2 кр', reward: 2, color: '#14b8a6' },
-            { label: '5 кр', reward: 5, color: '#f59e0b' },
-            { label: '10 кр', reward: 10, color: '#ec4899' },
-            { label: '1 кр', reward: 1, color: '#22c55e' },
-            { label: '0 кр', reward: 0, color: '#7c3aed' },
-            { label: '50 кр', reward: 50, color: '#f97316' }
-        ],
-        currentRotation: 0,
-        spinning: false
-    };
-
-    function getWheelCanvas() {
-        return document.getElementById('fortuneWheelCanvas');
-    }
-
-    function drawFortuneWheel(rotationDeg = 0) {
-        const canvas = getWheelCanvas();
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const size = canvas.width;
-        const center = size / 2;
-        const radius = center - 8;
-        const innerRadius = 26;
-        const segs = wheelState.segments;
-        const arc = (Math.PI * 2) / segs.length;
-
-        ctx.clearRect(0, 0, size, size);
-        ctx.save();
-        ctx.translate(center, center);
-        ctx.rotate((rotationDeg * Math.PI) / 180);
-
-        for (let i = 0; i < segs.length; i++) {
-            const start = i * arc - Math.PI / 2;
-            const end = start + arc;
-
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.arc(0, 0, radius, start, end);
-            ctx.closePath();
-            ctx.fillStyle = segs[i].color;
-            ctx.fill();
-
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-            ctx.stroke();
-
-            ctx.save();
-            const angle = start + arc / 2;
-            ctx.rotate(angle);
-            ctx.translate(radius * 0.66, 0);
-            ctx.rotate(Math.PI / 2);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 16px Inter, Arial, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(0,0,0,0.35)';
-            ctx.shadowBlur = 6;
-            ctx.fillText(segs[i].label, 0, 0);
-            ctx.restore();
-        }
-
-        ctx.beginPath();
-        ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
-        const centerGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, innerRadius);
-        centerGrad.addColorStop(0, '#ffffff');
-        centerGrad.addColorStop(0.45, '#fde68a');
-        centerGrad.addColorStop(1, '#d97706');
-        ctx.fillStyle = centerGrad;
-        ctx.fill();
-
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'rgba(255,255,255,0.20)';
-        ctx.stroke();
-
-        ctx.restore();
-    }
-
-    window.openWheel = function openWheel() {
-        const modal = document.getElementById('wheelModal');
-        if (!modal) return;
-        modal.classList.remove('hidden');
-        drawFortuneWheel(wheelState.currentRotation || 0);
-    };
-
-    window.closeWheel = function closeWheel() {
-        const modal = document.getElementById('wheelModal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-    };
-
-    function rewardToSegmentIndex(reward) {
-        const idx = wheelState.segments.findIndex(s => s.reward === reward);
-        return idx >= 0 ? idx : 0;
-    }
-
-    function setWheelResultText(text) {
-        const el = document.getElementById('wheelResultText');
-        if (el) el.textContent = text;
-    }
-
-    function getTelegramIdFallback() {
-        try {
-            return window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    window.spinWheel = async function spinWheel() {
-        if (wheelState.spinning) return;
-
-        const btn = document.getElementById('spinWheelBtn');
-        const canvas = getWheelCanvas();
-        wheelState.spinning = true;
-        if (btn) btn.disabled = true;
-        if (btn) btn.classList.add('btn-disabled');
-        if (canvas) canvas.classList.add('wheel-spinning');
-        setWheelResultText('Колесо крутится...');
-
-        let reward = 0;
-        try {
-            const body = {};
-            const tgInit = window.Telegram?.WebApp?.initData;
-            const tgId = getTelegramIdFallback();
-            if (tgInit) body.initData = tgInit;
-            else if (tgId) body.telegram_id = tgId;
-
-            const resp = await fetch('/wheel/spin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-
-            const data = await resp.json();
-            if (!resp.ok) throw new Error(data?.error || data?.message || 'Ошибка прокрутки');
-            reward = Number(data.reward || 0);
-        } catch (err) {
-            reward = 0;
-            setWheelResultText(err.message || 'Не удалось выполнить прокрутку');
-        }
-
-        const segmentIndex = rewardToSegmentIndex(reward);
-        const segmentAngle = 360 / wheelState.segments.length;
-        const targetCenterAngle = segmentIndex * segmentAngle + segmentAngle / 2;
-        const pointerAngle = 0;
-        const desiredRotation = 360 - targetCenterAngle + pointerAngle;
-        const extraSpins = 6 * 360;
-        const startRotation = wheelState.currentRotation || 0;
-        const targetRotation = startRotation + extraSpins + ((desiredRotation - (startRotation % 360) + 360) % 360);
-        const duration = 3800;
-        const startTime = performance.now();
-
-        function easeOutCubic(t) {
-            return 1 - Math.pow(1 - t, 3);
-        }
-
-        function animate(now) {
-            const elapsed = now - startTime;
-            const t = Math.min(elapsed / duration, 1);
-            const eased = easeOutCubic(t);
-            const current = startRotation + (targetRotation - startRotation) * eased;
-            wheelState.currentRotation = current;
-            drawFortuneWheel(current);
-
-            if (t < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                if (canvas) canvas.classList.remove('wheel-spinning');
-                wheelState.spinning = false;
-                if (btn) btn.disabled = false;
-                if (btn) btn.classList.remove('btn-disabled');
-                setWheelResultText('Твой выигрыш: ' + reward + ' кредитов');
-            }
-        }
-
-        requestAnimationFrame(animate);
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-        drawFortuneWheel(0);
-    });
-})();
-</script>
-
 </body>
 </html>`;
         }
@@ -6149,243 +5637,18 @@ closeDvizhRulesModal();
 </div>
 </div>
 
-<div id="wheelModal" class="wheel-modal-backdrop hidden">
-    <div class="wheel-modal-box p-5 sm:p-6 fade-up">
-        <button class="wheel-close-btn" onclick="closeWheel()">✕</button>
-
-        <div class="text-center">
-            <div class="premium-pill mx-auto mb-3">🎡 UBT Bonus Game</div>
-            <h2 class="text-2xl font-black tracking-tight">Колесо фортуны</h2>
-            <p class="text-sm text-white/65 mt-2">Крути колесо с плавной анимацией и выигрывай призы прямо в кредитах</p>
-        </div>
-
-        <div class="wheel-stage mt-4">
-            <div class="wheel-pointer"></div>
-            <div class="wheel-glow"></div>
-            <div class="wheel-shadow-ring"></div>
-            <div class="wheel-canvas-wrap">
-                <canvas id="fortuneWheelCanvas" width="272" height="272"></canvas>
-            </div>
-        </div>
-
-        <div class="wheel-result-box mt-2" id="wheelResultText">
-            Нажми «Крутить», чтобы испытать удачу
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mt-4">
-            <button id="spinWheelBtn" onclick="spinWheel()" class="primary-btn rounded-2xl px-4 py-4 font-bold">
-                Крутить за 2 кредита
-            </button>
-            <button onclick="closeWheel()" class="secondary-btn rounded-2xl px-4 py-4 font-bold">
-                Закрыть
-            </button>
-        </div>
-
-        <div class="mt-4 inner-panel">
-            <div class="text-xs text-white/55 mb-2">Сектора на колесе</div>
-            <div class="flex flex-wrap gap-2 justify-center text-xs">
-                <span class="glow-badge px-3 py-1.5 rounded-full">0 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">1 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">2 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">5 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">10 кр</span>
-                <span class="glow-badge px-3 py-1.5 rounded-full">50 кр</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-(function() {
-    const wheelState = {
-        segments: [
-            { label: '0 кр', reward: 0, color: '#8b5cf6' },
-            { label: '1 кр', reward: 1, color: '#3b82f6' },
-            { label: '2 кр', reward: 2, color: '#14b8a6' },
-            { label: '5 кр', reward: 5, color: '#f59e0b' },
-            { label: '10 кр', reward: 10, color: '#ec4899' },
-            { label: '1 кр', reward: 1, color: '#22c55e' },
-            { label: '0 кр', reward: 0, color: '#7c3aed' },
-            { label: '50 кр', reward: 50, color: '#f97316' }
-        ],
-        currentRotation: 0,
-        spinning: false
-    };
-
-    function getWheelCanvas() {
-        return document.getElementById('fortuneWheelCanvas');
-    }
-
-    function drawFortuneWheel(rotationDeg = 0) {
-        const canvas = getWheelCanvas();
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const size = canvas.width;
-        const center = size / 2;
-        const radius = center - 8;
-        const innerRadius = 26;
-        const segs = wheelState.segments;
-        const arc = (Math.PI * 2) / segs.length;
-
-        ctx.clearRect(0, 0, size, size);
-        ctx.save();
-        ctx.translate(center, center);
-        ctx.rotate((rotationDeg * Math.PI) / 180);
-
-        for (let i = 0; i < segs.length; i++) {
-            const start = i * arc - Math.PI / 2;
-            const end = start + arc;
-
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.arc(0, 0, radius, start, end);
-            ctx.closePath();
-            ctx.fillStyle = segs[i].color;
-            ctx.fill();
-
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-            ctx.stroke();
-
-            ctx.save();
-            const angle = start + arc / 2;
-            ctx.rotate(angle);
-            ctx.translate(radius * 0.66, 0);
-            ctx.rotate(Math.PI / 2);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 16px Inter, Arial, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(0,0,0,0.35)';
-            ctx.shadowBlur = 6;
-            ctx.fillText(segs[i].label, 0, 0);
-            ctx.restore();
-        }
-
-        ctx.beginPath();
-        ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
-        const centerGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, innerRadius);
-        centerGrad.addColorStop(0, '#ffffff');
-        centerGrad.addColorStop(0.45, '#fde68a');
-        centerGrad.addColorStop(1, '#d97706');
-        ctx.fillStyle = centerGrad;
-        ctx.fill();
-
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'rgba(255,255,255,0.20)';
-        ctx.stroke();
-
-        ctx.restore();
-    }
-
-    window.openWheel = function openWheel() {
-        const modal = document.getElementById('wheelModal');
-        if (!modal) return;
-        modal.classList.remove('hidden');
-        drawFortuneWheel(wheelState.currentRotation || 0);
-    };
-
-    window.closeWheel = function closeWheel() {
-        const modal = document.getElementById('wheelModal');
-        if (!modal) return;
-        modal.classList.add('hidden');
-    };
-
-    function rewardToSegmentIndex(reward) {
-        const idx = wheelState.segments.findIndex(s => s.reward === reward);
-        return idx >= 0 ? idx : 0;
-    }
-
-    function setWheelResultText(text) {
-        const el = document.getElementById('wheelResultText');
-        if (el) el.textContent = text;
-    }
-
-    function getTelegramIdFallback() {
-        try {
-            return window.Telegram?.WebApp?.initDataUnsafe?.user?.id || null;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    window.spinWheel = async function spinWheel() {
-        if (wheelState.spinning) return;
-
-        const btn = document.getElementById('spinWheelBtn');
-        const canvas = getWheelCanvas();
-        wheelState.spinning = true;
-        if (btn) btn.disabled = true;
-        if (btn) btn.classList.add('btn-disabled');
-        if (canvas) canvas.classList.add('wheel-spinning');
-        setWheelResultText('Колесо крутится...');
-
-        let reward = 0;
-        try {
-            const body = {};
-            const tgInit = window.Telegram?.WebApp?.initData;
-            const tgId = getTelegramIdFallback();
-            if (tgInit) body.initData = tgInit;
-            else if (tgId) body.telegram_id = tgId;
-
-            const resp = await fetch('/wheel/spin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-
-            const data = await resp.json();
-            if (!resp.ok) throw new Error(data?.error || data?.message || 'Ошибка прокрутки');
-            reward = Number(data.reward || 0);
-        } catch (err) {
-            reward = 0;
-            setWheelResultText(err.message || 'Не удалось выполнить прокрутку');
-        }
-
-        const segmentIndex = rewardToSegmentIndex(reward);
-        const segmentAngle = 360 / wheelState.segments.length;
-        const targetCenterAngle = segmentIndex * segmentAngle + segmentAngle / 2;
-        const pointerAngle = 0;
-        const desiredRotation = 360 - targetCenterAngle + pointerAngle;
-        const extraSpins = 6 * 360;
-        const startRotation = wheelState.currentRotation || 0;
-        const targetRotation = startRotation + extraSpins + ((desiredRotation - (startRotation % 360) + 360) % 360);
-        const duration = 3800;
-        const startTime = performance.now();
-
-        function easeOutCubic(t) {
-            return 1 - Math.pow(1 - t, 3);
-        }
-
-        function animate(now) {
-            const elapsed = now - startTime;
-            const t = Math.min(elapsed / duration, 1);
-            const eased = easeOutCubic(t);
-            const current = startRotation + (targetRotation - startRotation) * eased;
-            wheelState.currentRotation = current;
-            drawFortuneWheel(current);
-
-            if (t < 1) {
-                requestAnimationFrame(animate);
+    <script>
+        function openWheel() {
+            const tg = window.Telegram && window.Telegram.WebApp;
+            if (tg && typeof tg.HapticFeedback?.impactOccurred === 'function') {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+            if (tg && typeof tg.showAlert === 'function') {
+                tg.showAlert('Колесо удачи скоро откроется 🎡');
             } else {
-                if (canvas) canvas.classList.remove('wheel-spinning');
-                wheelState.spinning = false;
-                if (btn) btn.disabled = false;
-                if (btn) btn.classList.remove('btn-disabled');
-                setWheelResultText('Твой выигрыш: ' + reward + ' кредитов');
+                alert('Колесо удачи скоро откроется 🎡');
             }
         }
-
-        requestAnimationFrame(animate);
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-        drawFortuneWheel(0);
-    });
-})();
-</script>
-
+    </script>
 </body>
 </html>
