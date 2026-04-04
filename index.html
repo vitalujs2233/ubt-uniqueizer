@@ -417,79 +417,6 @@
             }
         }
 
-
-        .fortune-wheel-shell {
-            position: relative;
-            width: min(78vw, 320px);
-            height: min(78vw, 320px);
-            margin: 0 auto;
-        }
-
-        .fortune-wheel-pointer {
-            position: absolute;
-            left: 50%;
-            top: -4px;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 16px solid transparent;
-            border-right: 16px solid transparent;
-            border-top: 28px solid #f8fafc;
-            filter: drop-shadow(0 8px 10px rgba(0,0,0,0.35));
-            z-index: 3;
-        }
-
-        .fortune-wheel {
-            position: absolute;
-            inset: 0;
-            border-radius: 999px;
-            border: 10px solid rgba(255,255,255,0.08);
-            box-shadow:
-                inset 0 0 28px rgba(255,255,255,0.05),
-                0 24px 50px rgba(0,0,0,0.40),
-                0 0 40px rgba(168,85,247,0.14);
-            background:
-                conic-gradient(
-                    #8b5cf6 0deg 45deg,
-                    #38bdf8 45deg 90deg,
-                    #10b981 90deg 135deg,
-                    #f59e0b 135deg 180deg,
-                    #ec4899 180deg 225deg,
-                    #6366f1 225deg 270deg,
-                    #14b8a6 270deg 315deg,
-                    #f97316 315deg 360deg
-                );
-            transition: transform 5.2s cubic-bezier(0.12, 0.92, 0.16, 1);
-            transform: rotate(0deg);
-        }
-
-        .fortune-wheel::after {
-            content: "";
-            position: absolute;
-            inset: 18%;
-            border-radius: 999px;
-            background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.24), rgba(255,255,255,0.03) 42%, rgba(3,7,18,0.92) 70%);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.08);
-        }
-
-        .fortune-wheel-center {
-            position: absolute;
-            inset: 50%;
-            transform: translate(-50%, -50%);
-            width: 82px;
-            height: 82px;
-            border-radius: 999px;
-            background: linear-gradient(135deg, rgba(12,18,31,0.98), rgba(30,41,59,0.98));
-            border: 1px solid rgba(255,255,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            z-index: 2;
-            box-shadow: 0 0 25px rgba(0,0,0,0.28);
-        }
-
         @media (max-width: 640px) {
             .bento-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1270,7 +1197,14 @@ body::after {
                     <div class="bento-card cursor-pointer" onclick="showSection('link')">
                         <div class="h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-3">
-                                <div class="text-[15px] font-bold">Смарт-линк</div>
+                                <div class="text-[15px] font-bold">Смарт
+<!-- WHEEL CARD -->
+<div class="bento-card soft-pulse" onclick="showSection('wheel')">
+  <div class="text-sm opacity-70">🎡 Бонус</div>
+  <div class="text-lg font-bold mt-2">Колесо удачи</div>
+  <div class="text-xs opacity-60 mt-1">Крути и получай кредиты</div>
+</div>
+-линк</div>
                                 <div class="h-12 w-12 rounded-[18px] bg-blue-500/15 flex items-center justify-center text-2xl shrink-0">🔗</div>
                             </div>
 
@@ -1299,25 +1233,6 @@ body::after {
                             </div>
 
                             <div class="text-xs text-emerald-300 mt-3 tracking-wide">NEWS • BLOG • STORY • QUIZ</div>
-                        </div>
-                    </div>
-
-                    <div class="bento-card cursor-pointer" onclick="showSection('wheel')">
-                        <div class="h-full flex flex-col justify-between">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <div class="text-[15px] font-bold">Колесо удачи</div>
-                                    <div class="text-xs text-gray-400 mt-1">Бонусы и кредиты</div>
-                                </div>
-                                <div class="h-12 w-12 rounded-[18px] bg-amber-400/15 flex items-center justify-center text-2xl shrink-0">🎡</div>
-                            </div>
-
-                            <div class="mt-3 inner-panel">
-                                <div class="text-xs text-gray-400 mb-1">Lucky Spin</div>
-                                <div class="text-[15px] text-white leading-relaxed">Крути колесо, выигрывай кредиты и бонусы</div>
-                            </div>
-
-                            <div class="text-xs text-amber-300 mt-3 tracking-wide">SPIN • BONUS • JACKPOT</div>
                         </div>
                     </div>
 
@@ -1785,48 +1700,6 @@ body::after {
                 </div>
             </div>
 
-
-            <div id="wheel-section" class="hidden">
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
-                    <h2 class="section-title text-xl font-extrabold">🎡 Колесо удачи</h2>
-                </div>
-
-                <div class="glass-box p-4 rounded-[24px] mb-4">
-                    <div class="flex items-start justify-between gap-3 mb-4">
-                        <div>
-                            <div class="text-white font-semibold text-lg">Lucky Spin</div>
-                            <div class="text-sm text-gray-400 mt-1">Крути за 2 кредита и лови бонусы, джекпот и возвраты</div>
-                        </div>
-                        <div class="premium-pill shrink-0">2 кредита / spin</div>
-                    </div>
-
-                    <div class="fortune-wheel-shell mt-2 mb-5">
-                        <div class="fortune-wheel-pointer"></div>
-                        <div id="fortuneWheel" class="fortune-wheel"></div>
-                        <div class="fortune-wheel-center">🎁</div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="metric-tile">
-                            <div class="text-xs text-gray-400 mb-1">Стоимость</div>
-                            <div class="text-lg font-bold text-white">2 кредита</div>
-                        </div>
-                        <div class="metric-tile metric-tile-strong">
-                            <div class="text-xs text-gray-400 mb-1">Джекпот</div>
-                            <div class="text-lg font-bold text-amber-300">50 кредитов</div>
-                        </div>
-                    </div>
-
-                    <div id="wheelStatus" class="inner-panel text-sm text-gray-300 mb-4">Нажми на кнопку ниже, чтобы прокрутить колесо.</div>
-
-                    <div class="flex gap-3">
-                        <button id="spinWheelBtn" onclick="spinWheel()" class="primary-btn flex-1 py-4 rounded-[20px] text-white font-bold">Крутить колесо</button>
-                        <button onclick="showSection('main')" class="secondary-btn px-5 py-4 rounded-[20px] text-white font-semibold">Позже</button>
-                    </div>
-                </div>
-            </div>
-
             <div id="preland-section" class="hidden">
                 <div class="flex items-center justify-between mb-4 gap-3">
                     <button onclick="showSection('main')" class="text-blue-400 font-medium">← Назад</button>
@@ -2230,11 +2103,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
         const appState = {
             user: null,
-            transactions: [],
-            wheel: {
-                spinning: false,
-                rotation: 0
-            }
+            transactions: []
         };
 
         function hapticLight() {
@@ -3183,7 +3052,7 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
         }
 
         function showSection(section) {
-            const sections = ['main-menu', 'dating-cpa-section', 'cpa-stats-section', 'cpa-offer-details-section', 'video-section', 'link-section', 'preland-section', 'wheel-section', 'multilink-section', 'spy-section'];
+            const sections = ['main-menu', 'dating-cpa-section', 'cpa-stats-section', 'cpa-offer-details-section', 'video-section', 'link-section', 'preland-section', 'multilink-section', 'spy-section'];
             sections.forEach((s) => {
                 const el = document.getElementById(s);
                 if (el) el.classList.add('hidden');
@@ -3210,98 +3079,10 @@ class="secondary-btn px-4 py-2 rounded-2xl font-semibold text-sm">
                 renderMultilinkPreview();
             }
 
-            if (section === 'wheel') {
-                syncWheelUi();
-            }
-
             if (section === 'cpa-stats') {
                 loadCpaStatistics();
             }
         }
-
-
-        const wheelSegments = [
-            { key: 'try_again', label: '0 кредитов', reward: 0, angle: 22.5 },
-            { key: 'credit_1a', label: '+1 кредит', reward: 1, angle: 67.5 },
-            { key: 'credit_2', label: '+2 кредита', reward: 2, angle: 112.5 },
-            { key: 'credit_5', label: '+5 кредитов', reward: 5, angle: 157.5 },
-            { key: 'credit_10', label: '+10 кредитов', reward: 10, angle: 202.5 },
-            { key: 'try_again_2', label: '0 кредитов', reward: 0, angle: 247.5 },
-            { key: 'credit_1b', label: '+1 кредит', reward: 1, angle: 292.5 },
-            { key: 'jackpot_50', label: 'Джекпот 50', reward: 50, angle: 337.5 }
-        ];
-
-        function getWheelSegment(segmentKey) {
-            return wheelSegments.find((segment) => segment.key === segmentKey) || wheelSegments[0];
-        }
-
-        function syncWheelUi(message) {
-            const statusEl = document.getElementById('wheelStatus');
-            const spinBtn = document.getElementById('spinWheelBtn');
-            if (statusEl && message) {
-                statusEl.textContent = message;
-            }
-            if (spinBtn) {
-                spinBtn.disabled = !!appState.wheel.spinning;
-                spinBtn.classList.toggle('btn-disabled', !!appState.wheel.spinning);
-                spinBtn.textContent = appState.wheel.spinning ? 'Крутим...' : 'Крутить колесо';
-            }
-        }
-
-        async function spinWheel() {
-            if (appState.wheel.spinning) return;
-            if (!tg || !tg.initData) {
-                safeAlert('Открой Mini App через Telegram');
-                return;
-            }
-
-            const wheelEl = document.getElementById('fortuneWheel');
-            const statusEl = document.getElementById('wheelStatus');
-            if (!wheelEl || !statusEl) return;
-
-            appState.wheel.spinning = true;
-            syncWheelUi('Проверяем баланс и запускаем колесо...');
-            hapticMedium();
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/wheel/spin`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData: tg.initData })
-                });
-
-                const data = await response.json();
-                if (!response.ok || !data.ok) {
-                    throw new Error(data.message || 'Не удалось прокрутить колесо');
-                }
-
-                const segment = getWheelSegment(data.segmentKey);
-                const extraTurns = 5 * 360;
-                const targetRotation = appState.wheel.rotation + extraTurns + (360 - segment.angle);
-                appState.wheel.rotation = targetRotation;
-                wheelEl.style.transform = `rotate(${targetRotation}deg)`;
-                statusEl.textContent = 'Колесо крутится...';
-
-                setTimeout(() => {
-                    appState.user = data.user;
-                    updateUserBar();
-                    const rewardText = data.reward > 0 ? `Ты выиграл ${data.reward} кредитов.` : 'В этот раз без выигрыша.';
-                    const netText = data.netChange >= 0 ? `Баланс изменился на +${data.netChange}.` : `Списано ${Math.abs(data.netChange)} кредита.`;
-                    syncWheelUi(`${rewardText} ${netText} Текущий баланс: ${data.user.balance} кредитов.`);
-                    hapticSuccess();
-                    appState.wheel.spinning = false;
-                    syncWheelUi(document.getElementById('wheelStatus').textContent);
-                }, 5400);
-            } catch (error) {
-                console.error('Wheel spin error:', error);
-                appState.wheel.spinning = false;
-                syncWheelUi();
-                hapticError();
-                safeAlert(error.message || 'Ошибка запуска колеса');
-            }
-        }
-
-        window.spinWheel = spinWheel;
 
         function setDatingCpaHeaderMode(isCpa) {
             const userBalance = document.getElementById('userBalance');
@@ -5002,6 +4783,46 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+<div id="wheel" class="hidden p-4">
+  <h2 class="text-xl font-bold mb-4">🎡 Колесо удачи</h2>
+  <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
+    <canvas id="wheelCanvas" width="260" height="260"></canvas>
+  </div>
+  <button onclick="spinWheel()" class="primary-btn w-full mt-6 p-4 rounded-xl">
+    Крутить (2 кредита)
+  </button>
+</div>
+
+<script>
+const rewards = ["0","1","2","5","10","50","0","1"];
+
+function drawWheel() {
+  const canvas = document.getElementById("wheelCanvas");
+  const ctx = canvas.getContext("2d");
+  const arc = Math.PI * 2 / rewards.length;
+
+  for (let i = 0; i < rewards.length; i++) {
+    ctx.beginPath();
+    ctx.fillStyle = i % 2 ? "#8b5cf6" : "#3b82f6";
+    ctx.moveTo(130,130);
+    ctx.arc(130,130,120,i*arc,(i+1)*arc);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 14px Arial";
+    ctx.fillText(rewards[i]+"cr",120+Math.cos(i*arc)*70,120+Math.sin(i*arc)*70);
+  }
+}
+drawWheel();
+
+async function spinWheel() {
+  const res = await fetch("/wheel/spin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telegram_id:window.Telegram.WebApp.initDataUnsafe.user.id})});
+  const data = await res.json();
+  alert("Ты выиграл: "+data.reward+" кредитов");
+}
+</script>
+
 </body>
 </html>`;
         }
@@ -5707,5 +5528,45 @@ closeDvizhRulesModal();
 </div>
 </div>
 </div>
+
+<div id="wheel" class="hidden p-4">
+  <h2 class="text-xl font-bold mb-4">🎡 Колесо удачи</h2>
+  <div style="display:flex;justify-content:center;align-items:center;margin-top:20px;">
+    <canvas id="wheelCanvas" width="260" height="260"></canvas>
+  </div>
+  <button onclick="spinWheel()" class="primary-btn w-full mt-6 p-4 rounded-xl">
+    Крутить (2 кредита)
+  </button>
+</div>
+
+<script>
+const rewards = ["0","1","2","5","10","50","0","1"];
+
+function drawWheel() {
+  const canvas = document.getElementById("wheelCanvas");
+  const ctx = canvas.getContext("2d");
+  const arc = Math.PI * 2 / rewards.length;
+
+  for (let i = 0; i < rewards.length; i++) {
+    ctx.beginPath();
+    ctx.fillStyle = i % 2 ? "#8b5cf6" : "#3b82f6";
+    ctx.moveTo(130,130);
+    ctx.arc(130,130,120,i*arc,(i+1)*arc);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 14px Arial";
+    ctx.fillText(rewards[i]+"cr",120+Math.cos(i*arc)*70,120+Math.sin(i*arc)*70);
+  }
+}
+drawWheel();
+
+async function spinWheel() {
+  const res = await fetch("/wheel/spin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telegram_id:window.Telegram.WebApp.initDataUnsafe.user.id})});
+  const data = await res.json();
+  alert("Ты выиграл: "+data.reward+" кредитов");
+}
+</script>
+
 </body>
 </html>
