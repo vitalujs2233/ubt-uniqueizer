@@ -393,135 +393,6 @@
             text-shadow: 0 0 22px rgba(139,92,246,0.10);
         }
 
-        .wheel-card {
-            background:
-                radial-gradient(circle at top left, rgba(168,85,247,0.24), transparent 34%),
-                radial-gradient(circle at bottom right, rgba(56,189,248,0.18), transparent 36%),
-                linear-gradient(180deg, rgba(12,16,34,0.96), rgba(7,10,22,0.98));
-            border-color: rgba(103,232,249,0.18);
-            box-shadow:
-                0 18px 42px rgba(0,0,0,0.45),
-                0 0 0 1px rgba(168,85,247,0.08),
-                0 0 28px rgba(56,189,248,0.10);
-        }
-
-        .wheel-card:hover {
-            border-color: rgba(103,232,249,0.38);
-            box-shadow:
-                0 18px 42px rgba(0,0,0,0.45),
-                0 0 0 1px rgba(103,232,249,0.15),
-                0 0 34px rgba(168,85,247,0.16);
-        }
-
-        .wheel-glow {
-            position: absolute;
-            inset: auto -30px -36px auto;
-            width: 110px;
-            height: 110px;
-            border-radius: 999px;
-            background: radial-gradient(circle, rgba(168,85,247,0.34), rgba(56,189,248,0.12), transparent 72%);
-            filter: blur(12px);
-            pointer-events: none;
-        }
-
-        .wheel-icon {
-            background: linear-gradient(135deg, rgba(168,85,247,0.22), rgba(56,189,248,0.20));
-            border: 1px solid rgba(255,255,255,0.10);
-            box-shadow: 0 0 24px rgba(168,85,247,0.18);
-        }
-
-        .wheel-preview {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-            border-radius: 999px;
-            background:
-                conic-gradient(
-                    from -15deg,
-                    rgba(56,189,248,0.95) 0deg 60deg,
-                    rgba(168,85,247,0.95) 60deg 120deg,
-                    rgba(34,211,238,0.95) 120deg 180deg,
-                    rgba(99,102,241,0.95) 180deg 240deg,
-                    rgba(217,70,239,0.95) 240deg 300deg,
-                    rgba(250,204,21,0.95) 300deg 360deg
-                );
-            box-shadow:
-                0 0 0 6px rgba(255,255,255,0.05),
-                0 0 24px rgba(103,232,249,0.20),
-                inset 0 0 20px rgba(255,255,255,0.12);
-            animation: wheelCardFloat 3.8s ease-in-out infinite;
-        }
-
-        .wheel-preview::before {
-            content: "";
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 14px solid #f8fafc;
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.35));
-        }
-
-        .wheel-preview-ring {
-            position: absolute;
-            inset: 8px;
-            border-radius: 999px;
-            border: 1px dashed rgba(255,255,255,0.34);
-            opacity: 0.7;
-        }
-
-        .wheel-preview-center {
-            position: absolute;
-            inset: 50% auto auto 50%;
-            transform: translate(-50%, -50%);
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            color: white;
-            background: radial-gradient(circle, rgba(15,23,42,0.96), rgba(2,6,23,1));
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.08);
-        }
-
-        .wheel-slice {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            font-size: 10px;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.55);
-        }
-
-        .wheel-slice-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-38px); }
-        .wheel-slice-2 { transform: translate(-50%, -50%) rotate(60deg) translateY(-38px) rotate(-60deg); }
-        .wheel-slice-3 { transform: translate(-50%, -50%) rotate(120deg) translateY(-38px) rotate(-120deg); }
-        .wheel-slice-4 { transform: translate(-50%, -50%) rotate(180deg) translateY(-38px) rotate(-180deg); }
-        .wheel-slice-5 { transform: translate(-50%, -50%) rotate(240deg) translateY(-38px) rotate(-240deg); }
-        .wheel-slice-6 { transform: translate(-50%, -50%) rotate(300deg) translateY(-38px) rotate(-300deg); }
-
-        .wheel-cta {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            opacity: 0.9;
-        }
-
-        @keyframes wheelCardFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-4px) rotate(6deg); }
-        }
-
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -1336,32 +1207,6 @@ body::after {
                             </div>
 
                             <div class="text-xs text-violet-300 mt-3 tracking-wide">Mini Tracker Dashboard</div>
-                        </div>
-                    </div>
-
-                    <div class="bento-card cursor-pointer wheel-card" onclick="openWheel()">
-                        <div class="wheel-glow"></div>
-                        <div class="h-full flex flex-col justify-between relative z-10">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <div class="text-[15px] font-bold">Колесо удачи</div>
-                                    <div class="text-xs text-cyan-200/80 mt-1">Бонусы и подарки</div>
-                                </div>
-                                <div class="h-12 w-12 rounded-[18px] wheel-icon flex items-center justify-center text-2xl shrink-0">🎡</div>
-                            </div>
-
-                            <div class="mt-3 wheel-preview">
-                                <div class="wheel-preview-ring"></div>
-                                <div class="wheel-preview-center">SPIN</div>
-                                <div class="wheel-slice wheel-slice-1">0</div>
-                                <div class="wheel-slice wheel-slice-2">1</div>
-                                <div class="wheel-slice wheel-slice-3">2</div>
-                                <div class="wheel-slice wheel-slice-4">5</div>
-                                <div class="wheel-slice wheel-slice-5">10</div>
-                                <div class="wheel-slice wheel-slice-6">50</div>
-                            </div>
-
-                            <div class="text-xs text-fuchsia-200 mt-3 tracking-wide wheel-cta">Tap to open lucky spin</div>
                         </div>
                     </div>
 
@@ -4931,6 +4776,50 @@ ${paragraphs || '<p>Добавь основной текст преленда.</
 <div class="note">Материал подготовлен в UBT ToolKit</div>
 </div>
 </div>
+
+<div id="wheel" class="hidden p-4 fade-up">
+  <h2 class="text-xl font-bold mb-4">🎡 Колесо удачи</h2>
+
+  <div style="display:flex;justify-content:center;">
+    <canvas id="wheelCanvas" width="260" height="260"></canvas>
+  </div>
+
+  <button onclick="spinWheel()" class="primary-btn w-full mt-6 p-4 rounded-xl">
+    Крутить (2 кредита)
+  </button>
+</div>
+
+
+<script>
+const rewards = ["0","1","2","5","10","50","0","1"];
+
+function drawWheel() {
+  const canvas = document.getElementById("wheelCanvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const arc = Math.PI * 2 / rewards.length;
+
+  for (let i = 0; i < rewards.length; i++) {
+    ctx.beginPath();
+    ctx.fillStyle = i % 2 ? "#8b5cf6" : "#3b82f6";
+    ctx.moveTo(130,130);
+    ctx.arc(130,130,120,i*arc,(i+1)*arc);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 14px Arial";
+    ctx.fillText(rewards[i]+"cr",120+Math.cos(i*arc)*70,120+Math.sin(i*arc)*70);
+  }
+}
+
+function spinWheel() {
+  alert("Здесь будет вращение 🎡");
+}
+
+drawWheel();
+</script>
+
 </body>
 </html>`;
         }
@@ -5637,18 +5526,48 @@ closeDvizhRulesModal();
 </div>
 </div>
 
-    <script>
-        function openWheel() {
-            const tg = window.Telegram && window.Telegram.WebApp;
-            if (tg && typeof tg.HapticFeedback?.impactOccurred === 'function') {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-            if (tg && typeof tg.showAlert === 'function') {
-                tg.showAlert('Колесо удачи скоро откроется 🎡');
-            } else {
-                alert('Колесо удачи скоро откроется 🎡');
-            }
-        }
-    </script>
+<div id="wheel" class="hidden p-4 fade-up">
+  <h2 class="text-xl font-bold mb-4">🎡 Колесо удачи</h2>
+
+  <div style="display:flex;justify-content:center;">
+    <canvas id="wheelCanvas" width="260" height="260"></canvas>
+  </div>
+
+  <button onclick="spinWheel()" class="primary-btn w-full mt-6 p-4 rounded-xl">
+    Крутить (2 кредита)
+  </button>
+</div>
+
+
+<script>
+const rewards = ["0","1","2","5","10","50","0","1"];
+
+function drawWheel() {
+  const canvas = document.getElementById("wheelCanvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const arc = Math.PI * 2 / rewards.length;
+
+  for (let i = 0; i < rewards.length; i++) {
+    ctx.beginPath();
+    ctx.fillStyle = i % 2 ? "#8b5cf6" : "#3b82f6";
+    ctx.moveTo(130,130);
+    ctx.arc(130,130,120,i*arc,(i+1)*arc);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 14px Arial";
+    ctx.fillText(rewards[i]+"cr",120+Math.cos(i*arc)*70,120+Math.sin(i*arc)*70);
+  }
+}
+
+function spinWheel() {
+  alert("Здесь будет вращение 🎡");
+}
+
+drawWheel();
+</script>
+
 </body>
 </html>
