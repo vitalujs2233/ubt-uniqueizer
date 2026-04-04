@@ -1965,7 +1965,20 @@ app.post('/wheel/spin', async (req, res) => {
       [telegramId, reward, spinCost]
     );
 
-    res.json({ success: true, reward });
+    const userResult = await pool.query(
+      'select telegram_id, username, first_name, photo_url, balance, plan from users where telegram_id = $1 limit 1',
+      [telegramId]
+    );
+
+    const dbUser = userResult.rows[0] || null;
+
+    res.json({
+      success: true,
+      reward,
+      cost: spinCost,
+      balance: dbUser ? Number(dbUser.balance) : null,
+      user: dbUser
+    });
   } catch (error) {
     console.error('Wheel spin error:', error);
 
@@ -1973,14 +1986,13 @@ app.post('/wheel/spin', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: error.message || 'Server error' });
   }
 });
 
 
-app.listen(port, () => {
-    console.log('Server running on port ' + port);
-  });
-});
-
 ensureWheelTable().catch(console.error);
+
+app.listen(port, () => {
+  console.log('Server running on port ' + port);
+});
