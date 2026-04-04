@@ -5638,43 +5638,246 @@ closeDvizhRulesModal();
 </div>
 
     <script>
-       function openWheel() {
+function openWheel() {
     const tg = window.Telegram && window.Telegram.WebApp;
     if (tg && typeof tg.HapticFeedback?.impactOccurred === 'function') {
         tg.HapticFeedback.impactOccurred('medium');
     }
 
     const modal = document.getElementById('wheelModal');
-    if (modal) {
-        modal.classList.remove('hidden');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    if (typeof drawWheel === 'function') {
+        setTimeout(() => drawWheel(window.__wheelRotation || 0), 30);
     }
 }
 
 function closeWheel() {
     const modal = document.getElementById('wheelModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
-    </script>
-    <div id="wheelModal" class="wheel-modal-backdrop hidden">
-    <div class="wheel-modal-box p-5">
+</script>
+    
+<div id="wheelModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="w-full max-w-[420px] rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,12,40,0.98),rgba(8,10,24,0.98))] p-5 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none"></div>
 
-        <button onclick="closeWheel()" style="position:absolute;right:10px;top:10px;">✕</button>
-
-        <h2 style="text-align:center;font-weight:bold;margin-bottom:10px;">
-            🎡 Колесо фортуны
-        </h2>
-
-        <div style="display:flex;justify-content:center;">
-            <canvas id="fortuneWheelCanvas" width="260" height="260"></canvas>
-        </div>
-
-        <button onclick="spinWheel()" style="width:100%;margin-top:15px;padding:12px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:white;">
-            Крутить
+        <button onclick="closeWheel()"
+                class="secondary-btn px-3 py-2 rounded-2xl font-semibold text-sm absolute top-3 right-3 z-10">
+            ✕
         </button>
 
+        <div class="text-center mb-4">
+            <div class="premium-pill mx-auto mb-3">🎡 UBT BONUS GAME</div>
+            <h2 class="text-[24px] font-extrabold leading-tight">Колесо фортуны</h2>
+            <div class="text-sm text-gray-400 mt-2">Крути колесо и выигрывай кредиты</div>
+        </div>
+
+        <div class="relative flex justify-center items-center mb-4">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 z-10"
+                 style="width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid #ffffff;filter:drop-shadow(0 0 8px rgba(255,255,255,.35));">
+            </div>
+            <canvas id="fortuneWheelCanvas" width="280" height="280" class="max-w-full"></canvas>
+        </div>
+
+        <div id="wheelResult"
+             class="inner-panel text-center text-sm text-gray-200 min-h-[52px] flex items-center justify-center mb-4">
+            Нажми «Крутить», чтобы испытать удачу
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <button id="spinWheelBtn"
+                    onclick="spinWheel()"
+                    class="primary-btn px-4 py-4 rounded-2xl font-bold">
+                Крутить
+            </button>
+
+            <button onclick="closeWheel()"
+                    class="secondary-btn px-4 py-4 rounded-2xl font-bold">
+                Закрыть
+            </button>
+        </div>
+
+        <div class="mt-4 text-center text-xs text-gray-400">
+            Выигрыши на колесе: 0 • 1 • 2 • 5 • 10 • 50 кредитов
+        </div>
     </div>
 </div>
+
+<script>
+window.__wheelSegments = [
+    { label: '0', reward: 0, color: '#8b5cf6' },
+    { label: '1', reward: 1, color: '#3b82f6' },
+    { label: '2', reward: 2, color: '#14b8a6' },
+    { label: '5', reward: 5, color: '#f59e0b' },
+    { label: '10', reward: 10, color: '#ec4899' },
+    { label: '1', reward: 1, color: '#22c55e' },
+    { label: '0', reward: 0, color: '#7c3aed' },
+    { label: '50', reward: 50, color: '#f97316' }
+];
+window.__wheelRotation = window.__wheelRotation || 0;
+window.__wheelBusy = false;
+
+function drawWheel(rotationDeg = 0) {
+    const canvas = document.getElementById('fortuneWheelCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const center = size / 2;
+    const radius = center - 10;
+    const innerRadius = 28;
+    const arc = (Math.PI * 2) / window.__wheelSegments.length;
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate((rotationDeg * Math.PI) / 180);
+
+    for (let i = 0; i < window.__wheelSegments.length; i++) {
+        const seg = window.__wheelSegments[i];
+        const start = i * arc - Math.PI / 2;
+        const end = start + arc;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = seg.color;
+        ctx.fill();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+        ctx.stroke();
+
+        ctx.save();
+        const angle = start + arc / 2;
+        ctx.rotate(angle);
+        ctx.translate(radius * 0.67, 0);
+        ctx.rotate(Math.PI / 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.35)';
+        ctx.shadowBlur = 5;
+        ctx.fillText(seg.label + ' кр', 0, 0);
+        ctx.restore();
+    }
+
+    ctx.beginPath();
+    ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
+    const grad = ctx.createRadialGradient(0, 0, 3, 0, 0, innerRadius);
+    grad.addColorStop(0, '#ffffff');
+    grad.addColorStop(0.4, '#fde68a');
+    grad.addColorStop(1, '#d97706');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.stroke();
+    ctx.restore();
+}
+
+function getWheelResultEl() {
+    return document.getElementById('wheelResult');
+}
+
+function setWheelResult(text) {
+    const el = getWheelResultEl();
+    if (el) el.textContent = text;
+}
+
+function getTelegramWheelBody() {
+    const body = {};
+    const tgInit = window.Telegram?.WebApp?.initData;
+    const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+    if (tgInit) body.initData = tgInit;
+    else if (tgId) body.telegram_id = tgId;
+    return body;
+}
+
+function findSegmentIndexByReward(reward) {
+    const idx = window.__wheelSegments.findIndex(s => Number(s.reward) === Number(reward));
+    return idx >= 0 ? idx : 0;
+}
+
+async function spinWheel() {
+    if (window.__wheelBusy) return;
+    window.__wheelBusy = true;
+
+    const btn = document.getElementById('spinWheelBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('btn-disabled');
+    }
+
+    setWheelResult('Колесо крутится...');
+
+    let reward = 0;
+    try {
+        const resp = await fetch('/wheel/spin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(getTelegramWheelBody())
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) throw new Error(data.error || data.message || 'Ошибка прокрутки');
+        reward = Number(data.reward || 0);
+    } catch (e) {
+        setWheelResult(e.message || 'Не удалось выполнить прокрутку');
+        reward = 0;
+    }
+
+    const index = findSegmentIndexByReward(reward);
+    const segmentAngle = 360 / window.__wheelSegments.length;
+    const targetCenterAngle = index * segmentAngle + segmentAngle / 2;
+    const desiredRotation = 360 - targetCenterAngle;
+    const startRotation = window.__wheelRotation || 0;
+    const targetRotation = startRotation + 2160 + ((desiredRotation - (startRotation % 360) + 360) % 360);
+    const startTime = performance.now();
+    const duration = 3600;
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function animate(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const eased = easeOutCubic(t);
+        const current = startRotation + (targetRotation - startRotation) * eased;
+        window.__wheelRotation = current;
+        drawWheel(current);
+
+        if (t < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            setWheelResult('Твой выигрыш: ' + reward + ' кредитов');
+            window.__wheelBusy = false;
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove('btn-disabled');
+            }
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    drawWheel(window.__wheelRotation || 0);
+
+    document.getElementById('wheelModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'wheelModal') {
+            closeWheel();
+        }
+    });
+});
+</script>
 </body>
 </html>
